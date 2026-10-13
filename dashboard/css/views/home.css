@@ -59,7 +59,7 @@
 .h-hero--empty { background: var(--ink); color: var(--paper); flex-direction: column; justify-content: center; }
 .h-hero--empty .h-hero-title { white-space: normal; font-size: 56px; }
 
-.h-lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; min-height: 0; }
+.h-lanes { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; min-height: 0; }
 .h-lane { display: flex; flex-direction: column; gap: 6px; min-width: 0; border-top: 6px solid var(--c); padding-top: 10px; }
 .h-lane-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .h-lane-head b { font-size: 18px; font-weight: 800; font-stretch: 80%; text-transform: uppercase; letter-spacing: .06em; }
@@ -96,7 +96,7 @@
 .h-ring.is-done .ring-bg { fill: var(--c); }
 .h-ring.is-done .num { color: var(--c-ink); }
 
-.h-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.h-duo { display: grid; grid-template-columns: 1fr; gap: 16px; }
 .h-shop, .h-status { display: flex; flex-direction: column; gap: 4px; }
 .h-stat { display: flex; align-items: baseline; gap: 8px; }
 .h-stat .num { font-size: 56px; line-height: .9; }
@@ -108,3 +108,6 @@
 .h-st-row span { color: var(--ink-2); }
 .h-st-row.is-warn { color: #B45F00; font-weight: 800; }
 .h-st-row.is-warn span { color: inherit; }
+
+.h-wx-place { margin-bottom: 8px; }
+.h-wx-say a { font-size: 12px; color: var(--ink-2); margin-left: 6px; }

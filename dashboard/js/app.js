@@ -91,6 +91,7 @@
   // ------------------------------------------------------------ calendar helpers
   App.events = function () {
     var list = D.events.slice();
+    if (App.calendarSync) return list;
     var today = App.dayStart(App.now());
     if (App.calMode === 'busy') list = list.concat(D.busyExtras);
     if (App.calMode === 'empty') list = list.filter(function (e) { return e.allDay || !App.sameDay(e.start, today); });
@@ -109,6 +110,14 @@
     return App.events().filter(function (ev) {
       return ev.allDay && ev.start < e && ev.end > s && (!pid || ev.people.indexOf(pid) > -1);
     });
+  };
+  App.calendarPeople = function (day) {
+    var start = App.dayStart(day), end = App.addDays(start, 1);
+    var mentioned = App.events().some(function (event) {
+      var names = event.mentionedPeople || (App.isFamily(event) ? [] : event.people);
+      return event.start < end && event.end > start && names.indexOf('miyam') > -1;
+    });
+    return D.people.filter(function (person) { return person.id !== 'miyam' || mentioned; });
   };
   App.leaveBy = function (e) { return e.travel ? new Date(+e.start - e.travel * 60000) : e.start; };
   // The next thing someone needs to act on: earliest upcoming "leave by" today.
@@ -170,7 +179,8 @@
   }
   App.go = function (name, opts) {
     opts = opts || {};
-    if (!App.views[name]) name = 'home';
+    // Home controls are hidden until real devices are connected.
+    if (name === 'control' || !App.views[name]) name = 'home';
     if (App.current && App.current !== name && App.views[App.current].hide) App.views[App.current].hide();
     App.$$('.view').forEach(function (v) { v.classList.toggle('is-active', v.dataset.view === name); });
     App.$$('.rail-item').forEach(function (b) { b.classList.toggle('is-active', b.dataset.go === name); });
@@ -295,7 +305,6 @@
   function onIdleTick() {
     idleSec++;
     var blocked = $('#takeover').classList.contains('is-open');
-    if (App.mode === 'nightdash' && idleSec >= 20) { App.setMode('night'); return; }
     if (App.mode !== 'day' || blocked) return;
     if (idleSec === App.idle.home && App.current !== 'home') { App.closeSheet(); App.go('home'); }
     if (idleSec >= App.idle.ambient) {
@@ -327,7 +336,8 @@
 
   // ------------------------------------------------------------ boot
   App.start = function () {
-    App.setTime(15, 18); // demo default: a busy weekday afternoon
+    if (App.calendarSync) App.setTime(null);
+    else App.setTime(15, 18); // demo default: a busy weekday afternoon
     fit();
     window.addEventListener('resize', fit);
     // Switch tabs the instant a finger lands (pointerdown), not on release. Keyboard "clicks"
@@ -347,7 +357,7 @@
     setInterval(tick, 1000);
     App.emit('ready');
     refreshStale(1500);
-    setTimeout(function () { App.toast('Tip: press and hold the <b>clock</b> in the sidebar for demo controls', { ms: 6000, icon: 'bolt' }); }, 1200);
+    if (!App.calendarSync) setTimeout(function () { App.toast('Tip: press and hold the <b>clock</b> in the sidebar for demo controls', { ms: 6000, icon: 'bolt' }); }, 1200);
   };
   document.addEventListener('DOMContentLoaded', function () { App.start(); });
 })();

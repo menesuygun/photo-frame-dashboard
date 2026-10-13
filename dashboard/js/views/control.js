@@ -9,6 +9,7 @@
   // Optimistic device update: flip immediately, confirm (or revert) shortly after.
   App.setDevice = function (id, patch, opts) {
     var d = dev(id), before = {};
+    if (!d) return;
     Object.keys(patch).forEach(function (k) { before[k] = d[k]; d[k] = patch[k]; });
     V.pending[id] = true;
     changed([id]);
@@ -58,12 +59,8 @@
 
   function summary() {
     var lights = D.devices.filter(function (d) { return d.type === 'light' && d.on; });
-    var unlocked = D.devices.filter(function (d) { return d.type === 'lock' && !d.locked; });
-    var garage = dev('g-door');
-    var secure = !unlocked.length && garage.state === 'closed';
     var c = D.climate, m = D.media;
     return '<button class="sum' + (lights.length ? ' sum--warm' : '') + '" data-sum="lights"><span class="label">Lights</span><b class="num">' + lights.length + '</b><small>on in ' + unique(lights.map(function (l) { return l.room; })).length + ' rooms</small></button>' +
-      '<button class="sum' + (secure ? '' : ' sum--warn') + '" data-sum="security"><span class="label">Security</span><b class="num">' + (secure ? 'Locked' : unlocked.length + (garage.state !== 'closed' ? 1 : 0)) + '</b><small>' + (secure ? 'All doors + garage' : (garage.state !== 'closed' ? 'Garage ' + garage.state : '') + (unlocked.length ? (garage.state !== 'closed' ? ' · ' : '') + unlocked.map(function (u) { return u.name; }).join(', ') : '') + (secure ? '' : ' open')) + '</small></button>' +
       '<button class="sum" data-sum="climate"><span class="label">Climate</span><b class="num">' + c.current + '°</b><small>' + (c.mode === 'off' ? 'System off' : (c.set > c.current ? 'Heating' : c.set < c.current ? 'Cooling' : 'Holding') + ' to ' + c.set + '°') + '</small></button>' +
       '<button class="sum" data-sum="media"><span class="label">Media</span><b class="num">' + (m.playing ? 'Playing' : 'Paused') + '</b><small>' + m.room + ' speaker</small></button>';
   }
@@ -102,6 +99,7 @@
   }
 
   function cams() {
+    if (!D.cameras.length) return '';
     return '<div class="label">Cameras · snapshots every 20s</div><div class="cams">' + D.cameras.slice(0, 2).map(function (c) {
       return '<button class="cam" data-cam="' + c.id + '"><img src="' + App.img(c.seed, 400, 250) + '" alt=""><span class="cam-name">' + c.name + '</span><span class="cam-age">' + V.camAge + 's ago</span></button>';
     }).join('') + '</div>';
@@ -307,7 +305,7 @@
     if ((t = e.target.closest('[data-scene]'))) return applyScene(t.dataset.scene);
     if ((t = e.target.closest('[data-sum]'))) {
       var k = t.dataset.sum;
-      if (k === 'lights' || k === 'security') return listSheet(k);
+      if (k === 'lights') return listSheet(k);
       var target = V.el.querySelector(k === 'climate' ? '.hc-climate' : '.hc-media');
       target.classList.add('is-pulse'); setTimeout(function () { target.classList.remove('is-pulse'); }, 900);
       return;

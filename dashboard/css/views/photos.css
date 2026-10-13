@@ -52,3 +52,23 @@
 .ph-btn--fav { padding: 0 24px 0 20px; }
 .ph-btn--fav.is-on { background: #E4007C; }
 .ph-btn--fav.is-on .i { fill: currentColor; }
+
+.ph-library-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+.photo-empty { display: grid; place-items: center; height: 100%; padding: 40px; color: white; background: #202020; text-align: center; }
+.photo-upload input { display: block; max-width: 100%; margin: 18px 0; }
+.photo-library-row { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.photo-library-row img { width: 72px; height: 64px; object-fit: cover; border-radius: 8px; }
+.photo-library-row span { flex: 1; overflow-wrap: anywhere; min-width: 0; }
+
+.photo-detail-row { display: flex; gap: 16px; border-top: 1px solid var(--line); padding: 16px 0; }
+.photo-detail-row img { width: 110px; height: 120px; object-fit: cover; border-radius: 8px; }
+.photo-detail-row > div { flex: 1; min-width: 0; }
+.photo-upload label { display: block; font-size: 18px; }
+.photo-upload input:not([type=file]) { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); margin: 6px 0 12px; }
+.photo-lookup-note, .photo-detail-row small, .photo-library-row small { display: block; font-size: 14px; color: var(--ink-2); }
+.photos .cap { opacity: 1; bottom: 112px; max-width: calc(100% - 88px); }
+.photos .cap-title { font-size: 44px; overflow-wrap: anywhere; }
+.photos .cap-date { font-family: var(--sans); font-size: 24px; line-height: 1.2; }
+.photos .cap--m .cap-title { font-size: 28px; }
+.photos .cap--m .cap-date { font-size: 20px; }
+.cap-entry + .cap-entry { margin-top: 10px; }

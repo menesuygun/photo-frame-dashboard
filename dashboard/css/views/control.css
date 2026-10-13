@@ -3,7 +3,7 @@
 .hc-left { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
 .hc-right { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
 
-.hc-sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: none; }
+.hc-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; flex: none; }
 .sum { min-height: 120px; padding: 14px 16px; border-radius: var(--r); background: var(--card); display: flex; flex-direction: column; text-align: left; }
 .sum:active { transform: scale(.97); }
 .sum b { font-size: 48px; line-height: .95; margin-top: 4px; }

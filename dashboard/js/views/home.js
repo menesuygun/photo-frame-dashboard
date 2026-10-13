@@ -14,12 +14,12 @@
     var hours = App.hourly(7);
     var tmin = Math.min.apply(null, hours.map(function (h) { return h.t; }));
     var tmax = Math.max.apply(null, hours.map(function (h) { return h.t; }));
-    return '<div class="h-wx-top">' +
+    return '<div class="label h-wx-place">East Gwillimbury</div><div class="h-wx-top">' +
       '<span class="h-wx-icon">' + App.icon(w.cond, 60) + '</span>' +
       '<span class="h-wx-temp num">' + w.temp + '°</span>' +
       '<span class="h-wx-meta"><b>' + w.label + '</b><span>H ' + w.hi + '°  L ' + w.lo + '°</span></span>' +
       '</div>' +
-      '<div class="h-wx-say"><b>' + w.summary + '.</b> ' + w.advice + '.</div>' +
+      '<div class="h-wx-say"><b>' + App.esc(w.summary) + '</b> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>' +
       '<div class="h-wx-hours">' + hours.map(function (h) {
         var lift = tmax === tmin ? 0 : Math.round((h.t - tmin) / (tmax - tmin) * 8);
         return '<div class="h-hr' + (h.p >= 50 ? ' is-wet' : '') + '"><span class="h-hr-l">' + h.label + '</span>' +
@@ -27,16 +27,22 @@
       }).join('') + '</div>';
   }
 
+  App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
+
   function presence() {
     return D.people.map(function (p) {
-      var sub = p.home ? 'Home' : (p.eta ? '<b>ETA ' + p.eta + ' min</b>' : p.status);
-      return '<div class="h-who' + (p.home ? ' is-home' : '') + '" style="' + App.pstyle(p) + '">' +
-        App.avatar(p, 36, p.home ? '' : 'avatar--away') +
-        '<span><b>' + p.name + '</b><small>' + sub + '</small></span></div>';
+      return '<div class="h-who" style="' + App.pstyle(p) + '">' +
+        App.avatar(p, 36) +
+        '<span><b>' + p.name + '</b></span></div>';
     }).join('');
   }
 
   function hero() {
+    if (App.calendarSync && App.calendarSync.status !== 'ready') {
+      return '<div class="h-hero h-hero--empty"><div class="label label--light">Family calendar</div>' +
+        '<div class="h-hero-title serif">' + (App.calendarSync.status === 'stale' ? 'Showing your last update' : 'Your family’s schedule') + '</div>' +
+        App.calendarStatus() + '</div>';
+    }
     var e = App.nextEvent(), now = App.now();
     if (!e) {
       var tomorrow = App.timedOn(App.addDays(now, 1))[0];
@@ -71,7 +77,7 @@
 
   function lanes() {
     var now = App.now();
-    return D.people.map(function (p) {
+    return App.calendarPeople(now).map(function (p) {
       var list = App.timedOn(now, p.id).filter(function (e) { return e.end > now; });
       var shown = list.slice(0, 3), more = list.length - shown.length;
       return '<div class="h-lane" style="' + App.pstyle(p) + '">' +
@@ -120,13 +126,8 @@
 
   function status() {
     var lights = D.devices.filter(function (d) { return d.type === 'light' && d.on; }).length;
-    var unlocked = D.devices.filter(function (d) { return d.type === 'lock' && !d.locked; });
-    var garage = D.devices.filter(function (d) { return d.type === 'garage'; })[0];
-    var secure = !unlocked.length && garage.state === 'closed';
-    var secText = secure ? 'All locked' : (garage.state !== 'closed' ? 'Garage open' : unlocked[0].name + ' unlocked');
     return '<div class="label">Home</div>' +
       '<div class="h-st-row">' + App.icon('bulb', 24) + '<b class="num">' + lights + '</b><span>lights on</span></div>' +
-      '<div class="h-st-row' + (secure ? '' : ' is-warn') + '">' + App.icon(secure ? 'lock' : 'unlock', 24) + '<span>' + secText + '</span></div>' +
       '<div class="h-st-row">' + App.icon('thermo', 24) + '<b class="num">' + D.climate.current + '°</b><span>inside</span></div>';
   }
 
@@ -139,12 +140,12 @@
     el.querySelector('.h-lanes').innerHTML = lanes();
     el.querySelector('.h-chores').innerHTML = chores();
     el.querySelector('.h-shop').innerHTML = shopping();
-    el.querySelector('.h-status').innerHTML = status();
   }
 
+  App.on('photos', function () { if (V.el && !D.photos.length) V.el.querySelector('.h-photo-cap').innerHTML = ''; });
   function photoCaption(s) {
     var m = App.photoMeta(s.photos[0]);
-    V.el.querySelector('.h-photo-cap').innerHTML = '<b>' + (m.onThisDay ? 'On this day · ' : '') + m.kicker + '</b><span>' + App.esc(m.place) + '</span>';
+    V.el.querySelector('.h-photo-cap').innerHTML = '<span>' + App.esc(m.date) + '</span>';
   }
 
   App.register('home', {
@@ -159,7 +160,7 @@
           '<div class="h-side">' +
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
           '  <button class="h-chores card" data-go="tasks"></button>' +
-          '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button><button class="h-status card" data-go="control"></button></div>' +
+          '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
           '</div></div>';
         el.addEventListener('click', function (e) {
           var ev = e.target.closest('[data-ev]');

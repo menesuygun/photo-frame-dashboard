@@ -20,7 +20,7 @@
           '<button class="ph-zone ph-zone--l" data-prev aria-label="Previous"></button>' +
           '<button class="ph-zone ph-zone--c" data-loud aria-label="Show details"></button>' +
           '<button class="ph-zone ph-zone--r" data-next aria-label="Next"></button>' +
-          '<div class="ph-top"><div class="seg seg--glass">' + LAYOUTS.map(function (l) {
+          '<div class="ph-top"><div class="ph-library-controls"><button class="ph-btn" data-upload>Add photos</button><button class="ph-btn" data-manage>Manage photos</button></div><div class="seg seg--glass">' + LAYOUTS.map(function (l) {
             return '<button data-layout="' + l[0] + '" class="' + (l[0] === V.layout ? 'is-on' : '') + '">' + l[1] + '</button>';
           }).join('') + '</div></div>' +
           '<div class="ph-bottom">' +
@@ -32,6 +32,8 @@
         el.addEventListener('click', function (e) {
           var t = e.target.closest('button');
           if (!t) return;
+          if (t.hasAttribute('data-upload')) return App.openPhotoUpload();
+          if (t.hasAttribute('data-manage')) return App.managePhotos();
           if (t.hasAttribute('data-next')) V.show.next();
           if (t.hasAttribute('data-prev')) V.show.prev();
           if (t.hasAttribute('data-loud')) { V.loud = !V.loud; el.querySelector('.photos').classList.toggle('is-loud', V.loud); }
