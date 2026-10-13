@@ -112,50 +112,14 @@ window.DATA = (function () {
     { id: 'after', name: 'After school', range: '11 AM – 5 PM', from: 11, to: 17 },
     { id: 'evening', name: 'Evening', range: '5 – 10 PM', from: 17, to: 24 }
   ];
-  var cid = 0;
-  function chore(r, who, title, emoji, stars, done, extra) {
-    return Object.assign({ id: 'c' + (++cid), r: r, who: who, title: title, emoji: emoji, stars: stars, done: !!done }, extra || {});
-  }
-  var chores = [
-    chore('morning', 'atlas', 'Make bed', '🛏️', 1, true),
-    chore('morning', 'atlas', 'Brush teeth', '🪥', 1, true),
-    chore('morning', 'atlas', 'Pack backpack', '🎒', 1, true),
-    chore('morning', 'miyam', 'Make bed', '🛏️', 1, true),
-    chore('morning', 'miyam', 'Brush teeth', '🪥', 1, true),
-    chore('morning', 'miyam', 'Get dressed', '👕', 1, false),
-    chore('morning', 'Enes', 'School drop-off', '🚗', 0, true),
-    chore('morning', 'beyza', 'Pack lunches', '🥪', 0, true),
-    chore('morning', 'any', 'Feed Biscuit', '🐶', 1, true),
-
-    chore('after', 'atlas', 'Unpack lunchbox', '🥪', 1, true),
-    chore('after', 'atlas', 'Homework', '📚', 2, false),
-    chore('after', 'atlas', 'Pack soccer bag', '⚽', 1, false),
-    chore('after', 'miyam', 'Unpack lunchbox', '🥪', 1, true),
-    chore('after', 'miyam', 'Read for 20 min', '📖', 2, false),
-    chore('after', 'miyam', 'Practice piano', '🎹', 2, false),
-    chore('after', 'miyam', 'Tidy the Lego', '🧱', 1, false),
-    chore('after', 'Enes', 'Take out recycling', '♻️', 0, false, { overdue: true }),
-    chore('after', 'Enes', 'Call the plumber', '☎️', 0, true),
-    chore('after', 'beyza', 'Fold laundry', '🧺', 0, false),
-    chore('after', 'beyza', 'Order Zoe’s gift', '🎁', 0, true),
-    chore('after', 'any', 'Water the plants', '🪴', 1, false),
-    chore('after', 'any', 'Empty dishwasher', '🍽️', 2, false),
-    chore('after', 'any', 'Walk Biscuit', '🐕', 2, true),
-
-    chore('evening', 'atlas', 'Set the table', '🍴', 1, false),
-    chore('evening', 'atlas', 'Lay out clothes', '👕', 1, false),
-    chore('evening', 'atlas', 'Shower', '🚿', 1, false),
-    chore('evening', 'miyam', 'Clear plates', '🍽️', 1, false),
-    chore('evening', 'miyam', 'Bath', '🛁', 1, false),
-    chore('evening', 'miyam', 'Lay out clothes', '👕', 1, false),
-    chore('evening', 'Enes', 'Lock up', '🔐', 0, false),
-    chore('evening', 'beyza', 'Run dishwasher', '🫧', 0, false),
-    chore('evening', 'any', 'Wipe counters', '🧽', 1, false),
-    chore('evening', 'any', 'Garbage to curb', '🗑️', 2, false)
+  var chores = [];
+  var choreTemplates = [
+    { id: 'robot-vacuum', r: 'evening', who: 'enes', title: 'Start robot vacuum', emoji: '🤖', stars: 0, every: 1, label: 'Every night' },
+    { id: 'laundry', r: 'after', who: 'enes', title: 'Laundry', emoji: '🧺', stars: 0, every: 2, start: '2026-10-13', label: 'Every 2 days' },
+    { id: 'change-sheets', r: 'morning', who: 'any', title: 'Change sheets', emoji: '🛏️', stars: 0, weekday: 0, label: 'Every Sunday' }
   ];
-  var stars = { atlas: 42, miyam: 57 };
-  // Mon..Sun, 1 = all chores done, 0 = missed, null = future
-  var week = { atlas: [1, 1, 0, 1, 1, 0, 1], miyam: [1, 0, 1, 1, 1, 1, 0] };
+  var stars = {};
+  var week = {};
 
   // ---------------------------------------------------------------- shopping
   var stores = [{ id: 'grocer', name: 'FreshCo' }, { id: 'costco', name: 'Costco' }];
@@ -340,7 +304,7 @@ window.DATA = (function () {
   return {
     people: people, family: family, ALL: ALL,
     events: events, busyExtras: busyExtras,
-    routines: routines, chores: chores, stars: stars, week: week,
+    routines: routines, chores: chores, choreTemplates: choreTemplates, stars: stars, week: week,
     stores: stores, catOrder: catOrder, groceries: groceries, catalog: catalog, usuals: usuals,
     rooms: rooms, devices: devices, climate: climate, media: media, cameras: cameras, scenes: scenes,
     weather: weather, photos: photos, agents: agents,
