@@ -10,16 +10,17 @@
   }
   App.photoSrc = src;
 
-  function parseDate(p) { var a = p.date.split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); }
   App.photoMeta = function (p) {
-    var d = parseDate(p), now = App.now();
-    var years = now.getFullYear() - d.getFullYear();
-    var onThisDay = d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
-    var kicker = onThisDay ? years + (years === 1 ? ' year' : ' years') + ' ago today' : (years > 0 ? years + (years === 1 ? ' year ago' : ' years ago') : 'This year');
+    var match = String(p.date || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var d = match ? new Date(+match[1], +match[2] - 1, +match[3]) : null;
+    var valid = d && App.choreDate(d) === p.date;
+    var now = App.now(), years = valid ? now.getFullYear() - d.getFullYear() : 0;
+    var onThisDay = valid && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
     return {
-      date: App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear(),
-      monthYear: App.fmt.month(d) + ' ' + d.getFullYear(),
-      kicker: kicker, onThisDay: onThisDay, place: p.place, from: App.person(p.from)
+      date: valid ? App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
+      monthYear: valid ? App.fmt.month(d) + ' ' + d.getFullYear() : 'Date unknown',
+      kicker: valid && years > 0 ? years + (years === 1 ? ' year ago' : ' years ago') : '',
+      onThisDay: !!onThisDay, place: p.caption || p.location || p.place || '', from: App.person(p.from)
     };
   };
 
@@ -29,11 +30,11 @@
   }
 
   function caption(ps, size) {
-    var m = App.photoMeta(ps[0]);
-    return '<div class="cap cap--' + (size || 'l') + '">' +
-      '<div class="cap-kicker">' + (m.onThisDay ? '<b>On this day</b> · ' : '') + m.kicker + ' · ' + App.esc(m.place) + '</div>' +
-      '<div class="cap-date serif">' + (ps.length > 1 ? m.monthYear : m.date) + '</div>' +
-      '</div>';
+    return '<div class="cap cap--' + (size || 'l') + '">' + ps.map(function (p) {
+      var m = App.photoMeta(p);
+      return '<div class="cap-entry">' + (m.place ? '<div class="cap-title serif">' + App.esc(m.place) + '</div>' : '') +
+        '<div class="cap-date">' + App.esc(m.date) + '</div></div>';
+    }).join('') + '</div>';
   }
   function kb(p, still) {
     var dx = (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 2.5) + '%';
@@ -59,7 +60,7 @@
       var p = ps[0], m = App.photoMeta(p), rot = (Math.random() * 5 - 2.5).toFixed(1);
       return '<div class="slide slide--polaroid"><img class="blurfill" src="' + src(p) + '" alt="">' +
         '<figure class="polaroid polaroid--' + p.o + '" style="transform:rotate(' + rot + 'deg)"><div class="polaroid-img"><img src="' + src(p, true) + '" alt=""></div>' +
-        '<figcaption class="serif"><i>' + App.esc(m.place) + ', ' + m.monthYear + '</i></figcaption></figure></div>';
+        '<figcaption class="serif"><i>' + App.esc(m.place) + (m.place ? ' · ' : '') + App.esc(m.date) + '</i></figcaption></figure></div>';
     }
   };
 

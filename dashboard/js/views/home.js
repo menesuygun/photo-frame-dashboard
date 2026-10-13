@@ -152,7 +152,7 @@
   App.on('photos', function () { if (V.el && !D.photos.length) V.el.querySelector('.h-photo-cap').innerHTML = ''; });
   function photoCaption(s) {
     var m = App.photoMeta(s.photos[0]);
-    V.el.querySelector('.h-photo-cap').innerHTML = '<b>' + (m.onThisDay ? 'On this day · ' : '') + m.kicker + '</b><span>' + App.esc(m.place) + '</span>';
+    V.el.querySelector('.h-photo-cap').innerHTML = '<b>' + App.esc(m.place) + '</b><span>' + App.esc(m.date) + '</span>';
   }
 
   App.register('home', {
