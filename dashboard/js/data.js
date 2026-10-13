@@ -122,10 +122,11 @@ window.DATA = (function () {
   var week = {};
 
   // ---------------------------------------------------------------- shopping
-  var stores = [{ id: 'grocer', name: 'Grocery Store' }, { id: 'costco', name: 'Costco' }];
+  var stores = [{ id: 'grocer', name: 'Grocery Store' }, { id: 'costco', name: 'Costco' }, { id: 'other', name: 'Other' }];
   var catOrder = {
-    all: ['Produce', 'Bakery', 'Meat & Deli', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
+    all: ['Produce', 'Bakery', 'Meat & Deli', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household', 'Hardware & DIY'],
     grocer: ['Produce', 'Bakery', 'Meat & Deli', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
+    other: ['Hardware & DIY', 'Household'],
     costco: ['Household', 'Pantry', 'Snacks', 'Dairy & Eggs', 'Meat & Deli', 'Frozen', 'Produce', 'Bakery']
   };
   var gid = 0;

@@ -18,6 +18,55 @@
     catch (_) { App.toast('Shopping changes could not be saved on this device.'); }
   });
 
+  var usualsKey = 'frame-usuals-v1';
+  try {
+    var storedUsuals = JSON.parse(localStorage.getItem(usualsKey) || 'null');
+    if (Array.isArray(storedUsuals) && storedUsuals.length <= 50 && storedUsuals.every(function (name) { return typeof name === 'string' && name.trim() && name.length <= 120; })) D.usuals = storedUsuals;
+  } catch (_) {}
+  function persistUsuals() {
+    try { localStorage.setItem(usualsKey, JSON.stringify(D.usuals)); }
+    catch (_) { App.toast('Usuals could not be saved on this device.'); }
+    if (V.el) paintSuggest();
+  }
+  App.saveUsual = function (name, index) {
+    name = String(name || '').trim();
+    if (!name || name.length > 120) throw new Error('Enter an item name up to 120 characters.');
+    if (index != null && (!Number.isInteger(index) || index < 0 || index >= D.usuals.length)) throw new Error('Item no longer exists.');
+    if (D.usuals.some(function (item, i) { return i !== index && item.toLowerCase() === name.toLowerCase(); })) throw new Error('That item is already in Usuals.');
+    if (index == null) {
+      if (D.usuals.length >= 50) throw new Error('You can keep up to 50 Usuals.');
+      D.usuals.push(name);
+    } else D.usuals[index] = name;
+    persistUsuals();
+  };
+  App.removeUsual = function (index) {
+    if (!Number.isInteger(index) || index < 0 || index >= D.usuals.length) return;
+    D.usuals.splice(index, 1); persistUsuals();
+  };
+  function manageUsuals() {
+    App.sheet('<div class="sheet-pad"><h2 class="serif sheet-h">Your Usuals</h2><form data-usual-form><label class="label">Item name<input class="big-input" maxlength="120" required data-usual-name placeholder="Milk, screws, paint…"></label><div class="sheet-actions"><button class="btn btn--solid" type="submit" data-usual-save>Add item</button><button class="btn btn--ghost" type="button" data-usual-cancel hidden>Cancel edit</button></div></form><p role="status" data-usual-status></p><div class="usual-manager" data-usual-list></div></div>', {
+      onMount: function (sheet) {
+        var editing = null, input = sheet.querySelector('[data-usual-name]'), message = sheet.querySelector('[data-usual-status]');
+        function reset() { editing = null; input.value = ''; sheet.querySelector('[data-usual-save]').textContent = 'Add item'; sheet.querySelector('[data-usual-cancel]').hidden = true; }
+        function paint() { sheet.querySelector('[data-usual-list]').innerHTML = D.usuals.map(function (name, i) {
+          return '<div class="usual-manager-row"><b>' + App.esc(name) + '</b><button class="btn btn--ghost" data-usual-edit="' + i + '">Edit</button><button class="btn btn--ghost" data-usual-remove="' + i + '">Remove</button></div>';
+        }).join('') || '<p>No Usuals yet. Add your first item above.</p>'; }
+        sheet.querySelector('[data-usual-form]').addEventListener('submit', function (event) {
+          event.preventDefault();
+          try { App.saveUsual(input.value, editing); reset(); paint(); message.textContent = 'Usuals saved.'; }
+          catch (error) { message.textContent = error.message; }
+        });
+        sheet.addEventListener('click', function (event) {
+          var edit = event.target.closest('[data-usual-edit]'), remove = event.target.closest('[data-usual-remove]');
+          if (edit) { editing = +edit.dataset.usualEdit; input.value = D.usuals[editing]; sheet.querySelector('[data-usual-save]').textContent = 'Save changes'; sheet.querySelector('[data-usual-cancel]').hidden = false; input.focus(); }
+          if (remove) { App.removeUsual(+remove.dataset.usualRemove); reset(); paint(); message.textContent = 'Item removed from Usuals.'; }
+          if (event.target.closest('[data-usual-cancel]')) reset();
+        });
+        paint();
+      }
+    });
+  }
+
   function open() { return D.groceries.filter(function (g) { return !g.done && (V.store === 'all' || g.store === V.store); }); }
   function done() { return D.groceries.filter(function (g) { return g.done && (V.store === 'all' || g.store === V.store); }); }
   function storeName(id) { return D.stores.filter(function (s) { return s.id === id; })[0].name; }
@@ -30,8 +79,8 @@
       D.catalog.filter(function (c) { return n.split(/\s+/).some(function (w) { return w.length > 3 && c[0].toLowerCase().indexOf(w) > -1; }); })[0];
     return hit ? hit[1] : 'Other';
   }
-  function find(name, isDone) {
-    return D.groceries.filter(function (g) { return !!g.done === isDone && g.name.toLowerCase() === name.toLowerCase(); })[0];
+  function find(name, isDone, store) {
+    return D.groceries.filter(function (g) { return !!g.done === isDone && (!store || g.store === store) && g.name.toLowerCase() === name.toLowerCase(); })[0];
   }
 
   function row(g) {
@@ -39,14 +88,14 @@
       '<button class="s-hit" data-check="' + g.id + '">' +
       '<span class="s-box">' + App.icon('check', 22) + '</span>' +
       '<span class="s-name"><b>' + App.esc(g.name) + '</b>' + (g.note ? '<small>' + App.esc(g.note) + '</small>' : '') + '</span>' +
-      (V.store === 'all' && g.store === 'costco' ? '<span class="s-store">Costco</span>' : '') +
+      (V.store === 'all' && g.store !== 'grocer' ? '<span class="s-store">' + App.esc(storeName(g.store)) + '</span>' : '') +
       '</button>' +
       '<div class="s-qty"><button data-qty="-1" data-id="' + g.id + '" aria-label="Less">' + App.icon('minus', 22) + '</button><span class="num">' + g.qty + '</span><button data-qty="1" data-id="' + g.id + '" aria-label="More">' + App.icon('plus', 22) + '</button></div>' +
       '</div>';
   }
 
   function listHTML() {
-    var items = open(), order = D.catOrder[V.store].concat(['Other']);
+    var items = open(), order = D.catOrder[V.store].concat(D.catOrder.all).filter(function (cat, i, cats) { return cats.indexOf(cat) === i; }).concat(['Other']);
     var groups = order.map(function (cat) { return { cat: cat, items: items.filter(function (g) { return g.cat === cat; }) }; }).filter(function (x) { return x.items.length; });
     var d = done();
     return (items.length ? groups.map(function (gr) {
@@ -71,7 +120,7 @@
         return '<button class="s-ac-row" data-add="' + App.esc(m[0]) + '"><b>' + App.esc(m[0]) + '</b><span class="label">' + (on ? 'On list · ×' + on.qty : m[1]) + '</span>' + App.icon('plus', 26) + '</button>';
       }).join('') + (exact ? '' : '<button class="s-ac-row s-ac-row--new" data-add="' + App.esc(V.query.trim()) + '"><b>Add “' + App.esc(V.query.trim()) + '”</b><span class="label">' + (V.el.querySelector('.s-category').value || categorize(V.query)) + '</span>' + App.icon('plus', 26) + '</button>') + '</div>';
     }
-    return '<div class="label">Usuals · tap to add</div><div class="s-usuals">' + D.usuals.map(usualTile).join('') + '</div>';
+    return '<div class="s-usuals-head"><div class="label">Usuals · tap to add</div><button class="btn btn--ghost" data-manage-usuals>Edit Usuals</button></div><div class="s-usuals">' + D.usuals.map(usualTile).join('') + '</div>';
   }
   function usualTile(name) {
     var on = find(name, false);
@@ -158,14 +207,15 @@
     name = name.trim();
     if (!name || name.length > 120) return App.toast('Use an item name up to 120 characters.');
     var selected = V.el.querySelector('.s-category').value;
-    var g = find(name, false), msg;
+    var targetStore = V.store === 'all' ? 'grocer' : V.store;
+    var g = find(name, false, targetStore), msg;
     if (g) {
       g.qty++;
       if (selected && g.cat !== selected) { g.cat = selected; paintList(); }
       msg = 'Already on the list · now <b>×' + g.qty + '</b> ' + App.esc(g.name);
       var q = V.el.querySelector('.s-list [data-id="' + g.id + '"] .s-qty .num');
       if (q) q.textContent = g.qty;
-    } else if ((g = find(name, true))) {
+    } else if ((g = find(name, true, targetStore))) {
       g.done = false; g.qty = 1; if (selected) g.cat = selected;
       msg = 'Added back <b>' + App.esc(g.name) + '</b>';
       paintList();
@@ -214,6 +264,7 @@
 
   function onClick(e) {
     var t;
+    if (e.target.closest('[data-manage-usuals]')) return manageUsuals();
     if ((t = e.target.closest('[data-remove-all]'))) {
       if (!D.groceries.length) return;
       var removed = D.groceries.slice();

@@ -61,6 +61,30 @@ test('shopping adds selected categories, guesses Sujuk, removes at zero, and per
   undo();
   assert.equal(context.window.DATA.groceries.length, 2);
   assert.equal(JSON.parse(store.get('frame-shopping-v1')).length, 2);
+  action('[data-store]', { store: 'other' });
+  nodes['.s-category'].value = 'Hardware & DIY';
+  action('[data-add]', { add: 'Screws' });
+  const hardware = context.window.DATA.groceries.find(g => g.name === 'Screws');
+  assert.equal(hardware.store, 'other');
+  assert.equal(hardware.cat, 'Hardware & DIY');
+  assert.match(nodes['.s-list'].innerHTML, /Screws/);
+  vm.runInContext(source('views/shopping.js'), context);
+  assert.ok(context.window.DATA.groceries.some(g => g.name === 'Screws' && g.store === 'other'));
+});
+test('Usuals can be added, edited and removed and remain empty after reload', () => {
+  const { context, store } = setup();
+  vm.runInContext(source('views/shopping.js'), context);
+  const index = context.window.DATA.usuals.length;
+  context.App.saveUsual('Paint rollers');
+  assert.equal(context.window.DATA.usuals[index], 'Paint rollers');
+  context.App.saveUsual('Paint brushes', index);
+  assert.equal(JSON.parse(store.get('frame-usuals-v1'))[index], 'Paint brushes');
+  assert.throws(() => context.App.saveUsual('paint brushes'), /already/);
+  context.App.removeUsual(index);
+  assert.ok(!context.window.DATA.usuals.includes('Paint brushes'));
+  while (context.window.DATA.usuals.length) context.App.removeUsual(0);
+  vm.runInContext(source('views/shopping.js'), context);
+  assert.equal(context.window.DATA.usuals.length, 0);
 });
 test('weather clears demo data and maps real forecast, hourly data, and failure state', async () => {
   const { context } = setup();
