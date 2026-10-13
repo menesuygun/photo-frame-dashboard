@@ -85,12 +85,12 @@
 
   // ------------------------------------------------------------ Today (lanes per person)
   function dayView() {
-    var day = V.date;
+    var day = V.date, people = App.calendarPeople(V.date);
     var fam = App.timedOn(day).filter(App.isFamily);
     var allDay = App.allDayOn(day);
     var ad = allDay.length ? '<div class="allday"><div class="gutter label">All day</div><div class="allday-grid">' + allDay.map(function (e) {
       var fam2 = App.isFamily(e);
-      var idx = D.people.map(function (p) { return p.id; }).indexOf(e.people[0]);
+      var idx = people.map(function (p) { return p.id; }).indexOf(e.people[0]);
       var col = fam2 ? '1 / -1' : (idx + 1) + ' / span 1';
       var s = App.dayStart(day), spanDays = Math.round((e.end - e.start) / 864e5), dayN = Math.round((s - e.start) / 864e5) + 1;
       return '<button class="ad' + (e.start < s ? ' ad--cont' : '') + '" data-ev="' + e.id + '" style="grid-column:' + col + ';' + App.pstyle(App.evColor(e)) + '">' +
@@ -98,7 +98,7 @@
     }).join('') + '</div></div>' : '';
     var grid = '<div class="grid-scroll"><div class="grid" style="height:' + (END - START) * PX + 'px">' +
       '<div class="hours">' + hoursCol() + '</div>' +
-      '<div class="lanes">' + D.people.map(function (p) {
+      '<div class="lanes" style="--people:' + people.length + '">' + people.map(function (p) {
         var list = App.timedOn(day, p.id).filter(function (e) { return !App.isFamily(e); });
         return '<div class="lane" style="' + App.pstyle(p) + '">' + placeBlocks(list, null, p.id) + '</div>';
       }).join('') +

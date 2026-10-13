@@ -23,8 +23,8 @@ const event = (uid, lines) => `BEGIN:VEVENT\nUID:${uid}\n${lines}\nEND:VEVENT`;
 const parse = text => parseCalendar(text, new Date('2026-03-01'), new Date('2026-04-01'));
 
 test('name tags are case-insensitive, deduplicated, hidden; unknown tags stay visible', () => {
-  assert.deepEqual(assignment('[ ENES ][Beyza][enes] Dinner'), { title: 'Dinner', people: ['enes', 'beyza'] });
-  assert.deepEqual(assignment('[Atlas] Swimming'), { title: 'Swimming', people: ['atlas'] });
+  assert.deepEqual(assignment('[ ENES ][Beyza][enes] Dinner'), { title: 'Dinner', people: ['enes', 'beyza'], mentionedPeople: ['enes', 'beyza'] });
+  assert.deepEqual(assignment('[Atlas] Swimming'), { title: 'Swimming', people: ['atlas'], mentionedPeople: ['atlas'] });
   assert.deepEqual(assignment('[Work] Meeting').people, ['enes', 'beyza', 'atlas', 'miyam']);
   assert.equal(assignment('[Work] Meeting').title, '[Work] Meeting');
   assert.equal(assignment('[Family] Picnic').people.length, 4);

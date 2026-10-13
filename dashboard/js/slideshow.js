@@ -17,7 +17,7 @@
     var now = App.now(), years = valid ? now.getFullYear() - d.getFullYear() : 0;
     var onThisDay = valid && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
     return {
-      date: valid ? (p.dateSource === 'file' ? 'File date · ' : '') + App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
+      date: valid ? App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
       monthYear: valid ? App.fmt.month(d) + ' ' + d.getFullYear() : 'Date unknown',
       kicker: valid && years > 0 ? years + (years === 1 ? ' year ago' : ' years ago') : '',
       onThisDay: !!onThisDay, place: p.caption || p.location || p.place || '', from: App.person(p.from)
@@ -32,7 +32,7 @@
   function caption(ps, size) {
     return '<div class="cap cap--' + (size || 'l') + '">' + ps.map(function (p) {
       var m = App.photoMeta(p);
-      return '<div class="cap-entry">' + (m.place ? '<div class="cap-title serif">' + App.esc(m.place) + '</div>' : '') +
+      return '<div class="cap-entry">' +
         '<div class="cap-date">' + App.esc(m.date) + '</div></div>';
     }).join('') + '</div>';
   }
@@ -60,7 +60,7 @@
       var p = ps[0], m = App.photoMeta(p), rot = (Math.random() * 5 - 2.5).toFixed(1);
       return '<div class="slide slide--polaroid"><img class="blurfill" src="' + src(p) + '" alt="">' +
         '<figure class="polaroid polaroid--' + p.o + '" style="transform:rotate(' + rot + 'deg)"><div class="polaroid-img"><img src="' + src(p, true) + '" alt=""></div>' +
-        '<figcaption class="serif"><i>' + App.esc(m.place) + (m.place ? ' · ' : '') + App.esc(m.date) + '</i></figcaption></figure></div>';
+        '<figcaption class="serif"><i>' + App.esc(m.date) + '</i></figcaption></figure></div>';
     }
   };
 

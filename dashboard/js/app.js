@@ -111,6 +111,14 @@
       return ev.allDay && ev.start < e && ev.end > s && (!pid || ev.people.indexOf(pid) > -1);
     });
   };
+  App.calendarPeople = function (day) {
+    var start = App.dayStart(day), end = App.addDays(start, 1);
+    var mentioned = App.events().some(function (event) {
+      var names = event.mentionedPeople || (App.isFamily(event) ? [] : event.people);
+      return event.start < end && event.end > start && names.indexOf('miyam') > -1;
+    });
+    return D.people.filter(function (person) { return person.id !== 'miyam' || mentioned; });
+  };
   App.leaveBy = function (e) { return e.travel ? new Date(+e.start - e.travel * 60000) : e.start; };
   // The next thing someone needs to act on: earliest upcoming "leave by" today.
   App.nextEvent = function () {

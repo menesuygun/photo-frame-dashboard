@@ -77,7 +77,7 @@
 
   function lanes() {
     var now = App.now();
-    return D.people.map(function (p) {
+    return App.calendarPeople(now).map(function (p) {
       var list = App.timedOn(now, p.id).filter(function (e) { return e.end > now; });
       var shown = list.slice(0, 3), more = list.length - shown.length;
       return '<div class="h-lane" style="' + App.pstyle(p) + '">' +
@@ -145,7 +145,7 @@
   App.on('photos', function () { if (V.el && !D.photos.length) V.el.querySelector('.h-photo-cap').innerHTML = ''; });
   function photoCaption(s) {
     var m = App.photoMeta(s.photos[0]);
-    V.el.querySelector('.h-photo-cap').innerHTML = '<b>' + App.esc(m.place) + '</b><span>' + App.esc(m.date) + '</span>';
+    V.el.querySelector('.h-photo-cap').innerHTML = '<span>' + App.esc(m.date) + '</span>';
   }
 
   App.register('home', {

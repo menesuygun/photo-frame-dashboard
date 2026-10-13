@@ -4,16 +4,17 @@ import { createHash } from 'node:crypto';
 export const PEOPLE = ['enes', 'beyza', 'atlas', 'miyam'];
 
 export function assignment(summary = '') {
-  const people = [];
+  const people = [], mentionedPeople = [];
   const title = String(summary).replace(/\[([^\]]+)\]/g, (tag, name) => {
     const id = name.trim().toLowerCase();
     if (!PEOPLE.includes(id) && id !== 'family') return tag;
+    if (PEOPLE.includes(id) && !mentionedPeople.includes(id)) mentionedPeople.push(id);
     for (const person of id === 'family' ? PEOPLE : [id]) {
       if (!people.includes(person)) people.push(person);
     }
     return '';
   }).replace(/\s+/g, ' ').trim();
-  return { title: title || 'Untitled event', people: people.length ? people : PEOPLE.slice() };
+  return { title: title || 'Untitled event', people: people.length ? people : PEOPLE.slice(), mentionedPeople };
 }
 
 // Restrict the configured source to Apple's published calendar service.

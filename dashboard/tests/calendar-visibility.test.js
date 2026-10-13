@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import { assignment } from '../server/calendar.js';
+test('Miyam appears only on dates with an explicit mention, including all-day events', () => {
+  const data = { people: ['enes', 'beyza', 'atlas', 'miyam'].map(id => ({ id })), events: [] };
+  const context = { window: { DATA: data }, document: { addEventListener() {} }, Date, Intl, console };
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf8'), context);
+  const app = context.window.App;
+  app.events = () => data.events;
+  const day = new Date('2026-10-13T12:00:00');
+  const event = summary => ({ ...assignment(summary), start: new Date('2026-10-13T00:00:00'), end: new Date('2026-10-14T00:00:00'), allDay: true });
+  const ids = () => Array.from(app.calendarPeople(day), p => p.id);
+  assert.deepEqual(ids(), ['enes', 'beyza', 'atlas']);
+  data.events = [event('Shared event'), event('[Family] Picnic')];
+  assert.deepEqual(ids(), ['enes', 'beyza', 'atlas']);
+  data.events.push(event('[Miyam] Appointment'));
+  assert.deepEqual(ids(), ['enes', 'beyza', 'atlas', 'miyam']);
+  assert.equal(app.calendarPeople(new Date('2026-10-15T12:00:00')).length, 3);
+});
