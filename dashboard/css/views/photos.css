@@ -52,3 +52,10 @@
 .ph-btn--fav { padding: 0 24px 0 20px; }
 .ph-btn--fav.is-on { background: #E4007C; }
 .ph-btn--fav.is-on .i { fill: currentColor; }
+
+.ph-library-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+.photo-empty { display: grid; place-items: center; height: 100%; padding: 40px; color: white; background: #202020; text-align: center; }
+.photo-upload input { display: block; max-width: 100%; margin: 18px 0; }
+.photo-library-row { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.photo-library-row img { width: 72px; height: 64px; object-fit: cover; border-radius: 8px; }
+.photo-library-row span { flex: 1; overflow-wrap: anywhere; min-width: 0; }

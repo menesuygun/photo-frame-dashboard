@@ -6,7 +6,7 @@
   function src(p, big) {
     var w = p.o === 'p' ? 800 : 1600, h = p.o === 'p' ? 1200 : 1000;
     if (!big) { w = Math.round(w / 2); h = Math.round(h / 2); }
-    return App.img(p.seed, w, h);
+    return p.url || App.img(p.seed, w, h);
   }
   App.photoSrc = src;
 
@@ -73,6 +73,11 @@
     this.current = null;
   };
   var S = App.Slideshow.prototype;
+  var slideshows = [];
+  var OriginalSlideshow = App.Slideshow;
+  App.Slideshow = function (el, opts) { OriginalSlideshow.call(this, el, opts); slideshows.push(this); };
+  App.Slideshow.prototype = S;
+  App.on('photos', function () { slideshows.forEach(function (s) { var running = !!s.running; s.queue = []; s.history = []; s.current = null; s.next(); if (!running) s.stop(); }); });
 
   S.refill = function () {
     var q = [];
@@ -99,6 +104,8 @@
       else layout = n % 5 === 3 ? 'collage' : n % 5 === 4 ? 'polaroid' : 'cover';
     }
     var ps = [first];
+    if (layout === 'pair' && D.photos.filter(function (p) { return p.o === 'p'; }).length < 2) layout = 'cover';
+    if (layout === 'collage' && D.photos.length < 3) layout = 'cover';
     if (layout === 'pair') {
       if (first.o !== 'p') { first = sibling(function (x) { return x.o === 'p'; }); ps = [first]; }
       ps.push(sibling(function (x) { return x !== first && x.o === 'p' && x.tag === first.tag; }) || sibling(function (x) { return x !== first && x.o === 'p'; }));
@@ -138,7 +145,7 @@
 
   S.next = function () {
     var s = this.pick();
-    if (!s) return;
+    if (!s) { this.current = null; this.el.innerHTML = '<div class="photo-empty">Add your photos in the Photos section.</div>'; return; }
     if (this.current) this.history.push(this.current);
     this.render(s);
     this.restart();
@@ -154,6 +161,6 @@
     clearInterval(this.timer);
     this.timer = setInterval(function () { self.next(); }, this.o.interval);
   };
-  S.start = function () { if (!this.current) this.next(); else this.restart(); };
-  S.stop = function () { clearInterval(this.timer); this.timer = null; };
+  S.start = function () { this.running = true; if (!this.current) this.next(); else this.restart(); };
+  S.stop = function () { this.running = false; clearInterval(this.timer); this.timer = null; };
 })();
