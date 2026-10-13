@@ -21,10 +21,10 @@ window.DATA = (function () {
   var ALL = ['enes', 'beyza', 'atlas', 'miyam'];
 
   var people = [
-    { id: 'enes', name: 'Enes', color: '#FFB000', rgb: '255 176 0', ink: '#111111', home: false, status: 'Driving home', eta: 12 },
-    { id: 'beyza', name: 'Beyza', color: '#73B5F5', rgb: '115 181 245', ink: '#111111', home: false, status: 'At the office' },
-    { id: 'atlas', name: 'Atlas', age: 3, color: '#00A36C', rgb: '0 163 108', ink: '#FFFFFF', home: true, status: 'At the daycare' },
-    { id: 'miyam', name: 'Miyam', age: 2, color: '#A3A3A3', rgb: '163 163 163', ink: '#111111', home: true, status: 'Home' }
+    { id: 'enes', name: 'Enes', color: '#FFB000', rgb: '255 176 0', ink: '#111111' },
+    { id: 'beyza', name: 'Beyza', color: '#73B5F5', rgb: '115 181 245', ink: '#111111' },
+    { id: 'atlas', name: 'Atlas', age: 3, color: '#00A36C', rgb: '0 163 108', ink: '#FFFFFF' },
+    { id: 'miyam', name: 'Miyam', age: 2, color: '#A3A3A3', rgb: '163 163 163', ink: '#111111' }
   ];
   var family = { id: 'family', name: 'Family', color: '#111111', rgb: '17 17 17', ink: '#FFFFFF' };
 
@@ -194,25 +194,17 @@ window.DATA = (function () {
     { id: 'l-ceil', room: 'living', type: 'light', name: 'Ceiling', on: false, level: 100 },
     { id: 'l-blinds', room: 'living', type: 'blind', name: 'Blinds', pos: 60 },
     { id: 'l-fire', room: 'living', type: 'light', name: 'Mantel', on: false, level: 70 },
-    { id: 'e-door', room: 'entry', type: 'lock', name: 'Front Door', locked: true },
     { id: 'e-porch', room: 'entry', type: 'light', name: 'Porch', on: true, level: 100 },
-    { id: 'g-door', room: 'entry', type: 'garage', name: 'Garage', state: 'closed' },
-    { id: 'g-side', room: 'entry', type: 'lock', name: 'Side Door', locked: true },
     { id: 'u-atlas', room: 'upstairs', type: 'light', name: "Buzzsaw's Lamp", on: true, level: 30 },
     { id: 'u-miyam', room: 'upstairs', type: 'light', name: "Skidmark's Nightlight", on: false, level: 15 },
     { id: 'u-hall', room: 'upstairs', type: 'light', name: 'Hallway', on: false, level: 60 },
     { id: 'u-bath', room: 'upstairs', type: 'light', name: 'Bathroom', on: false, level: 100 },
     { id: 'y-string', room: 'yard', type: 'light', name: 'String Lights', on: false, level: 100, flaky: true },
-    { id: 'y-back', room: 'yard', type: 'lock', name: 'Back Door', locked: true },
     { id: 'y-flood', room: 'yard', type: 'light', name: 'Floodlight', on: false, level: 100 }
   ];
   var climate = { current: 20.5, set: 21.5, mode: 'heat', humidity: 42, outside: 14 };
   var media = { room: 'Kitchen', title: 'Harvest Moon', artist: 'Neil Young', playing: true, volume: 35, seed: 'harvest-vinyl' };
-  var cameras = [
-    { id: 'c-front', name: 'Front Porch', seed: 'porch-steps' },
-    { id: 'c-drive', name: 'Driveway', seed: 'driveway-maple' },
-    { id: 'c-yard', name: 'Backyard', seed: 'garden-yard' }
-  ];
+  var cameras = [];
   var scenes = [
     { id: 'morning', name: 'Morning', icon: 'sunrise', set: { 'k-pend': 100, 'k-under': 80, 'l-blinds': 100, 'l-lamp': 0, 'u-hall': 60 } },
     { id: 'dinner', name: 'Dinner', icon: 'utensils', set: { 'k-pend': 55, 'k-under': 30, 'k-island': 70, 'l-lamp': 40, 'l-ceil': 0 } },

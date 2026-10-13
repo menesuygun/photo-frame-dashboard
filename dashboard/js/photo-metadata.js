@@ -9,7 +9,7 @@ export function photoDate(value) {
   return Number.isFinite(+parsed) && App.choreDate(parsed) === date ? date : '';
 }
 export function metadataDetails(tags = {}) {
-  const date = photoDate(tags.DateTimeOriginal || tags.CreateDate || tags.DateCreated);
+  const date = [tags.DateTimeOriginal, tags.DateTimeDigitized, tags.CreateDate, tags.DateCreated, tags.GPSDateStamp].map(photoDate).find(Boolean) || '';
   const location = [tags.City || tags.Location || tags.SubLocation, tags.State || tags.ProvinceState, tags.Country || tags.CountryName]
     .filter(v => typeof v === 'string' && v.trim()).map(v => v.trim()).filter((v, i, values) => values.indexOf(v) === i).join(', ').slice(0, 160);
   const latitude = tags.latitude, longitude = tags.longitude;
@@ -20,8 +20,14 @@ const cache = new Map();
 let lastLookup = 0;
 App.inspectPhoto = async function (file) {
   let tags;
-  try { tags = await parse(file, { reviveValues: false, xmp: true, iptc: true, icc: false, jfif: false, ihdr: false }); } catch (_) {}
+  try { tags = await parse(file, { reviveValues: false, xmp: true, iptc: true, icc: false, jfif: false, ihdr: false }); } catch (_) {
+    try { tags = await parse(file, { reviveValues: false, xmp: false, iptc: false }); } catch (_) {}
+  }
   const result = metadataDetails(tags);
+  if (!result.date && Number.isFinite(file.lastModified)) {
+    const modified = new Date(file.lastModified);
+    if (Number.isFinite(+modified)) { result.date = App.choreDate(modified); result.dateSource = 'file'; }
+  }
   if (!result.location && result.gps) {
     const key = result.gps.latitude.toFixed(3) + ',' + result.gps.longitude.toFixed(3);
     if (cache.has(key)) result.location = cache.get(key);

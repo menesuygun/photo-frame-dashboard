@@ -89,7 +89,7 @@
           s.querySelector('[data-details]').innerHTML = details.map(function (d, i) {
             return '<div class="photo-detail-row"><img src="' + previews[i] + '" alt="Photo ' + (i + 1) + '"><div><label>Caption<input maxlength="160" data-caption="' + i + '" placeholder="' + App.esc(d.location || 'Write a caption or location') + '"></label>' +
               '<label>Photo date<input type="date" data-date="' + i + '" value="' + App.esc(d.date) + '"></label>' +
-              '<small>' + (d.date ? 'Date found in photo metadata.' : 'No photo date found. Add a date, or leave it unknown.') + '</small></div></div>';
+              '<small>' + (d.dateSource === 'metadata' ? 'Date taken found in photo metadata.' : d.dateSource === 'file' ? 'No capture date found. Using the file date; you can change it.' : 'No date available. You can add one.') + '</small></div></div>';
           }).join('');
           status.textContent = files.length ? 'Review the captions and dates, then add your photos.' : 'Choose at least one photo.';
           s.querySelector('[data-save]').disabled = !files.length;

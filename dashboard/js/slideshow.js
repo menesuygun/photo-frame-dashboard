@@ -17,7 +17,7 @@
     var now = App.now(), years = valid ? now.getFullYear() - d.getFullYear() : 0;
     var onThisDay = valid && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
     return {
-      date: valid ? App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
+      date: valid ? (p.dateSource === 'file' ? 'File date · ' : '') + App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
       monthYear: valid ? App.fmt.month(d) + ' ' + d.getFullYear() : 'Date unknown',
       kicker: valid && years > 0 ? years + (years === 1 ? ' year ago' : ' years ago') : '',
       onThisDay: !!onThisDay, place: p.caption || p.location || p.place || '', from: App.person(p.from)

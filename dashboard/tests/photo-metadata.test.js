@@ -37,3 +37,12 @@ test('location API returns town/region without street address and validates coor
     assert.equal(res.code, 400);
   } finally { globalThis.fetch = original; }
 });
+
+test('uploads without capture metadata automatically use a clearly identified file date', async () => {
+  const file = Buffer.from([0, 1, 2]);
+  file.lastModified = +new Date('2022-08-10T12:00:00');
+  const result = await App.inspectPhoto(file);
+  assert.equal(result.date, '2022-08-10');
+  assert.equal(result.dateSource, 'file');
+  assert.equal(metadataDetails({ DateTimeOriginal: 'invalid', DateTimeDigitized: '2020:04:03 12:00:00' }).date, '2020-04-03');
+});
