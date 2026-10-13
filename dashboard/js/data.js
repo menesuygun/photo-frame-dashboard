@@ -21,10 +21,10 @@ window.DATA = (function () {
   var ALL = ['enes', 'beyza', 'atlas', 'miyam'];
 
   var people = [
-    { id: 'enes', name: 'Enes', color: '#2D5BFF', rgb: '45 91 255', ink: '#FFFFFF', home: false, status: 'Driving home', eta: 12 },
-    { id: 'beyza', name: 'Beyza', color: '#E4007C', rgb: '228 0 124', ink: '#FFFFFF', home: false, status: 'At the office' },
+    { id: 'enes', name: 'Enes', color: '#FFB000', rgb: '255 176 0', ink: '#111111', home: false, status: 'Driving home', eta: 12 },
+    { id: 'beyza', name: 'Beyza', color: '#73B5F5', rgb: '115 181 245', ink: '#111111', home: false, status: 'At the office' },
     { id: 'atlas', name: 'Atlas', age: 3, color: '#00A36C', rgb: '0 163 108', ink: '#FFFFFF', home: true, status: 'At the daycare' },
-    { id: 'miyam', name: 'Miyam', age: 2, color: '#FFB000', rgb: '255 176 0', ink: '#111111', home: true, status: 'Home' }
+    { id: 'miyam', name: 'Miyam', age: 2, color: '#A3A3A3', rgb: '163 163 163', ink: '#111111', home: true, status: 'Home' }
   ];
   var family = { id: 'family', name: 'Family', color: '#111111', rgb: '17 17 17', ink: '#FFFFFF' };
 
