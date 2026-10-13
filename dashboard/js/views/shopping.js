@@ -4,12 +4,27 @@
   var D = window.DATA;
   var V = { el: null, store: 'all', query: '', drawer: false, pending: {}, flash: null };
 
+  var shoppingKey = 'frame-shopping-v1';
+  try {
+    var saved = JSON.parse(localStorage.getItem(shoppingKey) || 'null');
+    if (Array.isArray(saved) && saved.every(function (g) {
+      return g && typeof g.id === 'string' && /^[a-zA-Z0-9-]+$/.test(g.id) && typeof g.name === 'string' && g.name.length <= 120 &&
+        Number.isInteger(g.qty) && g.qty > 0 && typeof g.done === 'boolean' && D.stores.some(function (s) { return s.id === g.store; }) &&
+        D.catOrder.all.concat(['Other', 'Meat & Fish']).indexOf(g.cat) >= 0;
+    })) D.groceries = saved.map(function (g) { return Object.assign({}, g, { cat: g.cat === 'Meat & Fish' ? 'Meat & Deli' : g.cat }); });
+  } catch (_) {}
+  App.on('data', function () {
+    try { localStorage.setItem(shoppingKey, JSON.stringify(D.groceries)); }
+    catch (_) { App.toast('Shopping changes could not be saved on this device.'); }
+  });
+
   function open() { return D.groceries.filter(function (g) { return !g.done && (V.store === 'all' || g.store === V.store); }); }
   function done() { return D.groceries.filter(function (g) { return g.done && (V.store === 'all' || g.store === V.store); }); }
   function storeName(id) { return D.stores.filter(function (s) { return s.id === id; })[0].name; }
 
   function categorize(name) {
     var n = name.toLowerCase();
+    if (/sujuk|sucuk|sudjuk|sausage/.test(n)) return 'Meat & Deli';
     var hit = D.catalog.filter(function (c) { return c[0].toLowerCase() === n; })[0] ||
       D.catalog.filter(function (c) { var a = c[0].toLowerCase(); return a.indexOf(n) > -1 || n.indexOf(a) > -1; })[0] ||
       D.catalog.filter(function (c) { return n.split(/\s+/).some(function (w) { return w.length > 3 && c[0].toLowerCase().indexOf(w) > -1; }); })[0];
@@ -54,7 +69,7 @@
       return '<div class="label">Suggestions</div><div class="s-ac">' + matches.map(function (m) {
         var on = find(m[0], false);
         return '<button class="s-ac-row" data-add="' + App.esc(m[0]) + '"><b>' + App.esc(m[0]) + '</b><span class="label">' + (on ? 'On list · ×' + on.qty : m[1]) + '</span>' + App.icon('plus', 26) + '</button>';
-      }).join('') + (exact ? '' : '<button class="s-ac-row s-ac-row--new" data-add="' + App.esc(V.query.trim()) + '"><b>Add “' + App.esc(V.query.trim()) + '”</b><span class="label">' + categorize(V.query) + '</span>' + App.icon('plus', 26) + '</button>') + '</div>';
+      }).join('') + (exact ? '' : '<button class="s-ac-row s-ac-row--new" data-add="' + App.esc(V.query.trim()) + '"><b>Add “' + App.esc(V.query.trim()) + '”</b><span class="label">' + (V.el.querySelector('.s-category').value || categorize(V.query)) + '</span>' + App.icon('plus', 26) + '</button>') + '</div>';
     }
     return '<div class="label">Usuals · tap to add</div><div class="s-usuals">' + D.usuals.map(usualTile).join('') + '</div>';
   }
@@ -127,6 +142,7 @@
       '<aside class="s-side">' +
       '  <div class="s-add">' +
       '    <label class="s-input-wrap">' + App.icon('plus', 30) + '<input class="s-input" placeholder="Add an item…" autocomplete="off" enterkeyhint="done"></label>' +
+      '    <label class="s-category-label">Category<select class="s-category"><option value="">Suggested category</option>' + D.catOrder.all.concat(['Other']).map(function (cat) { return '<option value="' + App.esc(cat) + '">' + App.esc(cat) + '</option>'; }).join('') + '</select></label>' +
       '  </div>' +
       '  <div class="s-suggest"></div>' +
       '</aside></div>';
@@ -134,24 +150,28 @@
     input.value = V.query;
     input.addEventListener('input', function () { V.query = input.value; paintSuggest(); });
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && input.value.trim()) { add(input.value); } });
+    V.el.querySelector('.s-category').addEventListener('change', paintSuggest);
     paintList(); paintSuggest();
   }
 
   function add(name) {
     name = name.trim();
+    if (!name || name.length > 120) return App.toast('Use an item name up to 120 characters.');
+    var selected = V.el.querySelector('.s-category').value;
     var g = find(name, false), msg;
     if (g) {
       g.qty++;
+      if (selected && g.cat !== selected) { g.cat = selected; paintList(); }
       msg = 'Already on the list · now <b>×' + g.qty + '</b> ' + App.esc(g.name);
       var q = V.el.querySelector('.s-list [data-id="' + g.id + '"] .s-qty .num');
       if (q) q.textContent = g.qty;
     } else if ((g = find(name, true))) {
-      g.done = false; g.qty = 1;
+      g.done = false; g.qty = 1; if (selected) g.cat = selected;
       msg = 'Added back <b>' + App.esc(g.name) + '</b>';
       paintList();
     } else {
       var cat = D.catalog.filter(function (c) { return c[0].toLowerCase() === name.toLowerCase(); })[0];
-      g = { id: D._gid(), name: cat ? cat[0] : name.charAt(0).toUpperCase() + name.slice(1), cat: categorize(name), qty: 1, store: V.store === 'all' ? 'grocer' : V.store, done: false, note: '' };
+      g = { id: 'g-' + crypto.randomUUID(), name: cat ? cat[0] : name.charAt(0).toUpperCase() + name.slice(1), cat: selected || categorize(name), qty: 1, store: V.store === 'all' ? 'grocer' : V.store, done: false, note: '' };
       D.groceries.push(g);
       msg = 'Added <b>' + App.esc(g.name) + '</b> to ' + g.cat;
       insertRow(g);
@@ -202,9 +222,20 @@
     }
     if ((t = e.target.closest('[data-qty]'))) {
       var q = D.groceries.filter(function (x) { return x.id === t.dataset.id; })[0];
-      q.qty = Math.max(1, q.qty + +t.dataset.qty);
-      t.parentNode.querySelector('.num').textContent = q.qty;
-      refreshSuggestFor(q);
+      if (!q) return;
+      q.qty = Math.max(0, q.qty + +t.dataset.qty);
+      if (q.qty === 0) {
+        delete V.pending[q.id];
+        D.groceries = D.groceries.filter(function (x) { return x.id !== q.id; });
+        paintList(); paintSuggest();
+        App.toast('Removed <b>' + App.esc(q.name) + '</b>', { icon: 'cart', undo: function () {
+          var existing = find(q.name, false);
+          if (existing) existing.qty++;
+          else { q.qty = 1; D.groceries.push(q); }
+          paintList(); paintSuggest(); App.emit('data');
+        } });
+      } else { t.parentNode.querySelector('.num').textContent = q.qty; refreshSuggestFor(q); }
+      App.emit('data');
       return;
     }
     if ((t = e.target.closest('[data-add]'))) return add(t.dataset.add);
@@ -219,9 +250,9 @@
       var gone = done();
       D.groceries = D.groceries.filter(function (x) { return gone.indexOf(x) < 0; });
       V.drawer = false;
-      paintList();
+      paintList(); App.emit('data');
       App.toast('Cleared ' + gone.length + ' items', {
-        icon: 'check', undo: function () { D.groceries = D.groceries.concat(gone); paintList(); }
+        icon: 'check', undo: function () { D.groceries = D.groceries.concat(gone); paintList(); App.emit('data'); }
       });
     }
   }

@@ -13,7 +13,7 @@
 .chore-manage-row b, .chore-manage-row small { display: block; }
 .chore-manage-row small { color: var(--ink-2); margin-top: 6px; }
 @media (max-width: 1100px) { .t-head { flex-wrap: wrap; } .ch-toolbar { margin-left: auto; } }
-.t-head { display: flex; align-items: center; gap: 24px; margin-bottom: 18px; flex: none; }
+.t-head { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 18px; flex: none; }
 .t-title { margin-right: auto; }
 .t-title h1 { font-size: 64px; line-height: .95; }
 .t-progress { display: flex; align-items: center; gap: 12px; }

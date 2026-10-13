@@ -109,7 +109,7 @@ window.DATA = (function () {
   // ---------------------------------------------------------------- chores
   var routines = [
     { id: 'morning', name: 'Morning', range: '6 – 11 AM', from: 0, to: 11 },
-    { id: 'after', name: 'After school', range: '11 AM – 5 PM', from: 11, to: 17 },
+    { id: 'after', name: 'Afternoon', range: '11 AM – 5 PM', from: 11, to: 17 },
     { id: 'evening', name: 'Evening', range: '5 – 10 PM', from: 17, to: 24 }
   ];
   var chores = [];
@@ -124,9 +124,9 @@ window.DATA = (function () {
   // ---------------------------------------------------------------- shopping
   var stores = [{ id: 'grocer', name: 'FreshCo' }, { id: 'costco', name: 'Costco' }];
   var catOrder = {
-    all: ['Produce', 'Bakery', 'Meat & Fish', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
-    grocer: ['Produce', 'Bakery', 'Meat & Fish', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
-    costco: ['Household', 'Pantry', 'Snacks', 'Dairy & Eggs', 'Meat & Fish', 'Frozen', 'Produce', 'Bakery']
+    all: ['Produce', 'Bakery', 'Meat & Deli', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
+    grocer: ['Produce', 'Bakery', 'Meat & Deli', 'Dairy & Eggs', 'Pantry', 'Frozen', 'Snacks', 'Household'],
+    costco: ['Household', 'Pantry', 'Snacks', 'Dairy & Eggs', 'Meat & Deli', 'Frozen', 'Produce', 'Bakery']
   };
   var gid = 0;
   function g(name, cat, qty, store, done, note) {
@@ -139,8 +139,8 @@ window.DATA = (function () {
     g('Honeycrisp apples', 'Produce', 6, 'grocer'),
     g('Sourdough loaf', 'Bakery', 1, 'grocer'),
     g('Bagels', 'Bakery', 2, 'costco', false, 'Everything'),
-    g('Chicken thighs', 'Meat & Fish', 1, 'grocer', false, 'Boneless'),
-    g('Salmon fillets', 'Meat & Fish', 2, 'grocer'),
+    g('Chicken thighs', 'Meat & Deli', 1, 'grocer', false, 'Boneless'),
+    g('Salmon fillets', 'Meat & Deli', 2, 'grocer'),
     g('Milk 2%', 'Dairy & Eggs', 2, 'costco'),
     g('Eggs', 'Dairy & Eggs', 1, 'costco', false, '2 dozen'),
     g('Greek yogurt', 'Dairy & Eggs', 1, 'grocer'),
@@ -163,8 +163,8 @@ window.DATA = (function () {
     ['Broccoli', 'Produce'], ['Carrots', 'Produce'], ['Cucumber', 'Produce'], ['Garlic', 'Produce'], ['Grapes', 'Produce'],
     ['Lemons', 'Produce'], ['Limes', 'Produce'], ['Onions', 'Produce'], ['Potatoes', 'Produce'], ['Strawberries', 'Produce'],
     ['Tomatoes', 'Produce'], ['Bread', 'Bakery'], ['Bagels', 'Bakery'], ['Croissants', 'Bakery'], ['Sourdough loaf', 'Bakery'],
-    ['Tortillas', 'Bakery'], ['Hamburger buns', 'Bakery'], ['Bacon', 'Meat & Fish'], ['Chicken breasts', 'Meat & Fish'],
-    ['Chicken thighs', 'Meat & Fish'], ['Ground beef', 'Meat & Fish'], ['Salmon fillets', 'Meat & Fish'], ['Shrimp', 'Meat & Fish'],
+    ['Tortillas', 'Bakery'], ['Hamburger buns', 'Bakery'], ['Bacon', 'Meat & Deli'], ['Chicken breasts', 'Meat & Deli'],
+    ['Chicken thighs', 'Meat & Deli'], ['Ground beef', 'Meat & Deli'], ['Salmon fillets', 'Meat & Deli'], ['Shrimp', 'Meat & Deli'],
     ['Butter', 'Dairy & Eggs'], ['Cheddar', 'Dairy & Eggs'], ['Cream cheese', 'Dairy & Eggs'], ['Eggs', 'Dairy & Eggs'],
     ['Greek yogurt', 'Dairy & Eggs'], ['Milk 2%', 'Dairy & Eggs'], ['Oat milk', 'Dairy & Eggs'], ['Parmesan', 'Dairy & Eggs'],
     ['Black beans', 'Pantry'], ['Cereal', 'Pantry'], ['Coffee beans', 'Pantry'], ['Flour', 'Pantry'], ['Honey', 'Pantry'],
@@ -221,13 +221,8 @@ window.DATA = (function () {
     { id: 'night', name: 'Goodnight', icon: 'moon', set: { 'k-pend': 0, 'k-under': 10, 'k-island': 0, 'l-lamp': 0, 'l-ceil': 0, 'l-fire': 0, 'u-hall': 10, 'u-miyam': 15, 'e-porch': 0 } }
   ];
 
-  // ---------------------------------------------------------------- weather (index = hour of day)
-  var weather = {
-    hi: 17, lo: 8, feels: -2, humidity: 71, wind: 18,
-    t: [9, 9, 8, 8, 8, 8, 9, 10, 11, 12, 13, 15, 16, 17, 16, 15, 14, 13, 12, 12, 11, 10, 10, 9],
-    c: ['moon', 'moon', 'moon', 'moon', 'moon', 'moon', 'partly', 'partly', 'sun', 'sun', 'sun', 'partly', 'partly', 'cloud', 'cloud', 'cloud', 'rain', 'rain', 'rain', 'rain', 'cloud', 'cloud', 'moon', 'moon'],
-    p: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 10, 20, 25, 40, 80, 90, 70, 55, 20, 10, 0, 0]
-  };
+  // Weather is populated by the live East Gwillimbury integration.
+  var weather = null;
 
   // ---------------------------------------------------------------- photos
   var t = new Date(base);

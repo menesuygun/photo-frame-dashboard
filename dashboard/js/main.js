@@ -4,6 +4,7 @@ import './data.js';
 import './app.js';
 import './calendar-sync.js';
 import './chore-schedule.js';
+import './weather-sync.js';
 import './system.js';
 import './slideshow.js';
 import './views/home.js';
