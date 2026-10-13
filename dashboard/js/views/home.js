@@ -29,14 +29,6 @@
 
   App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
 
-  function presence() {
-    return D.people.map(function (p) {
-      return '<div class="h-who" style="' + App.pstyle(p) + '">' +
-        App.avatar(p, 36) +
-        '<span><b>' + p.name + '</b></span></div>';
-    }).join('');
-  }
-
   function hero() {
     if (App.calendarSync && App.calendarSync.status !== 'ready') {
       return '<div class="h-hero h-hero--empty"><div class="label label--light">Family calendar</div>' +
@@ -135,12 +127,14 @@
     var el = V.el;
     el.querySelector('.h-clock').innerHTML = clock();
     el.querySelector('.h-weather').innerHTML = weather();
-    el.querySelector('.h-presence').innerHTML = presence();
+    el.querySelector('.h-reminders').innerHTML = App.reminderPreview();
     el.querySelector('.h-hero-slot').innerHTML = hero();
     el.querySelector('.h-lanes').innerHTML = lanes();
     el.querySelector('.h-chores').innerHTML = chores();
     el.querySelector('.h-shop').innerHTML = shopping();
   }
+
+  App.on('reminders', function () { if (V.el) V.el.querySelector('.h-reminders').innerHTML = App.reminderPreview(); });
 
   App.on('photos', function () { if (V.el && !D.photos.length) V.el.querySelector('.h-photo-cap').innerHTML = ''; });
   function photoCaption(s) {
@@ -155,7 +149,7 @@
         el.innerHTML = '<div class="home">' +
           '<div class="h-clock" data-go="calendar"></div>' +
           '<div class="h-weather"></div>' +
-          '<div class="h-presence"></div>' +
+          '<div class="h-reminders"></div>' +
           '<div class="h-main"><div class="h-hero-slot"></div><div class="h-lanes" ></div></div>' +
           '<div class="h-side">' +
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
@@ -163,6 +157,9 @@
           '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
           '</div></div>';
         el.addEventListener('click', function (e) {
+          if (e.target.closest('[data-reminder-add]')) return App.reminderSheet();
+          var reminder = e.target.closest('[data-reminder-toggle]');
+          if (reminder) { try { App.toggleReminder(reminder.dataset.reminderToggle); } catch (_) { App.toast('Could not save reminders on this device.'); } return; }
           var ev = e.target.closest('[data-ev]');
           if (ev) { App.eventSheet(App.findEvent(ev.dataset.ev)); return; }
           var g = e.target.closest('[data-go]');

@@ -1,0 +1,24 @@
+.reminders { height: 100%; display: flex; flex-direction: column; gap: 24px; }
+.reminders-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.reminders-head h1 { font-size: 64px; line-height: 1; }
+.reminders-list { flex: 1; min-height: 0; overflow-y: auto; }
+.reminder-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.reminder-toggle { flex: 1; min-width: 0; min-height: 64px; display: flex; align-items: center; gap: 16px; text-align: left; font-size: 27px; }
+.reminder-toggle > span:last-child { overflow-wrap: anywhere; }
+.reminder-box { width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 7px; flex: none; display: grid; place-items: center; }
+.reminder-row.is-done .reminder-toggle { color: var(--mute); }
+.reminder-row.is-done .reminder-toggle > span:last-child { text-decoration: line-through; }
+.reminders-empty { padding: 90px 20px; text-align: center; font-size: 40px; color: var(--mute); }
+.reminder-form label { display: flex; flex-direction: column; gap: 10px; font-size: 20px; }
+.h-reminders { grid-column: 10 / 13; border-bottom: 3px solid var(--ink); display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; }
+.h-reminder-head { display: flex; justify-content: space-between; align-items: center; }
+.h-reminder-head .label { text-align: left; min-height: 38px; }
+.h-reminder-add { width: 40px; height: 38px; display: grid; place-items: center; background: var(--paper-2); border-radius: 10px; }
+.h-reminder-list { flex: 1; min-height: 0; overflow-y: auto; }
+.h-reminder-row { display: flex; align-items: center; gap: 8px; min-height: 32px; width: 100%; text-align: left; font-size: 18px; padding: 3px 0; }
+.h-reminder-row .reminder-box { width: 19px; height: 19px; border-radius: 5px; }
+.h-reminder-row > span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.h-reminder-all { font-size: 15px; font-weight: 700; text-align: left; min-height: 30px; }
+.h-reminder-empty { text-align: left; font-size: 18px; color: var(--mute); }
+.rail-item[data-screensaver] { margin-top: auto; }
+.rail-item[data-screensaver] + .rail-clock { margin-top: 0; }

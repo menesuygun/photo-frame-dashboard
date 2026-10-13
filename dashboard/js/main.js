@@ -9,6 +9,7 @@ import './system.js';
 import './slideshow.js';
 import './photo-metadata.js';
 import './photo-library.js';
+import './views/reminders.js';
 import './views/home.js';
 import './views/calendar.js';
 import './views/tasks.js';
