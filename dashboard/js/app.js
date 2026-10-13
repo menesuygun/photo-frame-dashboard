@@ -314,6 +314,11 @@
     }
   }
   App.resetIdle = function () { idleSec = 0; };
+  App.openScreensaver = function () {
+    App.closeSheet();
+    App.resetIdle();
+    App.setMode('ambient');
+  };
 
   // ------------------------------------------------------------ fit tablet and browser viewport
   var fit = App.fitScreen = function () {
@@ -360,6 +365,7 @@
       if (b && e.button === 0) App.go(b.dataset.go);
     });
     $('#rail').addEventListener('click', function (e) {
+      if (e.target.closest('[data-screensaver]')) { App.openScreensaver(); return; }
       var b = e.target.closest('[data-go]');
       if (b && e.detail === 0) App.go(b.dataset.go);
     });
