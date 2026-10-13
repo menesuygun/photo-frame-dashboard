@@ -18,7 +18,7 @@ window.DATA = (function () {
     return Object.assign({ id: 'e' + (++n), allDay: true, start: at(d, '00:00'), end: at(d + days, '00:00'), title: title, people: people }, extra || {});
   }
 
-  var ALL = ['alex', 'jordan', 'maya', 'otto'];
+  var ALL = ['enes', 'beyza', 'atlas', 'miyam'];
 
   var people = [
     { id: 'enes', name: 'Enes', color: '#2D5BFF', rgb: '45 91 255', ink: '#FFFFFF', home: false, status: 'Driving home', eta: 12 },
