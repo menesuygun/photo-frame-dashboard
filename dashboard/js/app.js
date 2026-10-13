@@ -315,11 +315,19 @@
   }
   App.resetIdle = function () { idleSec = 0; };
 
-  // ------------------------------------------------------------ stage scaling (desktop preview only)
-  function fit() {
-    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 800);
-    $('#stage').style.transform = Math.abs(s - 1) < 0.01 ? '' : 'scale(' + s + ')';
-  }
+  // ------------------------------------------------------------ fit tablet and browser viewport
+  var fit = App.fitScreen = function () {
+    var viewport = window.visualViewport;
+    var width = viewport ? viewport.width : window.innerWidth;
+    var height = viewport ? viewport.height : window.innerHeight;
+    var scale = Math.min(width / 1280, height / 800);
+    var stage = $('#stage'), stageHeight = height / scale;
+    stage.style.height = stageHeight + 'px';
+    stage.style.marginTop = -stageHeight / 2 + 'px';
+    stage.style.left = ((viewport ? viewport.offsetLeft : 0) + width / 2) + 'px';
+    stage.style.top = ((viewport ? viewport.offsetTop : 0) + height / 2) + 'px';
+    stage.style.transform = 'scale(' + scale + ')';
+  };
 
   // ------------------------------------------------------------ clock tick
   var lastMin = -1;
@@ -340,6 +348,11 @@
     else App.setTime(15, 18); // demo default: a busy weekday afternoon
     fit();
     window.addEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', fit);
+      window.visualViewport.addEventListener('scroll', fit);
+    }
     // Switch tabs the instant a finger lands (pointerdown), not on release. Keyboard "clicks"
     // (detail === 0) still work.
     $('#rail').addEventListener('pointerdown', function (e) {

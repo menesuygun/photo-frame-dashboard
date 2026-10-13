@@ -137,7 +137,7 @@
   }
   function render() {
     V.el.innerHTML = '<div class="shop">' +
-      '<header class="s-head"><div><div class="label">Shared list</div><h1 class="serif">Groceries</h1></div><div class="s-count"></div><div class="seg s-stores"></div></header>' +
+      '<header class="s-head"><div><div class="label">Shared list</div><h1 class="serif">Groceries</h1></div><div class="s-count"></div><div class="seg s-stores"></div><button class="btn btn--ghost s-remove-all" data-remove-all>Remove all</button></header>' +
       '<div class="s-list"></div>' +
       '<aside class="s-side">' +
       '  <div class="s-add">' +
@@ -214,6 +214,20 @@
 
   function onClick(e) {
     var t;
+    if ((t = e.target.closest('[data-remove-all]'))) {
+      if (!D.groceries.length) return;
+      var removed = D.groceries.slice();
+      V.pending = {}; V.drawer = false;
+      D.groceries = [];
+      paintList(); paintSuggest(); App.emit('data');
+      App.toast('Removed all shopping items', { icon: 'cart', undo: function () {
+        removed.forEach(function (item) {
+          if (!D.groceries.some(function (current) { return current.id === item.id || (current.name.toLowerCase() === item.name.toLowerCase() && current.store === item.store && current.done === item.done); })) D.groceries.push(item);
+        });
+        paintList(); paintSuggest(); App.emit('data');
+      } });
+      return;
+    }
     if ((t = e.target.closest('[data-check]'))) {
       var g = D.groceries.filter(function (x) { return x.id === t.dataset.check; })[0];
       if (g && !V.pending[g.id]) check(g);

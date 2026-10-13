@@ -1,6 +1,6 @@
 /* Shopping */
 .shop { height: 100%; display: grid; grid-template-columns: 1fr 440px; grid-template-rows: auto 1fr; gap: 16px 24px; }
-.s-head { grid-column: 1 / -1; display: flex; align-items: center; gap: 24px; }
+.s-head { flex-wrap: wrap; grid-column: 1 / -1; display: flex; align-items: center; gap: 24px; }
 .s-head h1 { font-size: 64px; line-height: .95; }
 .s-count { margin-right: auto; font-size: 22px; color: var(--mute); padding-top: 22px; }
 .s-count .num { font-size: 34px; color: var(--ink); }
@@ -70,3 +70,5 @@
 
 .s-category-label { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; font-size: 18px; }
 .s-category { min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--mute); background: var(--paper); color: var(--ink); font: inherit; }
+
+.s-remove-all { font-size: 17px; padding: 0 16px; white-space: nowrap; }

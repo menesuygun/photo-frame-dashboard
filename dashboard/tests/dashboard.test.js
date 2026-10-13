@@ -50,6 +50,17 @@ test('shopping adds selected categories, guesses Sujuk, removes at zero, and per
   assert.equal(JSON.parse(store.get('frame-shopping-v1')).length, 1);
   nodes['.s-category'].value = ''; action('[data-add]', { add: 'Sujuk' });
   assert.equal(context.window.DATA.groceries[1].cat, 'Meat & Deli');
+  let undo;
+  context.App.toast = (message, options) => { undo = options.undo; };
+  context.window.DATA.groceries[0].store = 'costco';
+  context.window.DATA.groceries[0].done = true;
+  action('[data-store]', { store: 'grocer' });
+  action('[data-remove-all]', {});
+  assert.equal(context.window.DATA.groceries.length, 0);
+  assert.deepEqual(JSON.parse(store.get('frame-shopping-v1')), []);
+  undo();
+  assert.equal(context.window.DATA.groceries.length, 2);
+  assert.equal(JSON.parse(store.get('frame-shopping-v1')).length, 2);
 });
 test('weather clears demo data and maps real forecast, hourly data, and failure state', async () => {
   const { context } = setup();
