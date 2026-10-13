@@ -21,10 +21,10 @@ window.DATA = (function () {
   var ALL = ['alex', 'jordan', 'maya', 'otto'];
 
   var people = [
-    { id: 'alex', name: 'Wes', color: '#2D5BFF', rgb: '45 91 255', ink: '#FFFFFF', home: false, status: 'Driving home', eta: 12 },
-    { id: 'jordan', name: 'Claudia', color: '#E4007C', rgb: '228 0 124', ink: '#FFFFFF', home: false, status: 'At the office' },
-    { id: 'maya', name: 'Buzzsaw', age: 10, color: '#00A36C', rgb: '0 163 108', ink: '#FFFFFF', home: true, status: 'Home' },
-    { id: 'otto', name: 'Skidmark', age: 6, color: '#FFB000', rgb: '255 176 0', ink: '#111111', home: true, status: 'Home' }
+    { id: 'enes', name: 'Enes', color: '#2D5BFF', rgb: '45 91 255', ink: '#FFFFFF', home: false, status: 'Driving home', eta: 12 },
+    { id: 'beyza', name: 'Beyza', color: '#E4007C', rgb: '228 0 124', ink: '#FFFFFF', home: false, status: 'At the office' },
+    { id: 'atlas', name: 'Miyam', age: 3, color: '#00A36C', rgb: '0 163 108', ink: '#FFFFFF', home: true, status: 'At the daycare' },
+    { id: 'miyam', name: 'Miyam', age: 2, color: '#FFB000', rgb: '255 176 0', ink: '#111111', home: true, status: 'Home' }
   ];
   var family = { id: 'family', name: 'Family', color: '#111111', rgb: '17 17 17', ink: '#FFFFFF' };
 
