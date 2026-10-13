@@ -197,13 +197,14 @@
       '<button class="icon-btn" data-nav="1" aria-label="Next">' + App.icon('right', 24) + '</button>' +
       '<button class="btn btn--ghost' + (isToday ? ' is-hidden' : '') + '" data-today>Today</button>' +
       '<div class="seg">' + MODES.map(function (m) { return '<button class="' + (V.mode === m[0] ? 'is-on' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
-      '<button class="fab" data-add aria-label="Add event">' + App.icon('plus', 26) + '</button>' +
+      (App.calendarSync ? '' : '<button class="fab" data-add aria-label="Add event">' + App.icon('plus', 26) + '</button>') +
       '</header>';
   }
 
   function render() {
     var body = { day: dayView, '3day': threeDay, week: weekView, month: monthView }[V.mode]();
-    V.el.innerHTML = '<div class="cal cal--' + V.mode + '">' + header() + '<div class="cal-body">' + body + '</div></div>';
+    V.el.innerHTML = '<div class="cal cal--' + V.mode + '">' + header() +
+      (App.calendarSync ? App.calendarStatus() : '') + '<div class="cal-body">' + body + '</div></div>';
     var sc = V.el.querySelector('.grid-scroll');
     if (sc) {
       var now = App.now();
@@ -277,6 +278,7 @@
   }
 
   function addSheet() {
+    if (App.calendarSync) return App.toast('Manage events in Apple Calendar.', { icon: 'calendar' });
     var now = App.now();
     var st = { who: [], day: 0, time: '15:30', dur: 60, title: '' };
     var days = [0, 1, 2, 3, 4];

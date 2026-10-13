@@ -37,6 +37,11 @@
   }
 
   function hero() {
+    if (App.calendarSync && App.calendarSync.status !== 'ready') {
+      return '<div class="h-hero h-hero--empty"><div class="label label--light">Family calendar</div>' +
+        '<div class="h-hero-title serif">' + (App.calendarSync.status === 'stale' ? 'Showing your last update' : 'Your family’s schedule') + '</div>' +
+        App.calendarStatus() + '</div>';
+    }
     var e = App.nextEvent(), now = App.now();
     if (!e) {
       var tomorrow = App.timedOn(App.addDays(now, 1))[0];

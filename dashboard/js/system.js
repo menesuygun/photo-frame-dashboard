@@ -133,6 +133,7 @@
       '</div>';
   }
   App.openDemo = function () {
+    if (App.calendarSync) return;
     var el = $('#demo');
     el.innerHTML = demoHTML();
     el.classList.add('is-open');

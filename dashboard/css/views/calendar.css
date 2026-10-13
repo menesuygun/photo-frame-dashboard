@@ -184,3 +184,4 @@
 .more-row i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
 .more-row b { font-size: 21px; flex: 1; }
 .more-row span { font-size: 16px; color: var(--mute); }
+.calendar-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px 8px; font-size: 15px; color: var(--mute); flex: none; }
