@@ -1,5 +1,18 @@
 /* Chores */
 .tasks { height: 100%; display: flex; flex-direction: column; }
+.ch-toolbar { display: flex; gap: 8px; }
+.chore-form label { display: flex; flex-direction: column; gap: 6px; font-size: 18px; font-weight: 600; }
+.chore-form input, .chore-form select { width: 100%; min-height: 48px; border: 1px solid var(--mute); border-radius: 10px; padding: 10px 12px; background: var(--paper); color: var(--ink); font: inherit; }
+.chore-form input:focus-visible, .chore-form select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.chore-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+.chore-fields [hidden] { display: none; }
+.chore-error { color: var(--ink); font-size: 17px; margin-top: 12px; }
+.chore-error:empty { display: none; }
+.chore-manage-row { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--paper-2); padding: 14px 0; }
+.chore-manage-row > div { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.chore-manage-row b, .chore-manage-row small { display: block; }
+.chore-manage-row small { color: var(--ink-2); margin-top: 6px; }
+@media (max-width: 1100px) { .t-head { flex-wrap: wrap; } .ch-toolbar { margin-left: auto; } }
 .t-head { display: flex; align-items: center; gap: 24px; margin-bottom: 18px; flex: none; }
 .t-title { margin-right: auto; }
 .t-title h1 { font-size: 64px; line-height: .95; }

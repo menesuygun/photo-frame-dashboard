@@ -56,6 +56,7 @@
       '<header class="t-head">' +
       '<div class="t-title"><div class="label">' + (r.id === auto.id ? 'Right now · ' : '') + r.range + '</div><h1 class="serif">' + r.name + '</h1></div>' +
       '<div class="seg">' + D.routines.map(function (x) { return '<button class="' + (x.id === r.id ? 'is-on' : '') + '" data-r="' + x.id + '">' + x.name + '</button>'; }).join('') + '</div>' +
+      '<div class="ch-toolbar"><button class="btn btn--ghost" data-manage-chores>Manage</button><button class="btn btn--solid" data-add-chore>Add chore</button></div>' +
       '<div class="t-progress"><span class="num">' + done + '<small>/' + inR.length + '</small></span><div class="t-bar"><i style="width:' + (inR.length ? done / inR.length * 100 : 0) + '%"></i></div><span class="label">done</span></div>' +
       '</header>' +
       '<div class="ch-lanes">' + LANES.map(function (w) { return lane(w, r); }).join('') + '</div>' +
@@ -112,8 +113,83 @@
     });
   }
 
+  function options(items, selected) {
+    return items.map(function (x) { return '<option value="' + App.esc(String(x[0])) + '"' + (String(x[0]) === String(selected) ? ' selected' : '') + '>' + App.esc(x[1]) + '</option>'; }).join('');
+  }
+  function choreSheet(t) {
+    t = t || { title: '', who: 'any', r: routine().id, every: 1, start: App.choreDate(App.now()) };
+    var repeat = t.weekday != null ? 'weekly' : t.every === 0 ? 'once' : t.every === 1 ? 'daily' : 'interval';
+    App.sheet('<form class="sheet-pad chore-form">' +
+      '<div class="label">' + (t.id ? 'Edit chore' : 'New chore') + '</div><h2 class="serif sheet-h">' + (t.id ? 'Edit chore' : 'Add chore') + '</h2>' +
+      '<label>Chore name<input name="title" required maxlength="120" value="' + App.esc(t.title) + '" placeholder="e.g. Water the plants"></label>' +
+      '<div class="chore-fields"><label>Assign to<select name="who">' + options(D.people.map(function (p) { return [p.id, p.name]; }).concat([['any', 'Anyone']]), t.who) + '</select></label>' +
+      '<label>Time of day<select name="routine">' + options(D.routines.map(function (r) { return [r.id, r.id === 'after' ? 'Afternoon' : r.name]; }), t.r) + '</select></label>' +
+      '<label>Repeat<select name="repeat">' + options([['once', 'Once'], ['daily', 'Every day'], ['interval', 'Every few days'], ['weekly', 'Every week']], repeat) + '</select></label>' +
+      '<label data-start>Start date<input name="start" type="date" value="' + App.esc(t.start || App.choreDate(App.now())) + '"></label>' +
+      '<label data-interval>Every how many days?<input name="interval" type="number" min="2" max="365" step="1" value="' + (t.every > 1 ? t.every : 2) + '"></label>' +
+      '<label data-weekday>Weekday<select name="weekday">' + options(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(function (d, i) { return [i, d]; }), t.weekday == null ? App.now().getDay() : t.weekday) + '</select></label></div>' +
+      '<p class="chore-error" role="alert"></p><div class="sheet-actions"><button type="button" class="btn btn--ghost" data-cancel>Cancel</button><button type="submit" class="btn btn--solid">Save chore</button></div></form>', {
+      onMount: function (s, close) {
+        var f = s.querySelector('form');
+        function update() {
+          var mode = f.elements.repeat.value;
+          s.querySelector('[data-start]').hidden = mode === 'weekly';
+          s.querySelector('[data-interval]').hidden = mode !== 'interval';
+          s.querySelector('[data-weekday]').hidden = mode !== 'weekly';
+          f.elements.start.required = mode !== 'weekly'; f.elements.start.disabled = mode === 'weekly';
+          f.elements.interval.disabled = mode !== 'interval';
+        }
+        update(); f.elements.repeat.addEventListener('change', update);
+        s.querySelector('[data-cancel]').addEventListener('click', close);
+        f.addEventListener('submit', function (e) {
+          e.preventDefault(); if (!f.reportValidity()) return;
+          var mode = f.elements.repeat.value;
+          var input = { id: t.id, title: f.elements.title.value, who: f.elements.who.value, r: f.elements.routine.value };
+          if (mode === 'weekly') input.weekday = Number(f.elements.weekday.value);
+          else { input.start = f.elements.start.value; input.every = mode === 'once' ? 0 : mode === 'daily' ? 1 : Number(f.elements.interval.value); }
+          try { App.saveChore(input); }
+          catch (_) { s.querySelector('.chore-error').textContent = 'Could not save. Check the fields and allow storage on this device.'; return; }
+          close(); render(); App.toast('Chore saved.');
+        });
+        f.elements.title.focus();
+      }
+    });
+  }
+  function manageSheet() {
+    App.sheet('<div class="sheet-pad"><div class="label">All schedules</div><h2 class="serif sheet-h">Manage chores</h2>' +
+      '<p class="sheet-p">Includes chores scheduled for other days.</p><div class="chore-manage">' +
+      (D.choreTemplates.length ? D.choreTemplates.map(function (t) {
+        return '<div class="chore-manage-row"><div><b>' + App.esc(t.title) + '</b><small>' + App.esc(t.who === 'any' ? 'Anyone' : App.person(t.who).name) + ' · ' + App.esc(t.label) + '</small></div>' +
+          '<button class="btn btn--ghost" data-edit-chore="' + t.id + '" aria-label="Edit ' + App.esc(t.title) + '">Edit</button>' +
+          '<button class="btn btn--ghost" data-delete-chore="' + t.id + '" aria-label="Delete ' + App.esc(t.title) + '">Delete</button></div>';
+      }).join('') : '<p>No chores yet. Use Add chore to create one.</p>') + '</div></div>', {
+      onMount: function (s, close) {
+        s.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-edit-chore], [data-delete-chore]'); if (!b) return;
+          var id = b.dataset.editChore || b.dataset.deleteChore;
+          var t = D.choreTemplates.find(function (x) { return x.id === id; }); if (!t) return;
+          close();
+          if (b.dataset.editChore) return choreSheet(t);
+          App.sheet('<div class="sheet-pad"><h2 class="serif sheet-h">Delete chore?</h2><p class="sheet-p">Remove “' + App.esc(t.title) + '” and its future repeats?</p>' +
+            '<p class="chore-error" role="alert"></p><div class="sheet-actions"><button class="btn btn--ghost" data-cancel>Cancel</button><button class="btn btn--solid" data-confirm>Delete chore</button></div></div>', {
+            onMount: function (sheet, finish) {
+              sheet.querySelector('[data-cancel]').addEventListener('click', function () { finish(); manageSheet(); });
+              sheet.querySelector('[data-confirm]').addEventListener('click', function () {
+                try { App.deleteChore(id); }
+                catch (_) { sheet.querySelector('.chore-error').textContent = 'Could not save the deletion on this device.'; return; }
+                finish(); render(); manageSheet();
+              });
+            }
+          });
+        });
+      }
+    });
+  }
+
   function onClick(e) {
     var t;
+    if (e.target.closest('[data-add-chore]')) return choreSheet();
+    if (e.target.closest('[data-manage-chores]')) return manageSheet();
     if ((t = e.target.closest('[data-r]'))) { V.routine = t.dataset.r === App.currentRoutine().id ? null : t.dataset.r; return render(); }
     if ((t = e.target.closest('[data-ch]'))) {
       var c = D.chores.filter(function (x) { return x.id === t.dataset.ch; })[0];
