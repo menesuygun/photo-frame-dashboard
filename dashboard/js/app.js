@@ -171,7 +171,8 @@
   }
   App.go = function (name, opts) {
     opts = opts || {};
-    if (!App.views[name]) name = 'home';
+    // Home controls are hidden until real devices are connected.
+    if (name === 'control' || !App.views[name]) name = 'home';
     if (App.current && App.current !== name && App.views[App.current].hide) App.views[App.current].hide();
     App.$$('.view').forEach(function (v) { v.classList.toggle('is-active', v.dataset.view === name); });
     App.$$('.rail-item').forEach(function (b) { b.classList.toggle('is-active', b.dataset.go === name); });

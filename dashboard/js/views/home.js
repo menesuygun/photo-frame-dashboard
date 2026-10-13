@@ -140,7 +140,6 @@
     el.querySelector('.h-lanes').innerHTML = lanes();
     el.querySelector('.h-chores').innerHTML = chores();
     el.querySelector('.h-shop').innerHTML = shopping();
-    el.querySelector('.h-status').innerHTML = status();
   }
 
   App.on('photos', function () { if (V.el && !D.photos.length) V.el.querySelector('.h-photo-cap').innerHTML = ''; });
@@ -161,7 +160,7 @@
           '<div class="h-side">' +
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
           '  <button class="h-chores card" data-go="tasks"></button>' +
-          '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button><button class="h-status card" data-go="control"></button></div>' +
+          '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
           '</div></div>';
         el.addEventListener('click', function (e) {
           var ev = e.target.closest('[data-ev]');

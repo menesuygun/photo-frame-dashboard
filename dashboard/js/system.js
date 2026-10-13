@@ -176,8 +176,8 @@
       if (k === 'a') App.setMode('ambient');
       if (k === 'n') App.setMode('night');
       if (k === 'escape') { closeDemo(); App.closeSheet(); }
-      var views = ['home', 'calendar', 'tasks', 'shopping', 'photos', 'control'];
-      if (k >= '1' && k <= '6') App.go(views[+k - 1]);
+      var views = ['home', 'calendar', 'tasks', 'shopping', 'photos'];
+      if (k >= '1' && k <= '5') App.go(views[+k - 1]);
     });
   });
 })();
