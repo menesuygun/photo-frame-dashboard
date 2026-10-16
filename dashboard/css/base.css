@@ -302,3 +302,5 @@ button.card:active, .h-hero:active, .h-photo:active { transform: scale(.985); }
 }
 .diag b { color: #fff; }
 .diag u { text-decoration: none; color: #aaa; }
+
+.rail-credits { font-size: 10px; text-align: center; color: var(--mute); text-decoration: none; padding: 2px 0; }

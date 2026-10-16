@@ -19,7 +19,7 @@
       '<span class="h-wx-temp num">' + w.temp + '°</span>' +
       App.prayerTimesHTML() +
       '</div>' +
-      '<div class="h-wx-say"><b>' + App.esc(w.summary) + '</b><span class="h-wx-highlow">H ' + w.hi + '° L ' + w.lo + '°</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>' +
+      '<div class="h-wx-say"><b>' + App.esc(w.summary) + '</b><span class="h-wx-highlow">H ' + w.hi + '° L ' + w.lo + '°</span></div>' +
       '<div class="h-wx-hours">' + hours.map(function (h) {
         var lift = tmax === tmin ? 0 : Math.round((h.t - tmin) / (tmax - tmin) * 8);
         return '<div class="h-hr' + (h.p >= 50 ? ' is-wet' : '') + '"><span class="h-hr-l">' + h.label + '</span>' +

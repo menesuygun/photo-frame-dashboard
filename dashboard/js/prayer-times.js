@@ -23,7 +23,7 @@
     var countdown = next ? '<div class="h-prayer-countdown">' + next.hours + ' hr ' + next.minutes + ' ' + (next.minutes === 1 ? 'minute' : 'minutes') + ' to <b>' + next.name + '</b></div>' : '';
     return '<div class="h-prayer-panel">' + countdown + '<div class="h-prayers" aria-label="East Gwillimbury prayer times, Hanafi Asr, ISNA calculation">' + ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(function (name) {
       return '<div class="h-prayer"><span>' + name + '</span><b>' + time(data.timings[name]) + '</b></div>';
-    }).join('') + '<a class="h-prayer-source" href="https://aladhan.com/calculation-methods" target="_blank" rel="noopener" title="Calculated prayer start times: ISNA method, Hanafi Asr. AlAdhan. Not mosque congregation times.">Hanafi<br>ISNA · AlAdhan</a></div></div>';
+    }).join('') + '</div></div>';
   };
   App.refreshPrayers = async function () {
     if (pending) return;
