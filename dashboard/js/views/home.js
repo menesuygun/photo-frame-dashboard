@@ -53,12 +53,15 @@
     var big = mins < 100
       ? '<div class="h-hero-count num">' + Math.round(mins) + '<small>min</small></div>'
       : '<div class="h-hero-count num">' + App.fmt.time(e.start, false) + '<small>' + App.fmt.ampm(e.start) + '</small></div>';
+    var traffic=App.travelState&&App.travelState[e.id];
     var leavePill = '';
+    if(e.loc&&!e.travel) leavePill='<span class="h-traffic-status">'+(traffic&&traffic.error==='traffic-setup-needed'?'Traffic setup needed':traffic&&traffic.status==='error'?'Driving time unavailable':traffic&&traffic.status==='loading'?'Checking traffic…':'')+'</span>';
     if (e.travel) {
       leavePill = leave <= 0
         ? '<span class="pill pill--alert"><i class="pulse"></i>Leave now</span>'
-        : '<span class="pill' + (leave <= 15 ? ' pill--soon' : '') + '">' + App.icon('car', 20) + 'Leave in ' + App.fmt.mins(leave) + '</span>';
+        : '<span class="pill' + (leave <= 15 ? ' pill--soon' : '') + '">' + App.icon('car', 20) + 'Leave by ' + App.fmt.time(App.leaveBy(e)) + '</span>';
     }
+    if(e.travel) leavePill+='<span class="h-traffic-status">'+e.travel+' min drive · Google Maps</span>';
     return '<button class="h-hero" style="' + App.pstyle(p) + '" data-ev="' + e.id + '">' +
       '<div class="h-hero-main">' +
       '  <div class="label label--on">Next up · ' + App.esc(whoText) + '</div>' +
@@ -147,6 +150,8 @@
 
   function mealCard() { if (!V.el) return; var slot=V.el.querySelector('.h-meals'); if (!slot) return; slot.innerHTML=App.mealsTodayHTML(); slot.hidden=!slot.innerHTML; V.el.querySelector('.home').classList.toggle('has-meals',!slot.hidden); }
   App.on('meals', mealCard);
+
+  App.on('travel',function(){if(V.el)V.el.querySelector('.h-hero-slot').innerHTML=hero();});
 
   App.on('reminders', function () { if (V.el) V.el.querySelector('.h-reminders').innerHTML = App.reminderPreview(); });
 

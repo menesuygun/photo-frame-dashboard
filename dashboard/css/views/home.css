@@ -145,3 +145,5 @@
 .h-weather .h-wx-say { font-size: 18px; margin: 2px 0; }
 
 .h-weather .h-hr-i { height: 20px; }
+
+.h-traffic-status { font-size:12px; opacity:.85; }.h-hero-foot { flex-wrap:wrap; gap:8px; }.h-hero-foot .pill { font-size:16px; }

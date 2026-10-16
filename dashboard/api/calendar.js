@@ -18,6 +18,14 @@ export default async function handler(req, res) {
   if (!timingSafeEqual(digest(supplied), digest(code))) return res.status(401).json({ error: 'Unlock the calendar' });
 
   try {
+    return res.status(200).json(await getCalendarPayload(source));
+  } catch {
+    // Do not expose the feed URL, raw events, or upstream error messages in logs/responses.
+    return res.status(502).json({ error: 'Calendar refresh failed. Please try again.' });
+  }
+}
+
+export async function getCalendarPayload(source) {
     const url = calendarUrl(source);
     if (!cached || cached.source !== source || Date.now() - cached.at >= FIVE_MINUTES) {
       if (!pending) {
@@ -35,9 +43,5 @@ export default async function handler(req, res) {
       }
       await pending;
     }
-    return res.status(200).json(cached.payload);
-  } catch {
-    // Do not expose the feed URL, raw events, or upstream error messages in logs/responses.
-    return res.status(502).json({ error: 'Calendar refresh failed. Please try again.' });
-  }
+  return cached.payload;
 }
