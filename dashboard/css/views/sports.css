@@ -1,0 +1,37 @@
+.sports { height:100%; overflow-y:auto; padding:0 2px 20px; }
+.sp-head { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:16px; }
+.sp-head h1 { font-size:64px; line-height:1; }.sp-head h1 span { color:#a6192e; }
+.sp-update { display:flex; gap:12px; align-items:center; font-size:13px; color:var(--mute); }
+.sp-update .btn { font-size:14px; min-height:40px; padding:0 14px; }
+.sp-hero { border-radius:22px; padding:24px 30px; background:linear-gradient(115deg,#84172a,#ae2436 70%,#c04430); color:#fff7de; position:relative; overflow:hidden; }
+.sp-hero:after { content:''; width:230px; height:230px; border:40px solid #f6c344; border-radius:50%; position:absolute; right:-110px; top:-140px; opacity:.2; pointer-events:none; }
+.sp-hero .label { color:#f6c344; }.sp-hero-top { display:flex; justify-content:space-between; gap:15px; align-items:center; }
+.sp-eyebrow { font-size:12px; letter-spacing:.12em; font-weight:800; text-transform:uppercase; color:#ffe196; }
+.sp-countdown { background:#f6c344; color:#651126; border-radius:20px; padding:8px 14px; font-size:14px; font-weight:800; flex:none; }
+.sp-hero-teams { display:flex; align-items:center; gap:22px; margin:18px 0 12px; }
+.sp-hero-teams img { width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 3px 7px #41061966); }
+.sp-hero h2 { font:42px/1.1 var(--serif); }.sp-hero h2 span { font:italic 22px var(--serif); margin:0 18px; color:#f6c344; }
+.sp-hero p { font-size:14px; opacity:.85; }
+.sp-tabs { display:flex; gap:6px; padding:18px 0; overflow-x:auto; flex:none; }
+.sp-tabs button { min-height:43px; padding:8px 18px; border-radius:999px; font-size:15px; font-weight:700; white-space:nowrap; }
+.sp-tabs button[aria-pressed=true] { background:var(--ink); color:var(--paper); }
+.sp-content { min-height:150px; }.sp-match-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.sp-match { background:var(--card); padding:16px; border-radius:16px; border:1px solid var(--line); }
+.sp-match--gs { border-left:4px solid #a6192e; }.sp-match--live { box-shadow:inset 0 3px #a6192e; }
+.sp-match-meta { display:flex; gap:10px; justify-content:space-between; font-size:11px; color:var(--mute); margin-bottom:14px; }.sp-match-meta b { white-space:nowrap; }.sp-match--live .sp-match-meta b { color:#a6192e; }
+.sp-team { display:flex; align-items:center; gap:10px; min-height:38px; font-size:17px; font-weight:600; }.sp-team img { width:26px; height:26px; object-fit:contain; flex:none; }.sp-team span { flex:1; min-width:0; overflow-wrap:anywhere; }.sp-team b { font-size:25px; font-variant-numeric:tabular-nums; }
+.sp-empty { padding:38px 18px; text-align:center; border-radius:18px; background:var(--card); font:28px var(--serif); color:var(--mute); }.sp-empty small { display:block; font:15px var(--sans); margin-top:10px; }
+.sp-table-scroll { overflow-x:auto; border-radius:16px; background:var(--card); }.sp-table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:16px; }.sp-table th { font-size:11px; text-transform:uppercase; color:var(--mute); letter-spacing:.08em; padding:14px 12px; text-align:right; }.sp-table td { padding:11px 12px; border-top:1px solid var(--line); text-align:right; }.sp-table th:nth-child(2),.sp-table td:nth-child(2) { text-align:left; }.sp-table td:nth-child(2) span { display:flex; align-items:center; gap:10px; white-space:nowrap; }.sp-table img { width:24px; height:24px; object-fit:contain; }.sp-table td:last-child { font-weight:900; }.sp-row-gs { background:#f6c34430; color:#89192a; font-weight:700; }.sp-season { margin:0 0 12px; font-size:14px; color:var(--mute); }
+.sp-week { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }.sp-week .btn { min-height:42px; padding:0 12px; font-size:14px; }.sp-week span { font-size:16px; font-weight:700; }
+.sp-day { font-size:15px; letter-spacing:.03em; font-weight:700; margin:20px 0 10px; }
+.sp-news { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }.sp-news a { display:flex; background:var(--card); border-radius:16px; overflow:hidden; color:var(--ink); text-decoration:none; }.sp-news img { width:130px; object-fit:cover; }.sp-news a>div { padding:18px; }.sp-news small { font-size:11px; color:var(--mute); }.sp-news h3 { font:24px/1.15 var(--serif); margin:10px 0; }.sp-news span { font-size:12px; font-weight:700; }
+.sp-leaders { display:grid; grid-template-columns:1fr 1fr; gap:18px; }.sp-leaders>div { border-radius:18px; background:var(--card); padding:20px; }.sp-leaders h3 { font-size:13px; letter-spacing:.1em; color:#a6192e; margin-bottom:14px; }.sp-scorer { display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); }.sp-scorer span { flex:1; }.sp-scorer b { font-size:28px; }.sp-scorer small { color:var(--mute); }
+.sp-footer { font-size:11px; color:var(--mute); padding:20px 0 0; }.sp-footer a { color:inherit; }.sp-notice { padding:10px 0; color:#8c4124; font-size:14px; }
+.sp-matchday { margin-top:6px; font-size:12px; font-weight:700; color:#a6192e; text-align:left; }
+@media(max-width:600px) {
+ .sp-head { flex-direction:column; align-items:stretch; gap:12px; }.sp-head h1 { font-size:46px; }.sp-update { justify-content:space-between; font-size:11px; }
+ .sp-hero { padding:20px 16px; }.sp-hero-top { flex-direction:column; align-items:flex-start; }.sp-eyebrow { font-size:10px; }.sp-hero-teams { gap:8px; }.sp-hero-teams img { width:32px; height:32px; }.sp-hero h2 { font-size:27px; }.sp-hero h2 span { display:block; margin:6px 0; font-size:18px; }.sp-hero p { font-size:12px; line-height:1.5; }
+ .sp-tabs button { padding:8px 13px; font-size:13px; }.sp-match-grid,.sp-news,.sp-leaders { grid-template-columns:1fr; }.sp-match { padding:14px; }.sp-team { font-size:15px; }.sp-table { font-size:13px; min-width:440px; }.sp-table th,.sp-table td { padding:10px 8px; }.sp-news a { flex-direction:column; }.sp-news img { width:100%; height:140px; }.sp-week { gap:6px; }.sp-week span { font-size:12px; }.sp-footer { line-height:1.6; }
+ .sp-matchday { font-size:11px; }
+}
+@media(max-width:600px) { .sp-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; overflow:visible; }.sp-tabs button { padding:8px 4px; font-size:12px; }.sp-hero-teams { justify-content:space-between; }.sp-hero-teams h2 { flex:1; } }

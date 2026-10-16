@@ -28,3 +28,5 @@ import './diag.js';
 import './education/view.js';
 
 import './household-sync.js';
+
+import './views/sports.js';
