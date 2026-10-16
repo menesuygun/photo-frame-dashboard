@@ -10,5 +10,15 @@
   for(const photo of photos){const {blob,...metadata}=photo;const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Could not back up a photo.'));reader.readAsDataURL(blob);});files.push({...metadata,data});}
   return {format:'family-dashboard-backup',version:1,createdAt:new Date().toISOString(),documents,photos:files};
  };
- A.downloadHouseholdBackup=async function(){const backup=await A.householdBackup();const url=URL.createObjectURL(new Blob([JSON.stringify(backup)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='family-dashboard-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);return backup;};
+ A.saveHouseholdBackupLocal=async function(){
+  const backup=await A.householdBackup();
+  await new Promise((resolve,reject)=>{
+   const opening=indexedDB.open('frame-household-backups',1);
+   opening.onupgradeneeded=()=>opening.result.createObjectStore('backups',{autoIncrement:true});
+   opening.onerror=()=>reject(new Error('Could not save a safety backup. Your existing data has not changed.'));
+   opening.onsuccess=()=>{const db=opening.result;const tx=db.transaction('backups','readwrite');tx.objectStore('backups').add(backup);tx.oncomplete=()=>{db.close();resolve();};tx.onerror=tx.onabort=()=>{db.close();reject(new Error('Not enough space for a safety backup. Your existing data has not changed.'));};};
+  });
+  return backup;
+ };
+ A.downloadHouseholdBackup=async function(){const backup=await A.householdBackup();const url=URL.createObjectURL(new Blob([JSON.stringify(backup)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.download='family-dashboard-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);return backup;};
 })();

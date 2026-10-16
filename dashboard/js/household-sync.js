@@ -4,7 +4,7 @@
  const keys={chores:'frame-chore-templates-v1',completions:'frame-chore-completions-v1',meals:'frame-meals-v1',reminders:'frame-reminders-v1',shopping:'frame-shopping-v1',usuals:'frame-usuals-v1',education:'frame-education-beyza-v1'};
  const names={chores:'Chores',completions:'Chore completions',meals:'Meals',reminders:'Reminders',shopping:'Shopping',usuals:'Usuals',education:'Education',photos:'Photos'};
  const enabledKey='frame-household-sync-v1',queueKey='frame-household-pending-v1';
- let enabled=localStorage.getItem(enabledKey)==='yes',applying=false,running=false,remote={},pending={},conflicts={},status='Not connected',timer;
+ let enabled=localStorage.getItem(enabledKey)==='yes',applying=false,running=false,remote={},pending={},conflicts={},status='Not connected',connecting=false,timer;
  try{pending=JSON.parse(localStorage.getItem(queueKey)||'{}');}catch(_){}
  try{const revisions=JSON.parse(localStorage.getItem('frame-household-revisions-v1')||'{}');for(const [category,item] of Object.entries(revisions))if(names[category]&&Number.isSafeInteger(item.revision))remote[category]=item;}catch(_){}
  const nativeSet=Storage.prototype.setItem;
@@ -13,10 +13,10 @@
  function keepQueue(){nativeSet.call(localStorage,queueKey,JSON.stringify(pending));}
  function state(message){status=message;const b=document.querySelector('[data-family-sync]');if(b)b.title='Family sync · '+status;}
  function code(){return localStorage.getItem('frame-calendar-code')||'';}
- async function request(path,method='GET',body){const r=await fetch(path,{method,headers:{Authorization:'Bearer '+code(),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store'});const data=await r.json();if(!r.ok){const error=new Error(data.error||'Sync unavailable');error.status=r.status;throw error;}return data;}
+ async function request(path,method='GET',body){const r=await fetch(path,{method,headers:{Authorization:'Bearer '+code(),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store',signal:AbortSignal.timeout(45000)});const data=await r.json();if(!r.ok){const error=new Error(data.error||'Sync unavailable');error.status=r.status;throw error;}return data;}
  function enqueue(category,value){if(!enabled||applying)return;pending[category]={value,revision:remote[category]?.revision||0};keepQueue();state('Saving…');clearTimeout(timer);timer=setTimeout(sync,800);}
  Storage.prototype.setItem=function(key,value){const old=this.getItem(key);nativeSet.call(this,key,value);if(this===localStorage&&old!==String(value)){const category=Object.keys(keys).find(c=>keys[c]===key);if(category){try{enqueue(category,JSON.parse(value));}catch(_){}}}};
- async function uploadPhotos(photos){for(const photo of photos){const signed=await request('/api/household-photos','POST',{id:photo.id});const r=await fetch(signed.url,{method:'PUT',headers:{'Content-Type':photo.blob.type||'image/jpeg','x-upsert':'true'},body:photo.blob});if(!r.ok)throw new Error('Photo upload failed. Local photos are safe.');}}
+ async function uploadPhotos(photos,progress=()=>{}){let count=0;for(const photo of photos){progress('Uploading photo '+(++count)+' of '+photos.length+'…');const signed=await request('/api/household-photos','POST',{id:photo.id});const r=await fetch(signed.url,{method:'PUT',headers:{'Content-Type':photo.blob.type||'image/jpeg','x-upsert':'true'},body:photo.blob,signal:AbortSignal.timeout(120000)});if(!r.ok)throw new Error('Photo upload failed. Local photos are safe.');}}
  async function changedPhotos(){if(!enabled||applying)return;try{const photos=await A.exportPhotoRecords(),metadata=photos.map(({blob,...p})=>p);if(canonical(metadata)===canonical(pending.photos?.value||remote.photos?.value||[]))return;enqueue('photos',metadata);}catch(error){state(error.message);}}
  async function apply(doc){
   applying=true;
@@ -39,11 +39,17 @@
    state(Object.keys(conflicts).length?'Changes need review':Object.keys(pending).length?'Changes waiting to sync':'Up to date');
   }catch(error){state(error.status===401?'Connect with your frame code':error.message);}finally{running=false;}
  }
- async function connect(importDevice){
+ async function connect(importDevice,progress=()=>{}){
+  if(connecting)throw new Error('An import is already running.');
+  connecting=true;A.householdImporting=true;
+  try{
+  progress('Checking shared household…');
   const cloud=await request('/api/household');
   if(importDevice){
    if(cloud.initialized)throw new Error('Shared data already exists. Use Connect this device instead. Nothing was overwritten.');
-   const backup=await A.downloadHouseholdBackup();const photos=await A.exportPhotoRecords();await uploadPhotos(photos);
+   progress('Saving a safety backup on this device…');
+   const backup=await A.saveHouseholdBackupLocal();const photos=await A.exportPhotoRecords();await uploadPhotos(photos,progress);
+   progress('Saving your lists and plans…');
    const documents={...backup.documents,photos:photos.map(({blob,...p})=>p)};
    if(!documents.chores)documents.chores=D.choreTemplates;
    for(const category of ['meals','reminders','shopping','usuals'])if(!documents[category])documents[category]=[];
@@ -52,13 +58,14 @@
    await request('/api/household','POST',{documents});
   }else{
    if(!cloud.initialized)throw new Error('Import your tablet first, then connect other devices.');
-   await A.downloadHouseholdBackup();
+   progress('Saving a safety backup on this device…');await A.saveHouseholdBackupLocal();
   }
-  enabled=true;nativeSet.call(localStorage,enabledKey,'yes');pending={};conflicts={};remote={};keepQueue();await sync();
+  enabled=true;nativeSet.call(localStorage,enabledKey,'yes');pending={};conflicts={};remote={};keepQueue();progress('Connecting this device…');await sync();
+  }finally{connecting=false;A.householdImporting=false;if(A.resetIdle)A.resetIdle();}
  }
  A.familySyncSheet=function(){
   const conflictNames=Object.keys(conflicts);
-  A.sheet('<div class="sheet-pad"><div class="label">Private household</div><h2 class="serif sheet-h">Family sync</h2><p class="sheet-p">'+A.esc(status)+'</p><p class="sheet-p">First, open this on your tablet and import its existing data. Then connect other devices. A backup downloads before import or connection. Photos are shared privately; allow downloads on this device.</p><p role="status" data-sync-message></p>'+(!code()?'<button class="btn btn--solid" data-sync-unlock>Connect with frame code</button>':'')+'<div class="sheet-actions"><button class="btn btn--ghost" data-sync-backup>Download device backup</button>'+(enabled?'<button class="btn btn--solid" data-sync-now>Sync now</button><button class="btn btn--ghost" data-sync-stop>Disconnect this device</button>':'<button class="btn btn--solid" data-sync-import>Import this device first</button><button class="btn btn--ghost" data-sync-connect>Connect to existing household</button>')+'</div>'+conflictNames.map(c=>'<div class="sheet-p"><b>'+names[c]+' changed on another device</b><p>Choose which version to keep. Your local changes stay saved until you decide.</p><button class="btn btn--ghost" data-sync-cloud="'+c+'">Use shared version</button><button class="btn btn--ghost" data-sync-local="'+c+'">Keep this device’s version</button></div>').join('')+'<p class="sheet-p">Updates normally appear within 30 seconds while devices are online. This does not change your iCloud calendar.</p></div>',{onMount(sheet){const message=sheet.querySelector('[data-sync-message]');sheet.addEventListener('click',async event=>{const b=event.target.closest('button');if(!b)return;b.disabled=true;try{if(b.hasAttribute('data-sync-unlock')){A.unlockCalendar();return;}if(b.hasAttribute('data-sync-backup')){await A.downloadHouseholdBackup();message.textContent='Backup downloaded.';}else if(b.hasAttribute('data-sync-import')||b.hasAttribute('data-sync-connect')){message.textContent='Preparing backup and connecting…';await connect(b.hasAttribute('data-sync-import'));message.textContent=status;}else if(b.hasAttribute('data-sync-now')){await sync();message.textContent=status;}else if(b.hasAttribute('data-sync-stop')){enabled=false;nativeSet.call(localStorage,enabledKey,'no');state('Disconnected. Local data kept.');message.textContent=status;}else if(b.dataset.syncCloud){const c=b.dataset.syncCloud;delete pending[c];keepQueue();await apply(conflicts[c]);delete conflicts[c];await sync();message.textContent=status;}else if(b.dataset.syncLocal){const c=b.dataset.syncLocal;pending[c].revision=conflicts[c].revision;delete conflicts[c];keepQueue();await sync();message.textContent=status;}}catch(error){message.textContent=error.message;}finally{b.disabled=false;}});}});
+  A.sheet('<div class="sheet-pad"><div class="label">Private household</div><h2 class="serif sheet-h">Family sync</h2><p class="sheet-p">'+A.esc(status)+'</p><p class="sheet-p">First, open this on your tablet and import its existing data. Then connect other devices. A safety backup is saved on this device before import or connection. You can also download a backup separately. Photos are shared privately.</p><p role="status" data-sync-message></p>'+(!code()?'<button class="btn btn--solid" data-sync-unlock>Connect with frame code</button>':'')+'<div class="sheet-actions"><button class="btn btn--ghost" data-sync-backup>Download device backup</button>'+(enabled?'<button class="btn btn--solid" data-sync-now>Sync now</button><button class="btn btn--ghost" data-sync-stop>Disconnect this device</button>':'<button class="btn btn--solid" data-sync-import>Import this device first</button><button class="btn btn--ghost" data-sync-connect>Connect to existing household</button>')+'</div>'+conflictNames.map(c=>'<div class="sheet-p"><b>'+names[c]+' changed on another device</b><p>Choose which version to keep. Your local changes stay saved until you decide.</p><button class="btn btn--ghost" data-sync-cloud="'+c+'">Use shared version</button><button class="btn btn--ghost" data-sync-local="'+c+'">Keep this device’s version</button></div>').join('')+'<p class="sheet-p">Updates normally appear within 30 seconds while devices are online. This does not change your iCloud calendar.</p></div>',{onMount(sheet){const message=sheet.querySelector('[data-sync-message]');sheet.addEventListener('click',async event=>{const b=event.target.closest('button');if(!b)return;b.disabled=true;try{if(b.hasAttribute('data-sync-unlock')){A.unlockCalendar();return;}if(b.hasAttribute('data-sync-backup')){await A.downloadHouseholdBackup();message.textContent='Backup downloaded.';}else if(b.hasAttribute('data-sync-import')||b.hasAttribute('data-sync-connect')){message.textContent='Preparing backup and connecting…';await connect(b.hasAttribute('data-sync-import'),text=>{message.textContent=text;});message.textContent=status;}else if(b.hasAttribute('data-sync-now')){await sync();message.textContent=status;}else if(b.hasAttribute('data-sync-stop')){enabled=false;nativeSet.call(localStorage,enabledKey,'no');state('Disconnected. Local data kept.');message.textContent=status;}else if(b.dataset.syncCloud){const c=b.dataset.syncCloud;delete pending[c];keepQueue();await apply(conflicts[c]);delete conflicts[c];await sync();message.textContent=status;}else if(b.dataset.syncLocal){const c=b.dataset.syncLocal;pending[c].revision=conflicts[c].revision;delete conflicts[c];keepQueue();await sync();message.textContent=status;}}catch(error){message.textContent=error.message;}finally{b.disabled=false;}});}});
  };
  A.syncHouseholdNow=sync;
  A.connectHousehold=connect;
