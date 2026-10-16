@@ -170,7 +170,7 @@
     $('#demo').addEventListener('click', demoClick);
     App.hold($('#railClock'), 700, { done: App.openDemo });
     document.addEventListener('keydown', function (e) {
-      if (e.target.tagName === 'INPUT') return;
+      if (e.target.closest('input,select,textarea,[contenteditable],#view-education')) return;
       var k = e.key.toLowerCase();
       if (k === 'd') { $('#demo').classList.contains('is-open') ? closeDemo() : App.openDemo(); }
       if (k === 'a') App.setMode('ambient');

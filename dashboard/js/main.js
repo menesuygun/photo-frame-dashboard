@@ -20,3 +20,5 @@ import './views/photos.js';
 import './views/control.js';
 import './views/ambient.js';
 import './diag.js';
+
+import './education/view.js';
