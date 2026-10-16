@@ -2,17 +2,25 @@
 (function () {
   'use strict';
   var D = window.DATA;
-  var PX = 72, START = 6, END = 23; // 72px per hour, 6 AM → 11 PM
+  var PX = 72, START = 0, END = 24; // Full local calendar day, midnight to midnight
   var V = { mode: 'day', date: null, el: null, scroll: null };
   var MODES = [['day', 'Today'], ['3day', '3 Day'], ['week', 'Week'], ['month', 'Month']];
 
   function y(d) { return ((d.getHours() + d.getMinutes() / 60) - START) * PX; }
+  var daySegment = App.calendarSegment = function (event, day) {
+    var start = App.dayStart(day), end = App.addDays(start, 1);
+    return Object.assign({}, event, {
+      start: new Date(Math.max(+event.start, +start)),
+      end: new Date(Math.min(+event.end, +end)),
+      travel: event.start < start ? 0 : event.travel
+    });
+  };
   function clampTop(e, day) {
-    var s = App.dayStart(day);
-    var a = e.start < s ? new Date(+s + START * 36e5) : e.start;
-    var endOfDay = new Date(+s + END * 36e5);
-    var b = e.end > endOfDay ? endOfDay : e.end;
-    return { top: Math.max(0, y(a)), h: Math.max(24, y(b) - Math.max(0, y(a)) - 3) };
+    var segment = daySegment(e, day), end = App.addDays(App.dayStart(day), 1);
+    var top = Math.max(0, y(segment.start));
+    // Midnight at the next day's boundary is 24:00 here, rather than 00:00.
+    var bottom = +segment.end === +end ? END * PX : y(segment.end);
+    return { top: top, h: Math.max(24, bottom - top - 3) };
   }
 
   // Overlap layout → [{e, col, cols}] (cols capped at 2, extra returned as overflow groups)
@@ -58,10 +66,10 @@
   }
 
   function placeBlocks(list, colorFn, laneId) {
-    return layout(list).map(function (it) {
+    return layout(list.map(function (event) { return daySegment(event, V.date); })).map(function (it) {
       var w = 100 / it.cols, left = it.col * w;
       if (it.more) {
-        var t = y(it.start), h = Math.max(30, y(it.end) - t - 3);
+        var bounds = clampTop(it, V.date), t = bounds.top, h = bounds.h;
         return '<button class="ev ev--more" data-more="' + it.more.map(function (e) { return e.id; }).join(',') + '" style="top:' + t + 'px;height:' + h + 'px;left:calc(' + left + '% + 2px);width:calc(' + w + '% - 4px)">+' + it.more.length + '<small>more</small></button>';
       }
       var b = clampTop(it.e, V.date);
@@ -72,7 +80,7 @@
   function hoursCol() {
     var h = '';
     for (var i = START; i <= END; i++) {
-      h += '<div class="hr" style="top:' + (i - START) * PX + 'px"><span>' + (i === 12 ? 'Noon' : (i % 12 || 12) + (i < 12 ? ' AM' : ' PM')) + '</span></div>';
+      h += '<div class="hr" style="top:' + (i - START) * PX + 'px"><span>' + (i === 0 || i === 24 ? '12 AM' : i === 12 ? 'Noon' : (i % 12 || 12) + (i < 12 ? ' AM' : ' PM')) + '</span></div>';
     }
     return h;
   }
@@ -104,7 +112,7 @@
       }).join('') +
       '<div class="lane-fam">' + fam.map(function (e) {
         var b = clampTop(e, day);
-        return evBlock(e, 'top:' + b.top + 'px;height:' + b.h + 'px;left:2px;right:2px');
+        return evBlock(daySegment(e, day), 'top:' + b.top + 'px;height:' + b.h + 'px;left:2px;right:2px');
       }).join('') + '</div>' +
       nowLine([day]) + '</div>' +
       '</div></div>';
@@ -155,7 +163,7 @@
         ad.map(function (e) { return '<button class="wk-ad" data-ev="' + e.id + '" style="' + App.pstyle(App.evColor(e)) + '">' + App.esc(e.title) + '</button>'; }).join('') +
         list.slice(0, max).map(function (e) {
           return '<button class="wk-ev' + (e.end <= now ? ' is-past' : '') + '" data-ev="' + e.id + '" style="' + App.pstyle(App.evColor(e)) + '">' +
-            '<span class="wk-t">' + App.fmt.time(e.start, false) + '</span><span class="wk-n">' + App.esc(e.title) + '</span></button>';
+            '<span class="wk-t">' + App.fmt.range(daySegment(e, d).start, daySegment(e, d).end) + '</span><span class="wk-n">' + App.esc(e.title) + '</span></button>';
         }).join('') +
         (more > 0 ? '<button class="wk-more" data-day="' + (+d) + '">+' + more + ' more</button>' : '') +
         (!list.length && !ad.length ? '<div class="wk-free serif"><i>Free</i></div>' : '') +
