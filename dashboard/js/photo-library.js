@@ -1,7 +1,7 @@
 // Personal photos stay in IndexedDB on the frame's browser.
 (function () {
   'use strict';
-  var database, records = [], ready;
+  var database, records = [], ready, photoRevision = 0;
   window.DATA.photos = [];
   function open() {
     if (database) return database;
@@ -14,7 +14,8 @@
     });
     return database;
   }
-  async function transaction(mode, operation) {
+  async function transaction(mode, operation, shared) {
+    if(mode==='readwrite'&&!shared)photoRevision++;
     var db = await open();
     return new Promise(function (resolve, reject) {
       var tx = db.transaction('photos', mode), result;
@@ -51,6 +52,20 @@
     } finally { URL.revokeObjectURL(url); }
   }
   ready = reload().catch(function () { App.emit('photos'); });
+  App.applySharedPhotoRecords = async function (photos) {
+    await ready;
+    var next=[], revision=photoRevision;
+    for (var photo of photos) {
+      var old=records.find(function(p){return p.id===photo.id;});
+      var blob=old&&old.blob;
+      if(!blob){var response=await fetch(photo.url);if(!response.ok)throw new Error('Photo download failed');blob=await response.blob();}
+      var {url,...metadata}=photo;next.push(Object.assign({},metadata,{blob:blob}));
+    }
+    if(photoRevision!==revision)throw new Error('Photos changed on this device. Sync will retry.');
+    await transaction('readwrite',function(store){store.clear();next.forEach(function(p){store.put(p);});},true);
+    await reload();
+  };
+  App.exportPhotoRecords = async function () { await ready; return records.slice(); };
   App.addPhotoFiles = async function (files, progress, details) {
     await ready;
     if (!files.length) throw new Error('Choose at least one photo.');
@@ -65,7 +80,7 @@
     App.sheet('<div class="sheet-pad photo-upload"><h2 class="serif sheet-h">Add photos</h2>' +
       '<p class="sheet-p">Choose JPG, PNG or WebP files. Add a caption or use the detected location. Photo date comes from metadata when available.</p>' +
       '<label>Choose photos<input type="file" accept="image/jpeg,image/png,image/webp" multiple data-files></label>' +
-      '<p class="photo-lookup-note">GPS coordinates are sent to Photon/Komoot for place names; photos stay on this device. Location data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.</p>' +
+      '<p class="photo-lookup-note">GPS coordinates are sent to Photon/Komoot for place names; photos stay on this device unless you enable Family sync. Location data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.</p>' +
       '<div data-details></div><p role="status" data-status></p><div class="sheet-actions"><button class="btn btn--ghost" data-cancel>Cancel</button><button class="btn btn--solid" data-save disabled>Add selected photos</button></div></div>', {
       onClose: function () { generation++; previews.forEach(URL.revokeObjectURL); },
       onMount: function (s, close) {
@@ -119,7 +134,7 @@
     await transaction('readwrite', function (store) { return store.put(updated); }); await reload();
   };
   App.managePhotos = function () {
-    App.sheet('<div class="sheet-pad"><h2 class="serif sheet-h">Your photos</h2><p class="sheet-p">Photos saved on this device.</p><p role="status" data-status></p>' +
+    App.sheet('<div class="sheet-pad"><h2 class="serif sheet-h">Your photos</h2><p class="sheet-p">Your photo library. Family sync shares it with your connected devices when enabled.</p><p role="status" data-status></p>' +
       '<div>' + (window.DATA.photos.length ? window.DATA.photos.map(function (p) {
         return '<div class="photo-library-row"><img src="' + p.url + '" alt=""><span>' + App.esc(p.place || 'No caption') + '<small>' + App.esc(App.photoMeta(p).date) + '</small></span><button class="btn btn--ghost" data-edit="' + p.id + '">Edit</button><button class="btn btn--ghost" data-remove="' + p.id + '">Remove</button></div>';
       }).join('') : '<p>No photos yet. Use Add photos to upload your own.</p>') + '</div></div>', {

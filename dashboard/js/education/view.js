@@ -1,5 +1,6 @@
 import { COURSE as C } from './course-data.js';
 import { activeUnit,scheduledPosts,courseMetrics,gradeMetrics,assignmentDue,discussionDue,countdown,emptyState,validateState,dateInZone,addDate,zonedDate,calendarEvents,safeURL } from './model.js';
+window.App.defaultEducationState=()=>emptyState(C);
 const App=window.App, key='frame-education-beyza-v1';
 let state=emptyState(C), el=null, tab='overview', selectedUnit=null;
 let month=dateInZone(new Date()).slice(0,7)+'-01', selectedDay=dateInZone(new Date());

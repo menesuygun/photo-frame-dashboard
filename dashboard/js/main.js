@@ -11,6 +11,7 @@ import './system.js';
 import './slideshow.js';
 import './photo-metadata.js';
 import './photo-library.js';
+import './household-backup.js';
 import './views/reminders.js';
 import './collection-day.js';
 import './meal-plan.js';
@@ -25,3 +26,5 @@ import './views/ambient.js';
 import './diag.js';
 
 import './education/view.js';
+
+import './household-sync.js';
