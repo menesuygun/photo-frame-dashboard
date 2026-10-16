@@ -10,11 +10,17 @@ export const torontoDate=(d=new Date())=>new Intl.DateTimeFormat('en-CA',{timeZo
 export function match(e){const c=e.competitions?.[0]||{},s=c.status||e.status||{},t=s.type||{};const team=x=>({id:String(x?.team?.id||''),name:x?.team?.displayName||'TBD',logo:x?.team?.logo||x?.team?.logos?.[0]?.href||'',score:typeof x?.score==='object'?x.score.displayValue:x?.score??null});return {id:e.id,date:e.date||c.date,name:e.name,competition:e.league?.name||c.altGameNote||e.season?.displayName||'Football',home:team(c.competitors?.find(x=>x.homeAway==='home')),away:team(c.competitors?.find(x=>x.homeAway==='away')),state:t.state||'pre',status:t.shortDetail||t.description||'Scheduled',clock:s.displayClock||'',venue:c.venue?.fullName||'',timeValid:c.timeValid!==false&&e.timeValid!==false};}
 export function tableRows(data){return (data.children||[]).flatMap(c=>c.standings?.entries||[]).map((e,i)=>{const stat=n=>e.stats?.find(x=>x.name===n)?.value??null;return {id:String(e.team.id),name:e.team.displayName,logo:e.team.logos?.[0]?.href||'',rank:stat('rank')??i+1,played:stat('gamesPlayed'),wins:stat('wins'),draws:stat('ties'),losses:stat('losses'),gd:stat('pointDifferential'),points:stat('points')};}).sort((a,b)=>a.rank-b.rank);}
 const safeUrl=s=>{try{const u=new URL(s);return u.protocol==='https:'?u.href:'';}catch{return '';}};
+export function parseTurkishNews(xml){
+ const decode=text=>text.replace(/^<!\[CDATA\[([\s\S]*)\]\]>$/,'$1').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(x[0-9a-f]+|[0-9]+);/gi,(_,n)=>{const code=n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):+n;return code<=0x10ffff?String.fromCodePoint(code):'';});
+ return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(m=>{const value=tag=>decode(m[1].match(new RegExp('<'+tag+'(?: [^>]*)?>([\\s\\S]*?)</'+tag+'>'))?.[1]||'');const source=value('source'),title=value('title');return {title:source&&title.endsWith(' - '+source)?title.slice(0,-source.length-3):title,date:value('pubDate'),url:safeUrl(value('link')),source:source||'Google Haberler',image:''};}).filter(n=>n.title&&n.url&&Number.isFinite(Date.parse(n.date))).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,12);
+}
 async function resource(kind,date){
  if(kind==='scores'){const r=await cached(ROOT+'site/v2/sports/soccer/tur.1/scoreboard?dates='+date.replaceAll('-',''),60000);return {...r,data:(r.data.events||[]).map(match)};}
  if(kind==='standings'){const r=await cached(ROOT+'v2/sports/soccer/tur.1/standings',900000);return {...r,data:tableRows(r.data),season:r.data.children?.[0]?.name||''};}
  if(kind==='galatasaray'){const r=await cached(ROOT+'site/v2/sports/soccer/all/teams/432/schedule?fixture=true',1800000);return {...r,data:(r.data.events||[]).map(match).sort((a,b)=>new Date(a.date)-new Date(b.date))};}
- if(kind==='news'){const r=await cached(ROOT+'site/v2/sports/soccer/tur.1/news?team=432&limit=30',900000);return {...r,data:(r.data.articles||[]).filter(a=>a.categories?.some(c=>String(c.teamId)==='432')||/galatasaray/i.test(a.headline)).slice(0,8).map(a=>({title:a.headline,date:a.published,url:safeUrl(a.links?.web?.href),image:safeUrl(a.images?.[0]?.url)})).filter(a=>a.url)};}
+ if(kind==='news'){
+  return cached('https://news.google.com/rss/search?q=Galatasaray+futbol+when:7d&hl=tr&gl=TR&ceid=TR:tr',900000,async(url,options)=>{const r=await fetch(url,options);return {ok:r.ok,json:async()=>parseTurkishNews(await r.text())};});
+ }
  if(kind==='scorers'){
   const year=new Date(date+'T12:00:00Z').getUTCFullYear()-(+date.slice(5,7)<7?1:0);
   const r=await cached('https://sports.core.api.espn.com/v2/sports/soccer/leagues/tur.1/seasons/'+year+'/types/1/leaders',3600000);
