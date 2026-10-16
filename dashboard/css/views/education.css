@@ -215,3 +215,6 @@
  .edu-summary-next { max-width:100%; }
  .edu-content-overview .edu-summary b { font-size:28px; }
 }
+
+.edu-profile { width:58px; height:58px; border-radius:50%; overflow:hidden; flex:none; border:3px solid #73B5F5; background:#e0effe; position:relative; }
+.edu-profile img { position:absolute; width:200%; max-width:none; height:auto; left:-50%; top:-73%; }
