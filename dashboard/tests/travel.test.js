@@ -12,3 +12,14 @@ test('travel API rejects access without the frame code before any routing reques
  const old=process.env.FRAME_ACCESS_CODE;process.env.FRAME_ACCESS_CODE='testing-code';const response={setHeader(){},status(code){this.code=code;return this;},json(data){this.data=data;return this;}};
  try{await handler({method:'GET',headers:{},query:{event:'a'.repeat(64)}},response);assert.equal(response.code,401);assert.equal(response.data.error,'unlock-calendar');}finally{if(old===undefined)delete process.env.FRAME_ACCESS_CODE;else process.env.FRAME_ACCESS_CODE=old;}
 });
+
+import vm from 'node:vm';import fs from 'node:fs';
+test('clicked event fetches traffic on demand, shares an in-flight request and reuses it for five minutes',async()=>{
+ const now=new Date();const e={id:'event',loc:'Venue',start:new Date(+now+3600000)};let calls=0,release;
+ const App={calendarSync:{status:'ready'},on(){},now:()=>now,nextEvent:()=>null,emit(){},fmt:{time:()=> '1:00 PM'},leaveBy:x=>new Date(+x.start-x.travel*60000),icon:()=>''};
+ const context={window:{App,DATA:{events:[e]}},Date,Number,Promise,setInterval(){},localStorage:{getItem:()=> 'code'},fetch:()=>{calls++;return new Promise(resolve=>release=()=>resolve({json:async()=>({minutes:12,checkedAt:new Date().toISOString()})}));}};
+ vm.runInNewContext(fs.readFileSync(new URL('../js/travel-time.js',import.meta.url),'utf8'),context);
+ const first=App.requestTravel(e),second=App.requestTravel(e);assert.equal(calls,1);assert.equal(first,second);release();await first;assert.equal(e.travel,12);await App.requestTravel(e);assert.equal(calls,1);assert.match(App.eventTravelHTML(e),/Leave by 1:00 PM/);
+ const distant={...e,id:'later',start:new Date(+now+2*86400000)};await App.requestTravel(distant);assert.equal(calls,1);assert.match(App.eventTravelHTML(distant),/within 24 hours/);
+ assert.match(App.eventTravelHTML({...e,loc:''}),/Add a destination/);
+});
