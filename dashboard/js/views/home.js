@@ -169,8 +169,9 @@
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
           '  <div class="h-chore-row"><button class="h-chores card" data-go="tasks"></button><aside class="h-collection card" role="status" hidden></aside></div>' +
           '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
-          '</div><button class="h-meals card" data-go="tasks" hidden></button></div>';
+          '</div><button class="h-meals card" data-open-meals hidden></button></div>';
         el.addEventListener('click', function (e) {
+          if (e.target.closest('[data-open-meals]')) return App.openMealPlanner();
           if (e.target.closest('[data-reminder-add]')) return App.reminderSheet();
           var reminder = e.target.closest('[data-reminder-toggle]');
           if (reminder) { try { App.toggleReminder(reminder.dataset.reminderToggle); } catch (_) { App.toast('Could not save reminders on this device.'); } return; }
