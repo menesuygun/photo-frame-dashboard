@@ -13,8 +13,9 @@
 
   function row(c, p) {
     var pend = V.pending[c.id];
+    var emoji = !c.emoji || ['✓', '✔', '✅'].indexOf(c.emoji) >= 0 ? '📋' : c.emoji;
     return '<button class="ch' + (c.done ? ' is-done' : '') + (pend ? ' is-checking' : '') + (c.overdue && !c.done ? ' is-overdue' : '') + '" data-ch="' + c.id + '">' +
-      '<span class="ch-emoji">' + c.emoji + '<span class="ch-check"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></span>' +
+      '<span class="ch-emoji">' + App.esc(emoji) + '<span class="ch-check"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></span>' +
       '<span class="ch-text"><b>' + App.esc(c.title) + '</b>' +
       (c.label ? '<small>' + (routine().id === 'all' ? App.esc(D.routines.find(function (r) { return r.id === c.r; }).name) + ' · ' : '') + App.esc(c.label) + (c.doneBy ? ' · ' + App.esc(App.person(c.doneBy).name) : '') + '</small>' : c.overdue && !c.done ? '<small class="ch-late">Overdue</small>' : c.stars ? '<small>' + App.icon('star', 14, 'i--fill') + c.stars + (c.doneBy ? ' · ' + App.person(c.doneBy).name : '') + '</small>' : (c.doneBy ? '<small>by ' + App.person(c.doneBy).name + '</small>' : '')) +
       '</span>' +

@@ -34,7 +34,7 @@
   App.saveChore = function (input) {
     var t = Object.assign({}, input);
     if (!t.id) t.id = 'chore-' + crypto.randomUUID();
-    t.title = String(t.title || '').trim(); t.emoji = '✓'; t.stars = 0;
+    t.title = String(t.title || '').trim(); t.emoji = '📋'; t.stars = 0;
     if (!validTemplate(t)) throw new Error('Please enter a name, person, and valid schedule.');
     t.label = t.weekday != null ? 'Every ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][t.weekday] :
       t.every === 0 ? 'Once · ' + t.start : t.every === 1 ? 'Every day' : 'Every ' + t.every + ' days';
