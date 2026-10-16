@@ -149,3 +149,6 @@
 .h-traffic-status { font-size:12px; opacity:.85; }.h-hero-foot { flex-wrap:wrap; gap:8px; }.h-hero-foot .pill { font-size:16px; }
 
 .h-weather .h-hr { gap:4px; }.h-weather .h-hr-i { height:24px; transform:none; }.h-weather .h-hr-l { line-height:1.2; }
+
+/* Fill the Today preview with portrait photos rather than side bars. */
+.h-photo .slide--fit .fitimg { left:0; width:100%; height:100%; transform:none; object-fit:cover; object-position:50% 30%; }
