@@ -36,7 +36,7 @@ window.App.scenicPhotos = [
     "id": "scenic-2FpMS1NuPBM",
     "o": "l",
     "place": "Moraine Lake, Alberta",
-    "photographer": "Andy Holmes",
+    "photographer": "A C",
     "source": "https://unsplash.com/photos/2FpMS1NuPBM",
     "url": "https://images.unsplash.com/photo-1491513756547-b0e03bd3daf6?auto=format&fit=crop&w=1920&q=85"
   },
