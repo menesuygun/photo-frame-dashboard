@@ -21,3 +21,12 @@
 .home.has-meals .meal-today-item .meal-photo,.home.has-meals .meal-today-item .meal-illustration { width:46px; height:46px; font-size:28px; }
 .home.has-meals .meal-today-item b { font-size:16px; }
 .home.has-meals .h-recent { display:block; }
+/* Keep a whole day's meals together; browse planned days vertically. */
+.home.has-meals .h-meals { justify-content:flex-start; overflow:hidden; }
+.home.has-meals .meal-week-list { display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; flex:1; min-height:0; gap:10px; width:100%; }
+.meal-day-group { display:grid; grid-template-columns:105px minmax(0,1fr); gap:12px; text-align:left; flex:none; border-top:1px solid var(--line); padding-top:8px; }
+.meal-day-group:first-child { border-top:0; padding-top:0; }.meal-day-heading { font-size:13px; padding-top:4px; }
+.meal-day-group > div { display:flex; flex-direction:column; gap:7px; min-width:0; }
+.home.has-meals .meal-day-group .meal-today-item { flex:none; }.home.has-meals .meal-day-group .meal-photo,.home.has-meals .meal-day-group .meal-illustration { width:32px; height:32px; font-size:21px; border-radius:8px; }.home.has-meals .meal-day-group .meal-today-item > span { gap:1px; }.home.has-meals .meal-day-group .meal-today-item b { font-size:14px; }.meal-day-group small { font-size:9px; }
+.meal-week-planner { display:flex; flex-direction:column; gap:12px; }.meal-planner-day { border:1px solid var(--line); border-radius:16px; padding:12px 16px; }.meal-planner-day > header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }.meal-planner-day h3 { font-size:18px; margin:0; }.meal-day-entries { display:flex; flex-direction:column; gap:8px; }.meal-planned { display:flex; gap:12px; padding:10px; border-radius:12px; align-items:center; }.meal-planned > div:not(.meal-actions) { flex:1; display:flex; flex-direction:column; gap:4px; min-width:0; }.meal-planned small { text-transform:capitalize; font-size:13px; }.meal-planned b { font-size:20px; overflow-wrap:anywhere; }.meal-planned .meal-actions { margin:0; }.meal-unplanned { color:var(--mute); font-size:15px; margin:0; padding:5px 0; }
+.tasks > .ch-lanes { flex:none; min-height:340px; }.tasks > .meal-plan { margin-top:4px; }
