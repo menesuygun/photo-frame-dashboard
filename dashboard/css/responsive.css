@@ -58,3 +58,8 @@
  .meal-day { grid-template-columns:1fr; }.meal-planned { flex-wrap:wrap; }
  .ambient { position:absolute; }
 }
+
+@media (max-width:600px) {
+ .h-chore-row,.h-chore-row.has-collection { grid-template-columns:minmax(0,1fr); width:100%; }
+ .h-chore-row .h-chores,.h-chore-row .h-collection { width:100%; min-height:120px; }
+}
