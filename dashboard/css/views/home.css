@@ -147,3 +147,5 @@
 .h-weather .h-hr-i { height: 20px; }
 
 .h-traffic-status { font-size:12px; opacity:.85; }.h-hero-foot { flex-wrap:wrap; gap:8px; }.h-hero-foot .pill { font-size:16px; }
+
+.h-weather .h-hr { gap:4px; }.h-weather .h-hr-i { height:24px; transform:none; }.h-weather .h-hr-l { line-height:1.2; }
