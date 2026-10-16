@@ -98,10 +98,9 @@
   App.ring = ring;
 
   function chores() {
-    var r = App.currentRoutine();
     var who = D.people.map(function (p) { return p.id; }).concat(['any']);
-    return '<div class="label">Chores · ' + r.name + '</div><div class="h-rings">' + who.map(function (id) {
-      var list = D.chores.filter(function (c) { return c.r === r.id && c.who === id; });
+    return '<div class="label">Chores · All day</div><div class="h-rings">' + who.map(function (id) {
+      var list = D.chores.filter(function (c) { return c.who === id; });
       if (!list.length) return '';
       var done = list.filter(function (c) { return c.done; }).length;
       var p = App.person(id);
