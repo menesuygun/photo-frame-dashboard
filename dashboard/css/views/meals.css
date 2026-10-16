@@ -10,3 +10,14 @@
 .tasks { overflow-y:auto; }.ch-lanes { min-height:320px; }
 .home.has-meals { grid-template-rows:184px minmax(0,1fr) 104px; }.h-meals { grid-column:1/-1; display:flex; gap:22px; align-items:center; padding:12px 20px; text-align:left; }.h-meals[hidden] { display:none; }.h-meals > .label { max-width:100px; }.meal-today-list { display:flex; gap:24px; flex:1; min-width:0; overflow-x:auto; }.meal-today-item { display:flex; gap:12px; align-items:center; flex:1; min-width:0; }.meal-today-item > span:not(.meal-illustration) { display:flex; flex-direction:column; gap:4px; min-width:0; }.meal-today-item small { text-transform:uppercase; font-size:11px; letter-spacing:1px; color:var(--mute); }.meal-today-item b { font-size:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }.home.has-meals .h-main { grid-template-rows:minmax(140px, .9fr) minmax(0,1fr); }.home.has-meals .h-side { grid-template-rows:minmax(70px,1fr) 128px 110px; }.home.has-meals .h-recent { display:none; }.home.has-meals .h-hero-title { font-size:46px; }.home.has-meals .h-hero-count { font-size:100px; }
 .home.has-meals .h-hero--empty { gap:8px; padding:14px 22px; }.home.has-meals .h-hero--empty .h-hero-title { font-size:32px; flex:none; margin:0; }.home.has-meals .h-hero--empty .calendar-status { font-size:12px; }.home.has-meals .h-hero--empty .label { flex:none; }
+/* The menu sits below the calendar, alongside Shopping. */
+.home.has-meals { grid-template-rows:184px minmax(0,1fr) 150px; }
+.home.has-meals .h-main { grid-column:1/8; grid-row:2; }
+.home.has-meals .h-side { grid-column:8/13; grid-row:2/4; grid-template-rows:minmax(70px,1fr) 142px 150px; }
+.home.has-meals .h-meals { grid-column:1/8; grid-row:3; flex-direction:column; align-items:stretch; justify-content:center; gap:12px; min-width:0; }
+.home.has-meals .h-meals > .label { max-width:none; }
+.home.has-meals .meal-today-list { gap:12px; flex:none; }
+.home.has-meals .meal-today-item { gap:8px; }
+.home.has-meals .meal-today-item .meal-photo,.home.has-meals .meal-today-item .meal-illustration { width:46px; height:46px; font-size:28px; }
+.home.has-meals .meal-today-item b { font-size:16px; }
+.home.has-meals .h-recent { display:block; }
