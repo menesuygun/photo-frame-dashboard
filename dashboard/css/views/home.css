@@ -115,9 +115,9 @@
 /* Collection reminder shares the chore row only when a pickup is due. */
 .h-chore-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; min-width: 0; }
 .h-chore-row.has-collection { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
-.h-chore-row .h-chores { min-width: 0; }
+.h-chore-row .h-chores { min-width: 0; display: flex; justify-content: flex-start; }
 .h-chore-row .h-rings { overflow-x: auto; gap: 10px; }
-.h-collection { padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.h-collection { padding: 18px 20px; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; }
 .h-collection[hidden] { display: none; }
 .collection-title { text-align: left; }
 .collection-bins { display: flex; gap: 16px; justify-content: center; }
