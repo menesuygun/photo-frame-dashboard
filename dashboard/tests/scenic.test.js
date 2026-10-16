@@ -4,7 +4,8 @@ test('screensaver uses its own scenic collection even when personal photos chang
  const events={};const App={on:(n,f)=>events[n]=f,photoMeta:()=>({}),esc:String};const context={window:{DATA:{photos:[{id:'personal'}]},App},App,Math,Date,Object,clearInterval(){},setInterval(){}};
  vm.createContext(context);vm.runInContext(source('scenic-photos.js'),context);vm.runInContext(source('slideshow.js'),context);
  const show=new App.Slideshow({}, {layout:'cover',photos:App.scenicPhotos});const picked=show.pick();assert.ok(picked.photos[0].url.startsWith('https://images.unsplash.com/'));assert.notEqual(picked.photos[0].id,'personal');show.current=picked;events.photos();assert.equal(show.current,picked);
- for(const place of ['Antalya','Istanbul','Toronto','Alberta','British Columbia','Québec'])assert.ok(App.scenicPhotos.some(p=>p.place.includes(place)));
+ assert.equal(App.scenicPhotos.length,15);assert.equal(new Set(App.scenicPhotos.map(p=>p.id)).size,15);
+ for(const place of ['Antalya','Istanbul','Toronto','Alberta','Niagara Falls'])assert.ok(App.scenicPhotos.some(p=>p.place.includes(place)));
 });
 test('idle starts scenic mode at 120 seconds on Education and at night',()=>{
  const text=source('app.js');const idle=text.slice(text.indexOf('  App.idle ='),text.indexOf('  App.resetIdle ='));
