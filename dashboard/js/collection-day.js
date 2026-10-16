@@ -21,6 +21,6 @@
   App.collectionNotice = function (date) {
     var info = App.collectionDay(date);
     if (!info) return '';
-    return '<div class="collection-title">' + info.title + '</div><div class="collection-bins"><div>' + (info.recycling ? bin('#2678d8', true) : bag()) + '<span>' + (info.recycling ? 'Recycling' : 'Garbage') + '</span></div><div>' + bin('#248b42', false) + '<span>Organics</span></div></div>';
+    return '<div class="collection-title label">' + info.title + '</div><div class="collection-bins"><div>' + (info.recycling ? bin('#2678d8', true) : bag()) + '<span>' + (info.recycling ? 'Recycling' : 'Garbage') + '</span></div><div>' + bin('#248b42', false) + '<span>Organics</span></div></div>';
   };
 })();

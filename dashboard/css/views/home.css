@@ -119,7 +119,7 @@
 .h-chore-row .h-rings { overflow-x: auto; gap: 10px; }
 .h-collection { padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
 .h-collection[hidden] { display: none; }
-.collection-title { font-size: 17px; line-height: 1.1; font-weight: 800; }
+.collection-title { text-align: left; }
 .collection-bins { display: flex; gap: 16px; justify-content: center; }
 .collection-bins > div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .collection-bins span { font-size: 12px; font-weight: 700; }
