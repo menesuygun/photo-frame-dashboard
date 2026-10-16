@@ -95,3 +95,29 @@
  .home.has-meals .meal-today-item b { font-size:13px; white-space:normal; }
  .home.has-meals .h-shop { padding:12px; height:100%; }
 }
+
+@media (max-width:600px) {
+ .reminders { height:auto; min-height:100%; gap:18px; }
+ .reminders-head { flex-wrap:wrap; gap:12px; }
+ .reminders-head h1 { font-size:38px; overflow-wrap:anywhere; }
+ .reminders-head .btn { min-height:44px; font-size:15px; padding:0 14px; }
+ .reminders-list { overflow:visible; }
+ .reminder-row { flex-wrap:wrap; gap:8px; }
+ .reminder-toggle { flex-basis:100%; font-size:21px; gap:10px; min-height:48px; }
+ .reminder-row > .btn { min-height:44px; font-size:14px; padding:0 12px; }
+ .reminders-empty { font-size:27px; padding:40px 10px; }
+ .photos .ph-top { top:12px; left:10px; right:10px; }
+ .ph-library-controls { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+ .photos .ph-btn { min-width:0; height:44px; padding:0 9px; font-size:11px; letter-spacing:.02em; gap:5px; }
+ .photos .seg { display:flex; flex-wrap:wrap; width:100%; }
+ .photos .seg button { min-width:0; flex:1 1 30%; padding:8px 4px; font-size:11px; min-height:36px; }
+ .ph-bottom { left:10px; right:10px; bottom:max(14px,env(safe-area-inset-bottom)); display:grid; grid-template-columns:44px minmax(0,1fr) 44px; gap:6px; }
+ .photos .ph-btn--fav { padding:0 6px; }
+ .photos .ph-btn .i { width:23px; height:23px; }
+ .ph-zone { top:155px; bottom:80px; }
+ .photos .cap { left:16px; right:16px; bottom:80px; max-width:calc(100% - 32px); }
+ .photos .cap-title { font-size:27px; }.photos .cap-date { font-size:18px; }
+ .photo-library-row { flex-wrap:wrap; gap:8px; }.photo-library-row span { flex-basis:calc(100% - 90px); }
+ .photo-library-row .btn { min-height:44px; padding:0 10px; font-size:14px; }
+ .photo-detail-row { flex-direction:column; }.photo-detail-row img { width:80px; height:80px; }
+}
