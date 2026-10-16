@@ -32,3 +32,5 @@
 .tasks > .ch-lanes { flex:none; min-height:340px; }.tasks > .meal-plan { margin-top:4px; }
 
 .meal-week-nav { display:flex; gap:8px; align-items:center; }.meal-week-nav > span { font-size:14px; min-width:210px; text-align:center; }.meal-week-nav button[aria-label] { font-size:30px; min-width:44px; }.meal-plan-head { flex-wrap:wrap; }
+
+.meal-today-badge { display:inline-block; padding:4px 10px; border:1px solid #bd2424; border-radius:999px; background:#c92c2c; color:#fff; font:700 12px/1.3 var(--sans); letter-spacing:.02em; vertical-align:middle; white-space:nowrap; }.meal-day-heading .meal-today-badge { display:table; margin-bottom:5px; }
