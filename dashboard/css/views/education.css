@@ -156,3 +156,62 @@
   .edu-overview input[type=checkbox] { width:28px; height:28px; }
   .edu-overview .edu-card-head .edu-btn { font-size:18px; min-height:40px; }
 }
+
+/* Family colours give each overview activity its own visual anchor. */
+.edu-content-overview .edu-summary { background:#73B5F5; border-radius:20px; padding:16px 22px; min-height:108px; position:relative; overflow:hidden; isolation:isolate; }
+.edu-content-overview .edu-summary::after { content:''; position:absolute; width:190px; height:190px; border:28px solid rgb(255 255 255 / .22); border-radius:50%; right:140px; top:-88px; z-index:-1; }
+.edu-summary .edu-eyebrow { font-size:11px; letter-spacing:1.8px; font-weight:800; color:#17334d; margin-bottom:4px; }
+.edu-content-overview .edu-summary b { font-size:29px; letter-spacing:-.7px; }
+.edu-content-overview .edu-summary span { color:#203b53; }
+.edu-summary-next strong { display:flex; align-items:baseline; justify-content:flex-end; gap:8px; font-size:48px; line-height:1; letter-spacing:-2px; }
+.edu-summary-next strong small { font-size:15px; letter-spacing:0; color:#203b53; }
+.edu-summary-next > span { font-size:12px; margin-top:6px; }
+.edu-overview { gap:12px; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); }
+.edu-overview-left { grid-template-rows:1.3fr 1fr .8fr; }
+.edu-overview-right { grid-template-rows:1.45fr .9fr 1.1fr; }
+.edu-overview .edu-card { border:0; border-radius:18px; padding:12px 16px; }
+.edu-card-head h2 { display:flex; align-items:center; gap:8px; }
+.edu-overview .edu-card-head h2::before { content:''; width:9px; height:9px; border-radius:50%; background:var(--section-color,#A3A3A3); flex:none; }
+.edu-deadlines { --section-color:#FFB000; background:#fff1cd; }
+.edu-discussions-summary { --section-color:#73B5F5; background:#e0effe; }
+.edu-readings-summary { --section-color:#00A36C; background:#ddf0e6; }
+.edu-course-progress { --section-color:#00A36C; background:#e7eee8; }
+.edu-milestones { --section-color:#A3A3A3; background:#e7e5e0; }
+.edu-mini-calendar { background:#fbfaf7; }
+.edu-overview .edu-btn { background:rgb(255 255 255 / .55); border:0; border-radius:8px; }
+.edu-overview .edu-assignment { border-color:rgb(134 97 22 / .15); padding:7px 0; }
+.edu-overview .edu-countdown { background:#FFB000; padding:6px 9px; border-radius:999px; font-size:11px; color:#111; }
+.edu-overview .edu-assignment.is-urgent .edu-countdown { background:#111; color:#fff1cd; }
+.edu-overview .edu-check-label b { font-size:15px; }
+.edu-overview input[type=checkbox] { accent-color:#111; width:20px; height:20px; }
+.edu-weekdays > span { background:rgb(255 255 255 / .6); border-radius:8px; }
+.edu-weekdays .is-today { background:#73B5F5; outline:0; }
+.edu-reading-counts b { font-size:30px; line-height:1; letter-spacing:-1px; }
+.edu-readings-summary .edu-progress i,.edu-course-progress .edu-progress i { background:#00A36C; }
+.edu-overview .edu-progress { background:rgb(0 70 40 / .12); }
+.edu-month.is-mini .edu-day { background:#eeede8; }
+.edu-month.is-mini .edu-day.is-today { background:#73B5F5; }
+.edu-nav { border:0; background:transparent; gap:6px; padding:0; }
+.edu-nav button { border:1px solid transparent; }
+.edu-nav button.is-active { background:#111; color:#fff; }
+.edu-nav button:hover:not(.is-active) { background:rgb(115 181 245 / .15); }
+@media (max-aspect-ratio:1/1) {
+ .edu-content-overview .edu-summary { min-height:140px; }
+ .edu-content-overview .edu-summary b { font-size:32px; }
+ .edu-overview .edu-card { padding:20px; }
+ .edu-overview .edu-check-label b { font-size:23px; }
+ .edu-overview .edu-countdown { font-size:18px; }
+}
+@media (min-aspect-ratio:1/1) {
+ .edu-content-overview .edu-summary { min-height:96px; padding:12px 22px; }
+ .edu-overview .edu-card { padding:10px 16px; }
+ .edu-overview .edu-assignment { padding:6px 0; }
+}
+.edu-summary > div:first-child { min-width:0; flex:1; }
+.edu-summary-next { flex:none; }
+@media (max-aspect-ratio:1/1) {
+ .edu-content-overview .edu-summary { flex-wrap:wrap; }
+ .edu-summary > div:first-child { flex-basis:65%; }
+ .edu-summary-next { max-width:100%; }
+ .edu-content-overview .edu-summary b { font-size:28px; }
+}
