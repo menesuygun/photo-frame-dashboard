@@ -10,7 +10,7 @@
     if (weekday !== 5 && !tomorrow) return null;
     var friday = today + (tomorrow ? 86400000 : 0);
     var weeks = Math.round((friday - Date.UTC(2026, 9, 16)) / (7 * 86400000));
-    return { title: tomorrow ? 'Garbage Day Tomorrow' : 'Garbage Day', recycling: weeks % 2 === 0 };
+    return { title: tomorrow ? 'Garbage Day TMR' : 'Garbage Day', recycling: weeks % 2 === 0 };
   };
   function bin(color, recycling) {
     return '<svg width="37" height="48" viewBox="0 0 40 52" aria-hidden="true"><path d="M8 12h24l-2 33H10z" fill="' + color + '" stroke="#111" stroke-width="2"/><path d="M5 9h30v5H5zM12 5h16v4H12z" fill="' + color + '" stroke="#111" stroke-width="2"/><circle cx="12" cy="47" r="3" fill="#111"/><circle cx="28" cy="47" r="3" fill="#111"/>' + (recycling ? '<path d="m18 22 3-4 4 7-4-1m6 5 2 4h-8l2-3m-6 8h-5l4-7 1 4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' : '<path d="M20 22c-7 4-7 10 0 13 7-3 7-9 0-13Z" fill="#fff"/><path d="m16 37 8-13" stroke="' + color + '" stroke-width="1.5"/>') + '</svg>';
