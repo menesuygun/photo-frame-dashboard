@@ -26,3 +26,5 @@
 .nt-time { font-size: 260px; line-height: .8; letter-spacing: -.04em; color: #C22C1C; }
 .nt-line { margin-top: 34px; font-size: 26px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #A02618; }
 .nt-line b { color: #C22C1C; }
+
+.amb-photo-credit { position:absolute; top:24px; left:28px; font-size:14px; color:#fff; text-shadow:0 1px 5px #000; background:rgba(0,0,0,.3); padding:7px 12px; border-radius:20px; pointer-events:none; }

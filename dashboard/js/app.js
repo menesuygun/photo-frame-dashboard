@@ -305,12 +305,12 @@
   function onIdleTick() {
     idleSec++;
     var blocked = $('#takeover').classList.contains('is-open');
-    if (App.mode !== 'day' || blocked || App.current === 'education') return;
+    if (App.mode !== 'day' || blocked) return;
     if (idleSec === App.idle.home && App.current !== 'home') { App.closeSheet(); App.go('home'); }
     if (idleSec >= App.idle.ambient) {
       App.closeSheet();
       App.go('home');
-      App.setMode(App.isNight() ? 'night' : 'ambient');
+      App.setMode('ambient');
     }
   }
   App.resetIdle = function () { idleSec = 0; };

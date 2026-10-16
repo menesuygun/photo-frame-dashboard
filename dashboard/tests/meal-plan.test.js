@@ -14,3 +14,14 @@ test('next seven days group meals under each date and exclude day eight',()=>{
  const html=preview([{id:'a',name:'Breakfast today',date:'2026-10-16',type:'breakfast'},{id:'b',name:'Dinner today',date:'2026-10-16',type:'dinner'},{id:'c',name:'Last day',date:'2026-10-22',type:'lunch'},{id:'d',name:'Outside week',date:'2026-10-23',type:'dinner'}]);
  assert.equal((html.match(/class="meal-day-group"/g)||[]).length,2);assert.match(html,/Last day/);assert.doesNotMatch(html,/Outside week/);assert.ok(html.indexOf('Breakfast today')<html.indexOf('Dinner today'));
 });
+test('planner arrows navigate Monday–Sunday weeks across year boundaries',()=>{
+ const App={choreDate:()=> '2026-12-31',now:()=>new Date(),on(){},esc:String};
+ vm.runInNewContext(source,{window:{App,addEventListener(){}},localStorage:{getItem:()=> '[]'},Date,Intl});
+ const panel={innerHTML:''};App.mountMealPlan(panel);
+ assert.match(panel.innerHTML,/Mon, Dec 28/);assert.match(panel.innerHTML,/Sun, Jan 3/);
+ const click=attributes=>panel.onclick({target:{closest:()=>({dataset:attributes,hasAttribute:k=>k==='data-meal-week'?'mealWeek' in attributes:k==='data-meal-this-week'?'thisWeek' in attributes:false})}});
+ click({mealWeek:'1'});assert.match(panel.innerHTML,/Mon, Jan 4/);assert.match(panel.innerHTML,/Sun, Jan 10/);
+ click({mealWeek:'-1'});assert.match(panel.innerHTML,/Mon, Dec 28/);
+ click({mealWeek:'-1'});assert.match(panel.innerHTML,/Mon, Dec 21/);
+ click({thisWeek:true});assert.match(panel.innerHTML,/Mon, Dec 28/);
+});

@@ -19,6 +19,7 @@ import './views/tasks.js';
 import './views/shopping.js';
 import './views/photos.js';
 import './views/control.js';
+import './scenic-photos.js';
 import './views/ambient.js';
 import './diag.js';
 

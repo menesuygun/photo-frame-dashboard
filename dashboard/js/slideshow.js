@@ -78,13 +78,14 @@
   var OriginalSlideshow = App.Slideshow;
   App.Slideshow = function (el, opts) { OriginalSlideshow.call(this, el, opts); slideshows.push(this); };
   App.Slideshow.prototype = S;
-  App.on('photos', function () { slideshows.forEach(function (s) { var running = !!s.running; s.queue = []; s.history = []; s.current = null; s.next(); if (!running) s.stop(); }); });
+  App.on('photos', function () { slideshows.forEach(function (s) { if (s.o.photos) return; var running = !!s.running; s.queue = []; s.history = []; s.current = null; s.next(); if (!running) s.stop(); }); });
 
   S.refill = function () {
     var q = [];
-    D.photos.forEach(function (p) { q.push(p); if (p.fav) q.push(p); });
+    (this.o.photos || D.photos).forEach(function (p) { q.push(p); if (p.fav) q.push(p); });
     // On-this-day photos always come first in a fresh cycle
-    shuffle(q).sort(function (a, b) { return (App.photoMeta(b).onThisDay ? 1 : 0) - (App.photoMeta(a).onThisDay ? 1 : 0); });
+    shuffle(q);
+    if (!this.o.photos) q.sort(function (a, b) { return (App.photoMeta(b).onThisDay ? 1 : 0) - (App.photoMeta(a).onThisDay ? 1 : 0); });
     this.queue = q;
   };
   S.take = function (pred) {
