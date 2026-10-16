@@ -106,6 +106,14 @@
     }).join('') + '</div>';
   }
 
+  function collection() {
+    var notice = App.collectionNotice(App.now());
+    var slot = V.el.querySelector('.h-collection');
+    slot.innerHTML = notice;
+    slot.hidden = !notice;
+    V.el.querySelector('.h-chore-row').classList.toggle('has-collection', !!notice);
+  }
+
   function shopping() {
     var open = D.groceries.filter(function (g) { return !g.done; });
     var recent = open.slice(-3).reverse();
@@ -131,6 +139,7 @@
     el.querySelector('.h-hero-slot').innerHTML = hero();
     el.querySelector('.h-lanes').innerHTML = lanes();
     el.querySelector('.h-chores').innerHTML = chores();
+    collection();
     el.querySelector('.h-shop').innerHTML = shopping();
   }
 
@@ -153,7 +162,7 @@
           '<div class="h-main"><div class="h-hero-slot"></div><div class="h-lanes" ></div></div>' +
           '<div class="h-side">' +
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
-          '  <button class="h-chores card" data-go="tasks"></button>' +
+          '  <div class="h-chore-row"><button class="h-chores card" data-go="tasks"></button><aside class="h-collection card" role="status" hidden></aside></div>' +
           '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
           '</div></div>';
         el.addEventListener('click', function (e) {
@@ -177,6 +186,7 @@
   App.on('minute', function (n) {
     if (!V.el || !V.el.firstChild) return;
     V.el.querySelector('.h-clock').innerHTML = clock();
+    collection();
     V.el.querySelector('.h-hero-slot').innerHTML = hero();
     if (n.getMinutes() === 0) { V.el.querySelector('.h-weather').innerHTML = weather(); V.el.querySelector('.h-lanes').innerHTML = lanes(); }
   });
