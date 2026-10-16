@@ -56,3 +56,12 @@ test('discussion cutoff remains configurable and handles DST; impossible local t
  assert.equal(discussionDue(C.units[0],state.settings).toISOString(),'2026-10-19T03:00:00.000Z');
  assert.throws(()=>zonedDate('2026-03-08','02:30','America/Toronto'));
 });
+
+ test('course completion counts only assignments and discussion posts',()=>{
+ const state=emptyState(C);
+ C.units.flatMap(u=>u.readings).forEach(r=>state.completions['reading:'+r.id]='2026-10-16T12:00:00Z');
+ assert.equal(courseMetrics(C,state).completionPercent,0);
+ C.assignments.forEach(a=>state.completions['assignment:'+a.id]='2026-10-16T12:00:00Z');
+ scheduledPosts(C).forEach(p=>state.completions[p.id]='2026-10-16T12:00:00Z');
+ const metrics=courseMetrics(C,state);assert.equal(metrics.total,38);assert.equal(metrics.completed,38);assert.equal(metrics.completionPercent,100);
+ });

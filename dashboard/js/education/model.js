@@ -28,7 +28,9 @@ export function allCompletionIds(course) {
 export function courseMetrics(course,state,now=new Date()) {
   const start=+zonedDate(course.start,'00:00','America/Toronto'), end=+zonedDate(addDate(course.end,1),'00:00','America/Toronto');
   const posts=scheduledPosts(course),required=course.units.flatMap(u=>u.readings.filter(r=>!r.optional));
-  return {elapsed:Math.max(0,Math.min(100,(+now-start)/(end-start)*100)),daysLeft:Math.max(0,Math.ceil((end-now)/864e5)),assignments:course.assignments.filter(a=>state.completions['assignment:'+a.id]).length,posts:posts.filter(p=>state.completions[p.id]).length,readings:required.filter(r=>state.completions['reading:'+r.id]).length,required:required.length};
+  const completionIds=[...course.assignments.map(a=>'assignment:'+a.id),...posts.map(p=>p.id)];
+  const completed=completionIds.filter(id=>state.completions[id]).length;
+  return {completed,total:completionIds.length,completionPercent:completionIds.length?completed/completionIds.length*100:0,elapsed:Math.max(0,Math.min(100,(+now-start)/(end-start)*100)),daysLeft:Math.max(0,Math.ceil((end-now)/864e5)),assignments:course.assignments.filter(a=>state.completions['assignment:'+a.id]).length,posts:posts.filter(p=>state.completions[p.id]).length,readings:required.filter(r=>state.completions['reading:'+r.id]).length,required:required.length};
 }
 export function gradeMetrics(course,grades) {
   let weight=0,points=0;

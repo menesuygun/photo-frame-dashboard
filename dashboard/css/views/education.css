@@ -217,4 +217,4 @@
 }
 
 .edu-profile { width:58px; height:58px; border-radius:50%; overflow:hidden; flex:none; border:3px solid #73B5F5; background:#e0effe; position:relative; }
-.edu-profile img { position:absolute; width:200%; max-width:none; height:auto; left:-50%; top:-73%; }
+.edu-profile img { position:absolute; width:100%; max-width:none; height:100%; left:0; top:0; object-fit:cover; object-position:50% 42%; }
