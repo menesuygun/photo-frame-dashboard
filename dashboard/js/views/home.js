@@ -17,9 +17,9 @@
     return '<div class="label h-wx-place">East Gwillimbury</div><div class="h-wx-top">' +
       '<span class="h-wx-icon">' + App.icon(w.cond, 60) + '</span>' +
       '<span class="h-wx-temp num">' + w.temp + '°</span>' +
-      '<span class="h-wx-meta"><b>' + w.label + '</b><span>H ' + w.hi + '°  L ' + w.lo + '°</span></span>' +
+      App.prayerTimesHTML() +
       '</div>' +
-      '<div class="h-wx-say"><b>' + App.esc(w.summary) + '</b> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>' +
+      '<div class="h-wx-say"><b>' + App.esc(w.summary) + '</b><span class="h-wx-highlow">H ' + w.hi + '° L ' + w.lo + '°</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>' +
       '<div class="h-wx-hours">' + hours.map(function (h) {
         var lift = tmax === tmin ? 0 : Math.round((h.t - tmin) / (tmax - tmin) * 8);
         return '<div class="h-hr' + (h.p >= 50 ? ' is-wet' : '') + '"><span class="h-hr-l">' + h.label + '</span>' +
@@ -27,6 +27,7 @@
       }).join('') + '</div>';
   }
 
+  App.on('prayers', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
   App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
 
   function hero() {

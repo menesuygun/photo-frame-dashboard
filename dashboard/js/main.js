@@ -5,6 +5,7 @@ import './app.js';
 import './calendar-sync.js';
 import './chore-schedule.js';
 import './weather-sync.js';
+import './prayer-times.js';
 import './system.js';
 import './slideshow.js';
 import './photo-metadata.js';
