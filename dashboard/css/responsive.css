@@ -136,3 +136,10 @@
  .home.has-meals .meal-dashboard-head .meal-week-link { align-self:flex-start; }
  .home.has-meals .meal-week-list { margin-top:4px; flex:1 1 0; }
 }
+
+/* Align Next up with the photo, then family lanes with the chores row. */
+@media(min-width:601px) {
+ .home.has-meals .h-main { grid-template-rows:minmax(0,1fr) 142px; }
+ .home:not(.has-meals) .h-main { grid-template-rows:minmax(0,1fr) 308px; }
+ .h-hero { min-height:0; }
+}
