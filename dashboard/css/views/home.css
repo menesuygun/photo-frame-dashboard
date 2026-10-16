@@ -136,3 +136,10 @@
 .h-prayer-panel { margin-left: auto; min-width: 0; }
 .h-prayer-panel .h-prayers { margin-left: 0; gap: 3px 9px; }
 .h-prayer-countdown { font-size: 12px; line-height: 1.2; margin-bottom: 5px; white-space: nowrap; }
+
+/* Keep prayer timings within the existing weather header height. */
+.h-prayer { gap: 0; }
+.h-prayer > span { font-size: 9px; line-height: 1.1; }
+.h-prayer b { font-size: 13px; line-height: 1.1; }
+.h-prayer-countdown { font-size: 11px; line-height: 1.1; margin-bottom: 3px; }
+.h-weather .h-wx-say { font-size: 18px; margin: 4px 0; }
