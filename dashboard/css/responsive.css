@@ -78,3 +78,20 @@
  .home.has-meals .meal-day-group { grid-template-columns:70px minmax(0,1fr); gap:8px; }
  .home.has-meals .meal-day-heading { font-size:11px; }
 }
+
+/* iPad: both compact cards stay under chores on the right. */
+@media (min-width:601px) {
+ .home.has-meals { grid-template-columns:repeat(24,minmax(0,1fr)); }
+ .home.has-meals .h-clock { grid-column:1/9; }
+ .home.has-meals .h-weather { grid-column:9/19; }
+ .home.has-meals .h-reminders { grid-column:19/25; }
+ .home.has-meals .h-main { grid-column:1/15; grid-row:2/4; }
+ .home.has-meals .h-photo,.home.has-meals .h-chore-row { grid-column:15/25; }
+ .home.has-meals .h-duo { grid-column:15/20; grid-row:4; }
+ .home.has-meals .h-meals { grid-column:20/25; grid-row:4; padding:12px; }
+ .home.has-meals .meal-dashboard-head { flex-wrap:wrap; gap:4px; }
+ .home.has-meals .meal-day-group { grid-template-columns:1fr; gap:4px; }
+ .home.has-meals .meal-day-heading { display:none; }
+ .home.has-meals .meal-today-item b { font-size:13px; white-space:normal; }
+ .home.has-meals .h-shop { padding:12px; height:100%; }
+}
