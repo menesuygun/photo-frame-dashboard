@@ -33,10 +33,10 @@
   }
 
   App.on('ready', function () {
-    $('#ambient').innerHTML = '<div class="amb-stage"></div><div class="amb-scrim"></div><div class="amb-info"></div><div class="amb-photo-credit"></div>';
+    $('#ambient').innerHTML = '<div class="amb-stage"></div><div class="amb-scrim"></div><div class="amb-info"></div><div class="amb-photo-credit"></div><button class="amb-next-photo" aria-label="Next screensaver photo">' + App.icon('right', 30) + '</button>';
     $('#night').innerHTML = '<div class="nt-inner"></div>';
     amb.show = new App.Slideshow($('#ambient .amb-stage'), { layout: 'cover', captions: false, interval: 20000, photos: App.scenicPhotos, onChange: function (slide) { var p=slide.photos[0]; $('#ambient .amb-photo-credit').innerHTML=App.esc(p.place)+' · Photo by '+App.esc(p.photographer)+' on Unsplash'; } });
-    $('#ambient').addEventListener('click', function () { App.resetIdle(); App.setMode('day'); App.go('home'); });
+    $('#ambient').addEventListener('click', function (event) { if (event && event.target.closest('.amb-next-photo')) { App.resetIdle(); amb.show.next(); return; } App.resetIdle(); App.setMode('day'); App.go('home'); });
     $('#night').addEventListener('click', function () { App.resetIdle(); App.setMode('day'); App.go('home'); });
   });
 
