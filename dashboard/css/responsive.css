@@ -1,0 +1,60 @@
+/* Keep event text above its details even in the compact tablet layout. */
+.h-hero-main > * { flex-shrink:0; }
+.h-hero-title,.home.has-meals .h-hero-title { font-size:38px; line-height:1.05; white-space:normal; overflow:visible; overflow-wrap:anywhere; margin:6px 0; }
+.h-hero { padding:18px 22px; gap:14px; }
+.h-hero-count,.home.has-meals .h-hero-count { font-size:88px; flex:none; }
+.h-hero-meta { font-size:16px; line-height:1.25; }
+.h-hero-foot { margin-top:10px; }
+.home.has-meals .h-main { grid-template-rows:minmax(220px,auto) minmax(0,1fr); }
+.h-hero-slot { min-height:0; }
+.h-hero-main { justify-content:center; }
+
+/* Phone layout is separate from the tablet's scaled canvas. */
+@media (max-width:600px) {
+ :root { --pad:16px; --fs-label:13px; }
+ .stage { width:100%; margin:0; grid-template-columns:60px minmax(0,1fr); }
+ .rail { overflow-y:auto; padding-bottom:env(safe-area-inset-bottom,8px); }
+ .rail-item { min-height:59px; height:59px; font-size:9px; letter-spacing:0; flex-shrink:0; }
+ .rail-item .i { width:22px; height:22px; }
+ .rail-clock { margin-top:auto; }
+ .rail-credits { font-size:10px; min-height:28px; }
+ .views { min-width:0; }
+ .view { padding:14px; overflow:auto; overscroll-behavior:contain; }
+ .view:not(.is-active):not(.is-warming) { display:none; }
+ .home,.home.has-meals { display:flex; flex-direction:column; height:auto; gap:16px; }
+ .home > * { min-width:0; flex:none; }
+ .h-clock { min-height:125px; padding:12px 0; }
+ .h-time { font-size:90px; }
+ .h-ampm { font-size:19px; }
+ .h-date { font-size:20px; }.h-date b { font-size:16px; }
+ .h-weather { padding:12px 0; min-height:175px; }
+ .h-wx-temp { font-size:65px; }
+ .h-wx-hours { gap:2px; }.h-hr,.h-hr-l { font-size:11px; }
+ .h-presence { min-height:120px; padding-bottom:12px; }
+ .h-main,.home.has-meals .h-main { display:flex; flex-direction:column; gap:16px; }
+ .h-hero { padding:16px; gap:10px; min-height:200px; }
+ .h-hero-title,.home.has-meals .h-hero-title,.h-hero--empty .h-hero-title,.home.has-meals .h-hero--empty .h-hero-title { font-size:30px; }
+ .h-hero-count,.home.has-meals .h-hero-count { font-size:50px; }
+ .h-hero-count small { font-size:12px; }
+ .h-hero-meta { font-size:14px; }.h-hero-foot .pill { font-size:12px; }
+ .h-lanes { display:flex; flex-direction:column; gap:14px; }
+ .h-lane { min-height:80px; }
+ .h-side,.home.has-meals .h-side { display:flex; flex-direction:column; gap:14px; }
+ .h-photo { height:240px; flex:none; }
+ .h-side > * { min-height:100px; }
+ .h-meals,.home.has-meals .h-meals { display:flex; flex-direction:column; padding:16px; }
+ .meal-dashboard-head { flex-wrap:wrap; gap:8px; }
+ .meal-today-list { flex-direction:column; overflow:visible; }
+ .meal-today-item b { white-space:normal; }
+ .sheet { width:calc(100% - 20px); max-width:100%; max-height:90%; overflow:auto; }
+ .sheet-pad { padding:45px 18px 20px; }.sheet-h { font-size:34px; }.sheet-p { font-size:17px; }
+ .sheet-actions { flex-wrap:wrap; }.sheet-actions .btn { min-height:44px; }
+ .chore-fields { grid-template-columns:1fr; }
+ .tasks { height:auto; }.ch-lanes { display:flex; flex-direction:column; }.ch-lane { min-height:160px; }.ch-list { overflow:visible; }
+ .t-title h1,.s-head h1 { font-size:42px; }
+ .shop { display:flex; flex-direction:column; height:auto; }.s-list { overflow:visible; padding-bottom:20px; }
+ .s-head { gap:10px; }.s-count { padding:0; }.s-name b { font-size:18px; }
+ .meal-week-nav { flex-wrap:wrap; }.meal-week-nav > span { min-width:0; font-size:12px; }
+ .meal-day { grid-template-columns:1fr; }.meal-planned { flex-wrap:wrap; }
+ .ambient { position:absolute; }
+}

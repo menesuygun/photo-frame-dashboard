@@ -326,6 +326,12 @@
     var viewport = window.visualViewport;
     var width = viewport ? viewport.width : window.innerWidth;
     var height = viewport ? viewport.height : window.innerHeight;
+    if (window.innerWidth <= 600) {
+      var phoneStage = $('#stage');
+      phoneStage.style.height = height + 'px';
+      phoneStage.style.marginTop = '0';phoneStage.style.left = '0';phoneStage.style.top = '0';phoneStage.style.transform = 'none';
+      return;
+    }
     var scale = Math.min(width / 1280, height / 800);
     var stage = $('#stage'), stageHeight = height / scale;
     stage.style.height = stageHeight + 'px';
