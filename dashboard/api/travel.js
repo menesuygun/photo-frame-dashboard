@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     if (!destination || /https?:|zoom|teams\.microsoft|online|virtual/i.test(destination)) return res.status(422).json({ error: 'destination-needed' });
     const cacheKey = hash(origin + destination + event.start).toString('hex');
     let entry = cache.get(cacheKey);
-    if (!entry || Date.now() - entry.at > 5*60*1000) {
+    if (!entry || Date.now() - entry.at >= 30*60*1000) {
       if (!pending.has(cacheKey)) pending.set(cacheKey, drivingEstimate({origin,destination,start:event.start,key,now}).then(data => ({at:Date.now(),data})).catch(error => ({at:Date.now(),data:{error:['routes-disabled','google-access-denied','address-incomplete','traffic-unavailable'].includes(error.message)?error.message:'route-unavailable'}})).then(value => {if(cache.size>100)cache.delete(cache.keys().next().value);cache.set(cacheKey,value);return value;}).finally(()=>pending.delete(cacheKey)));
       entry = await pending.get(cacheKey);
     }

@@ -14,7 +14,7 @@ test('travel API rejects access without the frame code before any routing reques
 });
 
 import vm from 'node:vm';import fs from 'node:fs';
-test('clicked event fetches traffic on demand, shares an in-flight request and reuses it for five minutes',async()=>{
+test('clicked event fetches traffic on demand, shares an in-flight request and reuses it for 30 minutes',async()=>{
  const now=new Date();const e={id:'event',loc:'Venue',start:new Date(+now+3600000)};let calls=0,release;
  const App={calendarSync:{status:'ready'},on(){},now:()=>now,nextEvent:()=>null,emit(){},fmt:{time:()=> '1:00 PM'},leaveBy:x=>new Date(+x.start-x.travel*60000),icon:()=>''};
  const context={window:{App,DATA:{events:[e]}},Date,Number,Promise,setInterval(){},localStorage:{getItem:()=> 'code'},fetch:()=>{calls++;return new Promise(resolve=>release=()=>resolve({json:async()=>({minutes:12,checkedAt:new Date().toISOString()})}));}};
@@ -22,4 +22,11 @@ test('clicked event fetches traffic on demand, shares an in-flight request and r
  const first=App.requestTravel(e),second=App.requestTravel(e);assert.equal(calls,1);assert.equal(first,second);release();await first;assert.equal(e.travel,12);await App.requestTravel(e);assert.equal(calls,1);assert.match(App.eventTravelHTML(e),/Leave by 1:00 PM/);
  const distant={...e,id:'later',start:new Date(+now+2*86400000)};await App.requestTravel(distant);assert.equal(calls,1);assert.match(App.eventTravelHTML(distant),/within 24 hours/);
  assert.match(App.eventTravelHTML({...e,loc:''}),/Add a destination/);
+});
+
+test('traffic cache refreshes at 30 minutes, not at five minutes',async()=>{
+ let stamp=Date.now(),calls=0;const initial=stamp;class Clock extends Date{constructor(...args){super(...(args.length?args:[stamp]));}static now(){return stamp;}}
+ const e={id:'event',loc:'Venue',start:new Clock(initial+3*3600000)};const App={calendarSync:{status:'ready'},on(){},now:()=>new Clock(),nextEvent:()=>e,emit(){}};
+ vm.runInNewContext(fs.readFileSync(new URL('../js/travel-time.js',import.meta.url),'utf8'),{window:{App,DATA:{events:[e]}},Date:Clock,Number,Promise,setInterval(){},localStorage:{getItem:()=> 'code'},fetch:async()=>{calls++;return {json:async()=>({minutes:12,checkedAt:new Clock().toISOString()})};}});
+ await App.requestTravel(e);assert.equal(calls,1);stamp=initial+29*60000;await App.requestTravel(e);assert.equal(calls,1);assert.equal(e.travel,12);stamp=initial+30*60000;await App.requestTravel(e);assert.equal(calls,2);
 });
