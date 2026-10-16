@@ -21,10 +21,11 @@ function setup() {
 test('chores default to the entire day and filter Morning/Afternoon/Evening explicitly', () => {
   const { context, views } = setup();
   context.App.refreshChores = () => {};
+  context.App.mountMealPlan = () => {};
   context.window.DATA.chores = [{ id: 'a', title: 'Morning task', r: 'morning', who: 'enes' }, { id: 'b', title: 'Evening task', r: 'evening', who: 'enes' }];
   vm.runInContext(source('views/tasks.js'), context);
   let click;
-  const el = { innerHTML: '', addEventListener: (n, f) => { click = f; } };
+  const el = { innerHTML: '', querySelector: () => ({}), addEventListener: (n, f) => { click = f; } };
   views.tasks.show(el);
   assert.match(el.innerHTML, /Morning task/); assert.match(el.innerHTML, /Evening task/);
   click({ target: { closest: s => s === '[data-r]' ? { dataset: { r: 'morning' } } : null } });

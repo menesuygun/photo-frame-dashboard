@@ -60,8 +60,10 @@
       '<div class="ch-toolbar"><button class="btn btn--ghost" data-manage-chores>Manage</button><button class="btn btn--solid" data-add-chore>Add chore</button></div>' +
       '<div class="t-progress"><span class="num">' + done + '<small>/' + inR.length + '</small></span><div class="t-bar"><i style="width:' + (inR.length ? done / inR.length * 100 : 0) + '%"></i></div><span class="label">done</span></div>' +
       '</header>' +
+      '<section class="meal-plan"></section>' +
       '<div class="ch-lanes">' + LANES.map(function (w) { return lane(w, r); }).join('') + '</div>' +
       '</div>';
+    App.mountMealPlan(V.el.querySelector('.meal-plan'));
   }
 
   function complete(c, btn, by) {

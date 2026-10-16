@@ -12,6 +12,7 @@ import './photo-metadata.js';
 import './photo-library.js';
 import './views/reminders.js';
 import './collection-day.js';
+import './meal-plan.js';
 import './views/home.js';
 import './views/calendar.js';
 import './views/tasks.js';

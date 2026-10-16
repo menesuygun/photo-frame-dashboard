@@ -141,8 +141,12 @@
     el.querySelector('.h-lanes').innerHTML = lanes();
     el.querySelector('.h-chores').innerHTML = chores();
     collection();
+    mealCard();
     el.querySelector('.h-shop').innerHTML = shopping();
   }
+
+  function mealCard() { if (!V.el) return; var slot=V.el.querySelector('.h-meals'); if (!slot) return; slot.innerHTML=App.mealsTodayHTML(); slot.hidden=!slot.innerHTML; V.el.querySelector('.home').classList.toggle('has-meals',!slot.hidden); }
+  App.on('meals', mealCard);
 
   App.on('reminders', function () { if (V.el) V.el.querySelector('.h-reminders').innerHTML = App.reminderPreview(); });
 
@@ -165,7 +169,7 @@
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
           '  <div class="h-chore-row"><button class="h-chores card" data-go="tasks"></button><aside class="h-collection card" role="status" hidden></aside></div>' +
           '  <div class="h-duo"><button class="h-shop card" data-go="shopping"></button></div>' +
-          '</div></div>';
+          '</div><button class="h-meals card" data-go="tasks" hidden></button></div>';
         el.addEventListener('click', function (e) {
           if (e.target.closest('[data-reminder-add]')) return App.reminderSheet();
           var reminder = e.target.closest('[data-reminder-toggle]');
@@ -188,6 +192,7 @@
     if (!V.el || !V.el.firstChild) return;
     V.el.querySelector('.h-clock').innerHTML = clock();
     collection();
+    mealCard();
     V.el.querySelector('.h-hero-slot').innerHTML = hero();
     if (n.getMinutes() === 0) { V.el.querySelector('.h-weather').innerHTML = weather(); V.el.querySelector('.h-lanes').innerHTML = lanes(); }
   });
