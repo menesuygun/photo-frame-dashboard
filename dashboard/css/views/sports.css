@@ -35,3 +35,6 @@
  .sp-matchday { font-size:11px; }
 }
 @media(max-width:600px) { .sp-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; overflow:visible; }.sp-tabs button { padding:8px 4px; font-size:12px; }.sp-hero-teams { justify-content:space-between; }.sp-hero-teams h2 { flex:1; } }
+
+.sp-hero h2 .sp-banner-score { display:inline-block; font:800 34px/1.2 var(--sans); font-variant-numeric:tabular-nums; color:#ffe196; white-space:nowrap; }
+@media(max-width:600px) { .sp-hero h2 .sp-banner-score { display:block; font-size:29px; margin:8px 0; } }

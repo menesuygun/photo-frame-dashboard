@@ -17,7 +17,7 @@ export function parseTurkishNews(xml){
 async function resource(kind,date){
  if(kind==='scores'){const r=await cached(ROOT+'site/v2/sports/soccer/tur.1/scoreboard?dates='+date.replaceAll('-',''),60000);return {...r,data:(r.data.events||[]).map(match)};}
  if(kind==='standings'){const r=await cached(ROOT+'v2/sports/soccer/tur.1/standings',900000);return {...r,data:tableRows(r.data),season:r.data.children?.[0]?.name||''};}
- if(kind==='galatasaray'){const r=await cached(ROOT+'site/v2/sports/soccer/all/teams/432/schedule?fixture=true',1800000);return {...r,data:(r.data.events||[]).map(match).sort((a,b)=>new Date(a.date)-new Date(b.date))};}
+ if(kind==='galatasaray'){const r=await cached(ROOT+'site/v2/sports/soccer/all/teams/432/schedule?fixture=true',60000);let recent;try{recent=await cached(ROOT+'site/v2/sports/soccer/all/teams/432/schedule',60000);}catch{}const events=new Map((r.data.events||[]).map(e=>[e.id,e]));for(const e of recent?.data?.events||[])if(torontoDate(new Date(e.date))===date)events.set(e.id,e);return {...r,stale:r.stale||recent?.stale,data:[...events.values()].map(match).sort((a,b)=>new Date(a.date)-new Date(b.date))};}
  if(kind==='news'){
   return cached('https://news.google.com/rss/search?q=Galatasaray+futbol+when:7d&hl=tr&gl=TR&ceid=TR:tr',900000,async(url,options)=>{const r=await fetch(url,options);return {ok:r.ok,json:async()=>parseTurkishNews(await r.text())};});
  }
