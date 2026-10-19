@@ -234,7 +234,7 @@
     if ((t = e.target.closest('[data-more]'))) return moreSheet(t.dataset.more.split(','));
     if ((t = e.target.closest('[data-nav]'))) return nav(+t.dataset.nav);
     if ((t = e.target.closest('[data-today]'))) { V.date = App.dayStart(App.now()); if (V.mode === 'month') V.date.setDate(1); V.scroll = null; return render(); }
-    if ((t = e.target.closest('[data-mode]'))) {
+    if ((t = e.target.closest('.seg [data-mode]'))) {
       V.mode = t.dataset.mode;
       if (V.mode === 'month') V.date = new Date(V.date.getFullYear(), V.date.getMonth(), 1);
       V.scroll = null;
