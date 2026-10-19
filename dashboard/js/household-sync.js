@@ -1,8 +1,8 @@
 // Opt-in household sync. Local data is never imported implicitly.
 (function(){
  const A=window.App,D=window.DATA;
- const keys={chores:'frame-chore-templates-v1',completions:'frame-chore-completions-v1',meals:'frame-meals-v1',reminders:'frame-reminders-v1',shopping:'frame-shopping-v1',usuals:'frame-usuals-v1',education:'frame-education-beyza-v1'};
- const names={chores:'Chores',completions:'Chore completions',meals:'Meals',reminders:'Reminders',shopping:'Shopping',usuals:'Usuals',education:'Education',photos:'Photos'};
+ const keys={events:'frame-calendar-events-v1',chores:'frame-chore-templates-v1',completions:'frame-chore-completions-v1',meals:'frame-meals-v1',reminders:'frame-reminders-v1',shopping:'frame-shopping-v1',usuals:'frame-usuals-v1',education:'frame-education-beyza-v1'};
+ const names={events:'Calendar events',chores:'Chores',completions:'Chore completions',meals:'Meals',reminders:'Reminders',shopping:'Shopping',usuals:'Usuals',education:'Education',photos:'Photos'};
  const enabledKey='frame-household-sync-v1',queueKey='frame-household-pending-v1';
  let enabled=localStorage.getItem(enabledKey)==='yes',applying=false,running=false,remote={},pending={},conflicts={},status='Not connected',connecting=false,timer;
  try{pending=JSON.parse(localStorage.getItem(queueKey)||'{}');}catch(_){}
@@ -52,7 +52,7 @@
    progress('Saving your lists and plans…');
    const documents={...backup.documents,photos:photos.map(({blob,...p})=>p)};
    if(!documents.chores)documents.chores=D.choreTemplates;
-   for(const category of ['meals','reminders','shopping','usuals'])if(!documents[category])documents[category]=[];
+   for(const category of ['events','meals','reminders','shopping','usuals'])if(!documents[category])documents[category]=[];
    if(!documents.completions)documents.completions={};
    if(!documents.education&&A.defaultEducationState)documents.education=A.defaultEducationState();
    await request('/api/household','POST',{documents});

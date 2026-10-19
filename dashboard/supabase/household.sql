@@ -2,7 +2,7 @@
 -- All browser access goes through this dashboard's authenticated server routes.
 create table if not exists public.household_documents (
   household text not null,
-  category text not null check (category in ('chores','completions','meals','reminders','shopping','usuals','education','photos')),
+  category text not null check (category in ('events','chores','completions','meals','reminders','shopping','usuals','education','photos')),
   value jsonb not null,
   revision bigint not null default 1 check (revision > 0),
   updated_at timestamptz not null default now(),

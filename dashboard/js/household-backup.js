@@ -1,7 +1,7 @@
 // Export existing device data before enabling household sync. No credentials are exported.
 (function(){
  const A=window.App;
- const keys={chores:'frame-chore-templates-v1',completions:'frame-chore-completions-v1',meals:'frame-meals-v1',reminders:'frame-reminders-v1',shopping:'frame-shopping-v1',usuals:'frame-usuals-v1',education:'frame-education-beyza-v1'};
+ const keys={events:'frame-calendar-events-v1',chores:'frame-chore-templates-v1',completions:'frame-chore-completions-v1',meals:'frame-meals-v1',reminders:'frame-reminders-v1',shopping:'frame-shopping-v1',usuals:'frame-usuals-v1',education:'frame-education-beyza-v1'};
  A.householdBackup=async function(){
   const documents={};
   for(const [category,key] of Object.entries(keys)){const value=localStorage.getItem(key);if(value!==null)documents[category]=JSON.parse(value);}

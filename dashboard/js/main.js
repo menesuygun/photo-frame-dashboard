@@ -32,3 +32,5 @@ import './household-sync.js';
 import './views/sports.js';
 
 import './views/adhan.js';
+
+import './dashboard-events.js';

@@ -28,7 +28,7 @@
   App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
 
   function hero() {
-    if (App.calendarSync && App.calendarSync.status !== 'ready') {
+    if (App.calendarSync && App.calendarSync.status !== 'ready' && !(App.dashboardEvents && App.dashboardEvents().length)) {
       return '<div class="h-hero h-hero--empty"><div class="label label--light">Family calendar</div>' +
         '<div class="h-hero-title serif">' + (App.calendarSync.status === 'stale' ? 'Showing your last update' : 'Your family’s schedule') + '</div>' +
         App.calendarStatus() + '</div>';

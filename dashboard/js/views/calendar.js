@@ -205,7 +205,7 @@
       '<button class="icon-btn" data-nav="1" aria-label="Next">' + App.icon('right', 24) + '</button>' +
       '<button class="btn btn--ghost' + (isToday ? ' is-hidden' : '') + '" data-today>Today</button>' +
       '<div class="seg">' + MODES.map(function (m) { return '<button class="' + (V.mode === m[0] ? 'is-on' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
-      (App.calendarSync ? '' : '<button class="fab" data-add aria-label="Add event">' + App.icon('plus', 26) + '</button>') +
+      ('<button class="fab" data-add aria-label="Add event">' + App.icon('plus', 26) + '</button>') +
       '</header>';
   }
 
@@ -272,7 +272,8 @@
         return '<span class="chip" style="' + App.pstyle(x) + '">' + App.avatar(x, 32) + x.name + '</span>';
       }).join('') + '</div></div>' +
       (e.notes ? '<div class="evs-notes serif">“' + App.esc(e.notes) + '”</div>' : '') +
-      '</div></div>', { cls: 'sheet--event', onMount:function(sheet){App.requestTravel(e).then(function(){if(sheet.isConnected){var slot=sheet.querySelector('[data-event-travel]');if(slot)slot.innerHTML=App.eventTravelHTML(e);}});} });
+      (e.dashboardEvent ? '<div class="dashboard-event-actions"><button class="btn btn--solid" data-edit-dashboard-event>Edit event</button><button class="btn btn--ghost" data-remove-dashboard-event>Remove event</button></div>' : '') +
+      '</div></div>', { cls: 'sheet--event', onMount:function(sheet){if(e.dashboardEvent){sheet.querySelector('[data-edit-dashboard-event]').onclick=function(){App.dashboardEventSheet(e);};sheet.querySelector('[data-remove-dashboard-event]').onclick=function(){App.removeDashboardEvent(e);};}App.requestTravel(e).then(function(){if(sheet.isConnected){var slot=sheet.querySelector('[data-event-travel]');if(slot)slot.innerHTML=App.eventTravelHTML(e);}});} });
   };
 
   function moreSheet(ids) {
@@ -286,6 +287,7 @@
   }
 
   function addSheet() {
+    if (App.dashboardEventSheet) return App.dashboardEventSheet(null, V.date || App.now());
     if (App.calendarSync) return App.toast('Manage events in Apple Calendar.', { icon: 'calendar' });
     var now = App.now();
     var st = { who: [], day: 0, time: '15:30', dur: 60, title: '' };
