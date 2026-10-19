@@ -34,6 +34,10 @@
         App.calendarStatus() + '</div>';
     }
     var e = App.nextEvent(), now = App.now();
+    if (!e && App.allDayOn(now).length) {
+      var allDay = App.allDayOn(now)[0], color = App.evColor(allDay);
+      return '<button class="h-hero" style="' + App.pstyle(color) + '" data-ev="' + allDay.id + '"><div class="h-hero-main"><div class="label label--on">All day today</div><div class="h-hero-title serif">' + App.esc(allDay.title) + '</div><div class="h-hero-meta">' + App.esc(allDay.people.map(function(id){return App.person(id).name;}).join(' + ')) + (allDay.loc ? ' · ' + App.esc(allDay.loc) : '') + '</div></div></button>';
+    }
     if (!e) {
       var tomorrow = App.timedOn(App.addDays(now, 1))[0];
       return '<div class="h-hero h-hero--empty" data-go="calendar">' +
@@ -71,14 +75,14 @@
   function lanes() {
     var now = App.now();
     return App.calendarPeople(now).map(function (p) {
-      var list = App.timedOn(now, p.id).filter(function (e) { return e.end > now; });
+      var list = App.allDayOn(now, p.id).concat(App.timedOn(now, p.id).filter(function (e) { return e.end > now; }));
       var shown = list.slice(0, 3), more = list.length - shown.length;
       return '<div class="h-lane" style="' + App.pstyle(p) + '">' +
         '<div class="h-lane-head">' + App.avatar(p, 30) + '<b>' + p.name + '</b></div>' +
         (list.length ? shown.map(function (e) {
-          var cur = e.start <= now;
+          var cur = !e.allDay && e.start <= now;
           return '<button class="h-ev' + (cur ? ' is-now' : '') + '" data-ev="' + e.id + '">' +
-            '<span class="h-ev-t">' + (cur ? 'Now' : App.fmt.time(e.start, false)) + '</span>' +
+            '<span class="h-ev-t">' + (e.allDay ? 'All day' : cur ? 'Now' : App.fmt.time(e.start, false)) + '</span>' +
             '<span class="h-ev-n">' + App.esc(e.title) + '</span></button>';
         }).join('') : '<div class="h-free serif"><i>Free</i> the rest of the day</div>') +
         (more > 0 ? '<button class="h-more" data-go="calendar">+' + more + ' more</button>' : '') +

@@ -152,3 +152,6 @@
 
 /* Fill the Today preview with portrait photos rather than side bars. */
 .h-photo .slide--fit .fitimg { left:0; width:100%; height:100%; transform:none; object-fit:cover; object-position:50% 30%; }
+
+/* Keep all-day and timed cards reachable in compact Today lanes. */
+.h-lane { overflow-y:auto; }.h-lane-head,.h-ev,.h-free,.h-more { flex-shrink:0; }
