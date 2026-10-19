@@ -303,7 +303,7 @@
   App.idle = { home: 60, ambient: 120 };
   var idleSec = 0;
   function onIdleTick() {
-    if (App.householdImporting) return;
+    if (App.householdImporting || App.adhanPlaying) return;
     idleSec++;
     var blocked = $('#takeover').classList.contains('is-open');
     if (App.mode !== 'day' || blocked) return;
