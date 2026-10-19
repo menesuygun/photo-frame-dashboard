@@ -6,7 +6,8 @@
  function read(){try{const rows=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(rows)&&rows.every(valid)?rows:[];}catch{return [];}}
  let rows=read();
  const parse=v=>{if(/^\d{4}-\d{2}-\d{2}$/.test(v)){const [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d);}return new Date(v);};
- A.dashboardEvents=()=>rows.map(e=>({...e,start:parse(e.start),end:parse(e.end),dashboardEvent:true,mentionedPeople:e.people.length===people.length?[]:e.people}));
+ let rendered=new Map();
+ A.dashboardEvents=()=>rows.map(e=>{const signature=JSON.stringify(e),cached=rendered.get(e.id);if(cached?.signature===signature)return cached.event;const event={...e,start:parse(e.start),end:parse(e.end),dashboardEvent:true,mentionedPeople:e.people.length===people.length?[]:e.people};rendered.set(e.id,{signature,event});return event;});
  const original=A.events;A.events=()=>original().concat(A.dashboardEvents());
  function fields(instant){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(instant)).map(p=>[p.type,p.value]));return {date:parts.year+'-'+parts.month+'-'+parts.day,time:parts.hour+':'+parts.minute};}
  function addDate(date,days){const d=new Date(date+'T12:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);}

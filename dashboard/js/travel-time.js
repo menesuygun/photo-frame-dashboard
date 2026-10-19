@@ -6,12 +6,12 @@
  function eligible(e){return e&&!e.allDay&&e.loc&&e.start>A.now()&&e.start-A.now()<=86400000&&!/https?:|zoom|teams\.microsoft|online|virtual/i.test(e.loc);}
  function apply(e,data){if(data.error||!Number.isFinite(data.minutes)||!data.checkedAt||Date.now()-new Date(data.checkedAt)>=REFRESH_MS){delete e.travel;A.travelState[e.id]={status:'error',error:data.error||'route-unavailable'};return;}e.travel=data.minutes;A.travelState[e.id]={status:'ready',...data};}
  A.requestTravel=function(e){
-   if(!eligible(e)||!A.calendarSync||!['ready','stale'].includes(A.calendarSync.status))return Promise.resolve();
+   if(!eligible(e)||!A.calendarSync||(!e.dashboardEvent&&!['ready','stale'].includes(A.calendarSync.status)))return Promise.resolve();
    var id=e.id,stamp=e.start.toISOString()+'|'+e.loc,entry=cache[id];
    if(entry&&entry.stamp===stamp&&Date.now()-(entry.data.checkedAt?new Date(entry.data.checkedAt).getTime():entry.at)<REFRESH_MS){apply(e,entry.data);return Promise.resolve();}
    if(busy[id])return busy[id];A.travelState[id]={status:'loading'};
    var code='';try{code=localStorage.getItem('frame-calendar-code')||'';}catch(_){}
-   busy[id]=fetch('/api/travel?event='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+code},cache:'no-store'}).then(function(r){return r.json();}).then(function(data){cache[id]={stamp:stamp,at:Date.now(),data:data};var current=D.events.find(function(x){return x.id===id;});if(current&&current.start.toISOString()+'|'+current.loc===stamp){apply(current,data);if(current!==e)apply(e,data);}}).catch(function(){apply(e,{error:'route-unavailable'});}).finally(function(){delete busy[id];A.emit('travel');});
+   busy[id]=fetch('/api/travel?event='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+code},cache:'no-store'}).then(function(r){return r.json();}).then(function(data){cache[id]={stamp:stamp,at:Date.now(),data:data};var current=A.findEvent?A.findEvent(id):D.events.find(function(x){return x.id===id;});if(current&&current.start.toISOString()+'|'+current.loc===stamp){apply(current,data);if(current!==e)apply(e,data);}}).catch(function(){apply(e,{error:'route-unavailable'});}).finally(function(){delete busy[id];A.emit('travel');});
    return busy[id];
  };
  function update(){return A.requestTravel(A.nextEvent());}
