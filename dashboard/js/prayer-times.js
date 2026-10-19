@@ -25,6 +25,13 @@
       return '<div class="h-prayer"><span>' + name + '</span><b>' + time(data.timings[name]) + '</b></div>';
     }).join('') + '</div></div>';
   };
+  App.prayerData = function () { return data && data.date === today() ? data : null; };
+  var prayerHTML = App.prayerTimesHTML;
+  App.prayerTimesHTML = function () {
+    var html = prayerHTML();
+    var link = '<button class="h-adhan-link" data-go="adhan" aria-label="Open Adhan and prayer audio settings">☾ Adhan</button>';
+    return html.includes('h-prayer-panel') ? html.replace('<div class="h-prayer-panel">', '<div class="h-prayer-panel">' + link) : '<div class="h-prayer-panel">' + link + html + '</div>';
+  };
   App.refreshPrayers = async function () {
     if (pending) return;
     pending = true; requestedDate = today(); lastAttempt = Date.now();
