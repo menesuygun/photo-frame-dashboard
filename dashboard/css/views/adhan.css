@@ -15,3 +15,5 @@
 @media(max-width:600px) { .adhan-head { align-items:flex-start; flex-wrap:wrap; }.adhan-head h1 { font-size:46px; }.adhan-layout { grid-template-columns:1fr; gap:16px; }.adhan-image,.adhan-image-pending { min-height:230px; }.adhan-image-pending>span { font-size:50px; }.adhan-image-pending h2 { font-size:34px; }.adhan-panel { padding:18px; }.adhan-panel h2 { font-size:26px; }.adhan-prayer>span:first-child { gap:10px; }.adhan-prayer b { min-width:65px; font-size:18px; }.adhan-prayer small { font-size:15px; }.adhan-about { padding:18px 0; } }
 
 .adhan-image figcaption a { color:inherit; font-size:10px; text-underline-offset:2px; }
+
+.adhan-prayer>span:first-child { flex-wrap:wrap; row-gap:3px; }.adhan-recording { flex-basis:100%; color:var(--mute); font-size:12px!important; }.adhan-about a { color:inherit; }.adhan-previews { display:flex; flex-wrap:wrap; gap:7px; margin-top:18px; }.adhan-previews>.label { flex-basis:100%; margin-bottom:3px; }.adhan-previews .btn { min-height:40px; font-size:12px; padding:6px 12px; }
