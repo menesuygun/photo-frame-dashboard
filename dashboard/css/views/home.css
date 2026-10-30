@@ -3,7 +3,7 @@
   height: 100%;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 184px 1fr;
+  grid-template-rows: minmax(216px, max-content) minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -109,7 +109,7 @@
 .h-st-row.is-warn { color: #B45F00; font-weight: 800; }
 .h-st-row.is-warn span { color: inherit; }
 
-.h-wx-place { margin-bottom: 8px; }
+.h-wx-place { margin-bottom: 8px; flex-shrink: 0; }
 .h-wx-say a { font-size: 12px; color: var(--ink-2); margin-left: 6px; }
 
 /* Collection reminder shares the chore row only when a pickup is due. */

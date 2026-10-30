@@ -66,7 +66,7 @@
 
 /* iPad: compact meals to the right of the shopping card. */
 @media (min-width:601px) {
- .home.has-meals { grid-template-rows:184px minmax(70px,1fr) 142px 120px; }
+ .home.has-meals { grid-template-rows:minmax(216px,max-content) minmax(70px,1fr) 142px 120px; }
  .home.has-meals .h-main { grid-column:1/8; grid-row:2/4; }
  .home.has-meals .h-side { display:contents; }
  .home.has-meals .h-photo { grid-column:8/13; grid-row:2; min-height:0; }
