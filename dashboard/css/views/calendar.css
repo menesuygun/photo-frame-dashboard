@@ -185,3 +185,24 @@
 .more-row b { font-size: 21px; flex: 1; }
 .more-row span { font-size: 16px; color: var(--mute); }
 .calendar-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px 8px; font-size: 15px; color: var(--mute); flex: none; }
+
+/* Local recreation shortcut uses the town's official EG logo. */
+.cal-head { height:auto; min-height:52px; }
+.cal-head .cal-eg { display:flex; align-items:center; justify-content:center; width:86px; min-height:52px; flex:0 0 86px; border-radius:10px; }
+.cal-eg img { display:block; width:78px; height:51px; object-fit:contain; }
+.cal-eg:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+.cal-eg:hover { background:var(--paper-2); }
+.eg-drop-heading { display:flex; align-items:center; gap:18px; padding-right:44px; margin-bottom:18px; }
+.eg-drop-heading img { object-fit:contain; flex:none; }
+.eg-programs { display:grid; gap:14px; margin:22px 0; }
+.eg-program { display:flex; align-items:center; gap:16px; padding:22px 20px; border-radius:16px; text-decoration:none; color:var(--ink); }
+.eg-program--aquatic { background:#dcebf8; }.eg-program--gym { background:#e1edda; }
+.eg-program-symbol { width:44px; height:44px; display:grid; place-items:center; flex:none; }.eg-program>span:nth-child(2) { min-width:0; }
+.eg-program b { display:block; font-size:23px; line-height:1.2; }.eg-program small { display:block; margin-top:5px; font-size:16px; color:var(--ink-2); }
+.eg-program-open { margin-left:auto; font-size:27px; flex:none; }.eg-town-link { display:block; color:var(--ink-2); font-size:16px; line-height:1.4; }
+@media(max-width:600px) {
+ .cal-head [data-today].is-hidden { display:none; }
+ .cal-head .cal-eg { flex-basis:72px; width:72px; }.cal-eg img { width:68px; height:45px; }
+ .eg-drop-heading { flex-wrap:wrap; gap:10px; }.eg-program { padding:18px 12px; gap:10px; }
+ .eg-program b { font-size:20px; }.eg-program small { font-size:14px; }.eg-program-symbol { width:30px; }
+}
