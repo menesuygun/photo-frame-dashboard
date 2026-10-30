@@ -288,24 +288,7 @@
     });
   }
 
-  function egDropInSheet() {
-    var base = 'https://anc.ca.apm.activecommunities.com/eastgwillimbury/calendars?onlineSiteId=0&no_scroll_top=true&displayType=0&view=2';
-    var programs = {
-      aquatic: { name:'Aquatic Drop-Ins', url:base+'&defaultCalendarId=2&locationId=27' },
-      gym: { name:'Gymnasium Drop-Ins', url:base+'&defaultCalendarId=6&locationId=27%2C9' }
-    };
-    App.sheet('<section class="eg-live"><header class="eg-live-head"><img src="https://www.eastgwillimbury.ca/en/images/structure/logo.svg" alt="East Gwillimbury" width="78" height="51"><div><div class="label">East Gwillimbury</div><h2 class="serif">Live drop-in schedules</h2></div></header><nav class="eg-live-tabs" aria-label="Drop-in programs"><button class="is-on" data-eg-program="aquatic" aria-pressed="true">'+App.icon('drop',22)+'Aquatic Drop-Ins</button><button data-eg-program="gym" aria-pressed="false">'+App.icon('ball',22)+'Gymnasium Drop-Ins</button></nav><div class="eg-live-tools"><span>Official town calendar · use its date controls to browse</span><a data-eg-external href="'+programs.aquatic.url.replace(/&/g,'&amp;')+'" target="_blank" rel="noopener noreferrer">Open full schedule ↗</a></div><iframe class="eg-live-frame" data-eg-frame title="EG Aquatic Drop-Ins live calendar" src="'+programs.aquatic.url.replace(/&/g,'&amp;')+'" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe><p class="eg-live-help">If the calendar does not load, use Open full schedule above. Times and changes are supplied by the Town of East Gwillimbury.</p></section>', {
-      cls:'sheet--eg-live',
-      onMount:function(sheet){
-        sheet.querySelectorAll('[data-eg-program]').forEach(function(button){button.addEventListener('click',function(){
-          var selected=programs[button.dataset.egProgram],frame=sheet.querySelector('[data-eg-frame]');
-          if(button.getAttribute('aria-pressed')==='true')return;
-          sheet.querySelectorAll('[data-eg-program]').forEach(function(b){var active=b===button;b.classList.toggle('is-on',active);b.setAttribute('aria-pressed',String(active));});
-          frame.title='EG '+selected.name+' live calendar';frame.src=selected.url;sheet.querySelector('[data-eg-external]').href=selected.url;
-        });});
-      }
-    });
-  }
+  function egDropInSheet() { return App.egDropInSheet(); }
 
   function addSheet() {
     if (App.dashboardEventSheet) return App.dashboardEventSheet(null, V.date || App.now());
