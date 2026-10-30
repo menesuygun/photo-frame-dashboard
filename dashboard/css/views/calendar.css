@@ -247,3 +247,9 @@
  .eg-native .eg-live-head h2 { font-size:23px; }.eg-calendar-nav { gap:8px; }.eg-date-controls { width:100%; gap:4px; }.eg-date-controls>b { flex:1; font-size:12px; }.eg-date-controls .icon-btn { width:28px; height:34px; }.eg-date-controls .btn { min-height:34px; padding:0 8px; font-size:11px; }
  .eg-view-controls { width:100%; }.eg-view-controls button { flex:1; font-size:12px; min-height:34px; }.eg-calendar-grid--day .eg-session summary strong { font-size:18px; }.eg-calendar-grid--day .eg-session summary small { font-size:12px; }
 }
+
+/* Highlight only sessions that are in progress in East Gwillimbury. */
+.eg-native .eg-session.is-live { background:#FFB000; color:#111; box-shadow:inset 0 0 0 2px #996500; }
+.eg-session.is-live summary small { color:#282215; }
+.eg-session-now { display:inline-flex; align-self:flex-start; padding:3px 7px; border-radius:6px; background:#111; color:#fff; font-size:10px; line-height:1.2; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.eg-session-now[hidden] { display:none; }
