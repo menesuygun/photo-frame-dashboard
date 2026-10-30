@@ -290,9 +290,21 @@
 
   function egDropInSheet() {
     var base = 'https://anc.ca.apm.activecommunities.com/eastgwillimbury/calendars?onlineSiteId=0&no_scroll_top=true&displayType=0&view=2';
-    var aquatic = base + '&defaultCalendarId=2&locationId=27';
-    var gym = base + '&defaultCalendarId=6&locationId=27%2C9';
-    App.sheet('<div class="sheet-pad eg-drop-ins"><div class="eg-drop-heading"><img src="https://www.eastgwillimbury.ca/en/images/structure/logo.svg" alt="East Gwillimbury" width="108" height="71"><div class="label">Local recreation</div></div><h2 class="serif sheet-h">Drop-in schedules</h2><p class="sheet-p">Choose a program to view the town’s live timetable. Schedules open in a new tab, keeping your family calendar here.</p><div class="eg-programs"><a class="eg-program eg-program--aquatic" href="'+aquatic.replace(/&/g,'&amp;')+'" target="_blank" rel="noopener noreferrer"><span class="eg-program-symbol" aria-hidden="true">'+App.icon('drop',32)+'</span><span><b>Aquatic Drop-Ins</b><small>Pool and swim schedules</small></span><span class="eg-program-open" aria-hidden="true">↗</span></a><a class="eg-program eg-program--gym" href="'+gym.replace(/&/g,'&amp;')+'" target="_blank" rel="noopener noreferrer"><span class="eg-program-symbol" aria-hidden="true">'+App.icon('ball',32)+'</span><span><b>Gymnasium Drop-Ins</b><small>Gym and court schedules</small></span><span class="eg-program-open" aria-hidden="true">↗</span></a></div><a class="eg-town-link" href="https://www.eastgwillimbury.ca/en/living-in-eg/drop-in-programs.aspx" target="_blank" rel="noopener noreferrer">Town notices, admission details and locations ↗</a></div>');
+    var programs = {
+      aquatic: { name:'Aquatic Drop-Ins', url:base+'&defaultCalendarId=2&locationId=27' },
+      gym: { name:'Gymnasium Drop-Ins', url:base+'&defaultCalendarId=6&locationId=27%2C9' }
+    };
+    App.sheet('<section class="eg-live"><header class="eg-live-head"><img src="https://www.eastgwillimbury.ca/en/images/structure/logo.svg" alt="East Gwillimbury" width="78" height="51"><div><div class="label">East Gwillimbury</div><h2 class="serif">Live drop-in schedules</h2></div></header><nav class="eg-live-tabs" aria-label="Drop-in programs"><button class="is-on" data-eg-program="aquatic" aria-pressed="true">'+App.icon('drop',22)+'Aquatic Drop-Ins</button><button data-eg-program="gym" aria-pressed="false">'+App.icon('ball',22)+'Gymnasium Drop-Ins</button></nav><div class="eg-live-tools"><span>Official town calendar · use its date controls to browse</span><a data-eg-external href="'+programs.aquatic.url.replace(/&/g,'&amp;')+'" target="_blank" rel="noopener noreferrer">Open full schedule ↗</a></div><iframe class="eg-live-frame" data-eg-frame title="EG Aquatic Drop-Ins live calendar" src="'+programs.aquatic.url.replace(/&/g,'&amp;')+'" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe><p class="eg-live-help">If the calendar does not load, use Open full schedule above. Times and changes are supplied by the Town of East Gwillimbury.</p></section>', {
+      cls:'sheet--eg-live',
+      onMount:function(sheet){
+        sheet.querySelectorAll('[data-eg-program]').forEach(function(button){button.addEventListener('click',function(){
+          var selected=programs[button.dataset.egProgram],frame=sheet.querySelector('[data-eg-frame]');
+          if(button.getAttribute('aria-pressed')==='true')return;
+          sheet.querySelectorAll('[data-eg-program]').forEach(function(b){var active=b===button;b.classList.toggle('is-on',active);b.setAttribute('aria-pressed',String(active));});
+          frame.title='EG '+selected.name+' live calendar';frame.src=selected.url;sheet.querySelector('[data-eg-external]').href=selected.url;
+        });});
+      }
+    });
   }
 
   function addSheet() {

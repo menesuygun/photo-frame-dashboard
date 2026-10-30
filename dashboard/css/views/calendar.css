@@ -206,3 +206,20 @@
  .eg-drop-heading { flex-wrap:wrap; gap:10px; }.eg-program { padding:18px 12px; gap:10px; }
  .eg-program b { font-size:20px; }.eg-program small { font-size:14px; }.eg-program-symbol { width:30px; }
 }
+
+/* Keep the official live recreation calendar inside the dashboard. */
+.sheet--eg-live { width:calc(100% - 32px); max-width:1160px; height:calc(100% - 32px); max-height:none; overflow:hidden; }
+.eg-live { height:100%; min-height:0; display:flex; flex-direction:column; gap:12px; padding:22px; }
+.eg-live-head { display:flex; gap:18px; align-items:center; padding-right:56px; flex:none; }
+.eg-live-head img { flex:none; object-fit:contain; }.eg-live-head h2 { margin:4px 0 0; font-size:34px; line-height:1; }
+.eg-live-tabs { display:flex; flex-wrap:wrap; gap:8px; flex:none; }.eg-live-tabs button { display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 18px; border:1px solid var(--line); border-radius:12px; font-weight:700; font-size:17px; }
+.eg-live-tabs button.is-on { background:var(--ink); color:var(--paper); }
+.eg-live-tools { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; flex:none; font-size:13px; color:var(--ink-2); }.eg-live-tools a { color:inherit; font-weight:700; }
+.eg-live-frame { display:block; width:100%; flex:1 1 0; min-height:150px; border:1px solid var(--line); border-radius:10px; background:#fff; }
+.eg-live-help { flex:none; margin:0; font-size:12px; line-height:1.3; color:var(--mute); }
+@media(max-width:600px) {
+ .sheet--eg-live { height:calc(100% - 16px); max-height:none; width:calc(100% - 16px); }
+ .eg-live { padding:14px; gap:10px; }.eg-live-head { gap:10px; padding-right:44px; }.eg-live-head img { width:55px; height:36px; }.eg-live-head h2 { font-size:25px; }.eg-live-head .label { font-size:10px; }
+ .eg-live-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.eg-live-tabs button { font-size:13px; padding:8px 6px; gap:5px; }.eg-live-tabs .i { width:18px; height:18px; flex:none; }
+ .eg-live-tools { font-size:11px; }.eg-live-help { font-size:10px; }
+}
