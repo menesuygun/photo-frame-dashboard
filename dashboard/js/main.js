@@ -39,3 +39,5 @@ import './dashboard-events.js';
 import './google-tasks.js';
 
 import './eg-schedules.js';
+
+import './alexa-shopping.js';
