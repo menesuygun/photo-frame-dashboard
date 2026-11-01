@@ -71,5 +71,5 @@
  A.connectHousehold=connect;
  A.householdSyncState=()=>({enabled,status,pending:Object.keys(pending),conflicts:Object.keys(conflicts)});
  A.on('photos',changedPhotos);
- A.on('ready',()=>{const button=document.createElement('button');button.className='rail-family-sync';button.type='button';button.dataset.familySync='';button.setAttribute('aria-label','Family sync');button.innerHTML=A.icon('sync',24)+'<span>Family<br>sync</span>';button.onclick=A.familySyncSheet;document.querySelector('[data-screensaver]').before(button);state(enabled?'Connecting…':'Not connected');sync();setInterval(sync,30000);window.addEventListener('online',sync);document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync();});});
+ A.on('ready',()=>{const button=document.createElement('button');button.className='rail-family-sync';button.type='button';button.dataset.familySync='';button.setAttribute('aria-label','Family sync');button.innerHTML=A.icon('sync',24)+'<span>Family<br>sync</span>';button.onclick=A.familySyncSheet;document.querySelector('#railClock').after(button);state(enabled?'Connecting…':'Not connected');sync();setInterval(sync,30000);window.addEventListener('online',sync);document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync();});});
 })();
