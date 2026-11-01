@@ -28,6 +28,8 @@
   App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
 
   function hero() {
+    var matchday = App.galatasarayHomeHero && App.galatasarayHomeHero();
+    if (matchday) return matchday;
     if (App.calendarSync && App.calendarSync.status !== 'ready' && !(App.dashboardEvents && App.dashboardEvents().length)) {
       return '<div class="h-hero h-hero--empty"><div class="label label--light">Family calendar</div>' +
         '<div class="h-hero-title serif">' + (App.calendarSync.status === 'stale' ? 'Showing your last update' : 'Your family’s schedule') + '</div>' +
@@ -152,6 +154,7 @@
   App.on('meals', mealCard);
 
   App.on('travel',function(){if(V.el)V.el.querySelector('.h-hero-slot').innerHTML=hero();});
+  App.on('sports',function(){if(V.el)V.el.querySelector('.h-hero-slot').innerHTML=hero();});
 
   App.on('reminders', function () { if (V.el) V.el.querySelector('.h-reminders').innerHTML = App.reminderPreview(); });
 

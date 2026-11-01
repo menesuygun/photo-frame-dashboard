@@ -38,3 +38,22 @@
 
 .sp-hero h2 .sp-banner-score { display:inline-block; font:800 34px/1.2 var(--sans); font-variant-numeric:tabular-nums; color:#ffe196; white-space:nowrap; }
 @media(max-width:600px) { .sp-hero h2 .sp-banner-score { display:block; font-size:29px; margin:8px 0; } }
+
+/* Matchday takes the Today hero, matching the Sports banner's club colours. */
+.home .h-hero--gs { background:linear-gradient(115deg,#84172a,#ae2436 70%,#c04430); color:#fff7de; border-bottom:4px solid #f6c344; gap:16px; align-items:center; }
+.h-hero--gs:after { content:''; position:absolute; width:200px; height:200px; border:35px solid #f6c344; border-radius:50%; right:-100px; top:-125px; opacity:.16; pointer-events:none; }
+.h-hero--gs .h-hero-main,.h-gs-crest,.h-gs-score { position:relative; z-index:1; }
+.h-hero--gs .label { color:#ffe196; font-size:13px; }.home .h-hero--gs .h-hero-title { font-size:32px; line-height:1.04; margin:6px 0; }
+.h-gs-vs { color:#f6c344; font-size:.7em; font-style:italic; }
+.h-gs-crest { width:70px; flex:0 0 70px; }.h-gs-crest img { display:block; width:100%; height:88px; object-fit:contain; filter:drop-shadow(0 3px 7px #41061966); }
+.h-hero--gs .h-hero-meta { font-size:13px; line-height:1.3; opacity:.95; }.h-hero--gs .h-hero-foot { font-size:12px; line-height:1.3; gap:10px; margin-top:10px; }
+.h-gs-live-note { color:#ffe196; font-weight:800; }.h-gs-open { font-weight:700; }
+.h-gs-score { flex:none; min-width:90px; font-size:45px; line-height:1; text-align:right; white-space:nowrap; color:#ffe196; }
+.h-gs-score small { display:block; font:800 13px/1.3 var(--sans); letter-spacing:.1em; margin-top:6px; }
+@media(max-width:600px) {
+ .home .h-hero--gs { display:grid; grid-template-columns:48px minmax(0,1fr); gap:10px; padding:16px; }
+ .h-hero--gs .h-gs-crest { grid-column:1; grid-row:1; width:48px; }.h-gs-crest img { height:60px; }
+ .h-hero--gs .h-hero-main { grid-column:2; grid-row:1/3; }.home .h-hero--gs .h-hero-title { font-size:25px; }
+ .h-hero--gs .h-gs-score { grid-column:1; grid-row:2; min-width:0; font-size:25px; text-align:center; align-self:start; }.h-gs-score small { font-size:10px; letter-spacing:.02em; }
+ .h-hero--gs .label { font-size:11px; }.h-hero--gs .h-hero-meta,.h-hero--gs .h-hero-foot { font-size:12px; }
+}

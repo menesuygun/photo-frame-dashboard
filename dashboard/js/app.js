@@ -367,6 +367,7 @@
     }
     // Switch tabs the instant a finger lands (pointerdown), not on release. Keyboard "clicks"
     // (detail === 0) still work.
+    var lastTodayTap = 0;
     $('#rail').addEventListener('pointerdown', function (e) {
       var b = e.target.closest('[data-go]');
       if (b && e.button === 0) App.go(b.dataset.go);
@@ -374,6 +375,14 @@
     $('#rail').addEventListener('click', function (e) {
       if (e.target.closest('[data-screensaver]')) { App.openScreensaver(); return; }
       var b = e.target.closest('[data-go]');
+      if (b && b.dataset.go === 'home') {
+        var tapTime = Date.now();
+        if (lastTodayTap && tapTime - lastTodayTap <= 500) { lastTodayTap = 0; history.replaceState(null, '', '#home'); window.location.reload(); return; }
+        lastTodayTap = tapTime;
+        if (e.detail === 0) App.go('home');
+        return;
+      }
+      lastTodayTap = 0;
       if (b && e.detail === 0) App.go(b.dataset.go);
     });
     document.addEventListener('pointerdown', App.resetIdle, true);

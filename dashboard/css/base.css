@@ -316,3 +316,6 @@ button.card:active, .h-hero:active, .h-photo:active { transform: scale(.985); }
 }
 .rail-family-sync:active { background:var(--paper-2); }
 .rail-family-sync:focus-visible { outline:2px solid var(--ink); outline-offset:-4px; }
+
+/* Let the kiosk receive both taps instead of triggering browser zoom. */
+.rail-item[data-go=home] { touch-action:manipulation; }
