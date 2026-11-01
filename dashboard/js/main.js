@@ -2,6 +2,7 @@
 import './icons.js';
 import './data.js';
 import './app.js';
+import './themes.js';
 import './calendar-sync.js';
 import './travel-time.js';
 import './chore-schedule.js';

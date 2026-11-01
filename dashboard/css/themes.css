@@ -1,0 +1,22 @@
+/* Only theme-neutral accents are recoloured; people, match colours and safety signals retain their meaning. */
+:root { --theme-accent:var(--ink); --theme-accent-rgb:var(--ink-rgb); }
+html[data-colour-theme]:not([data-colour-theme="classic"]) .rail-item.is-active,
+html[data-colour-theme]:not([data-colour-theme="classic"]) .btn--solid {
+ background:var(--theme-accent); border-color:var(--theme-accent); color:var(--card);
+}
+.colour-theme-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:20px 0; }
+.colour-theme-option { min-width:0; padding:10px; border:2px solid var(--line); border-radius:14px; background:var(--card); text-align:left; }
+.colour-theme-option[aria-pressed="true"] { border-color:var(--theme-accent); box-shadow:0 0 0 1px var(--theme-accent); }
+.colour-theme-option:focus-visible { outline:3px solid var(--theme-accent); outline-offset:3px; }
+.colour-theme-sample { display:flex; align-items:center; gap:12px; height:76px; padding:12px 16px; border-radius:8px; background:var(--preview-paper); color:var(--preview-ink); }
+.colour-theme-demo-title { font:38px/1 var(--serif); }
+.colour-theme-demo-card { height:42px; flex:1; background:var(--preview-card); border-radius:8px; border-bottom:3px solid var(--preview-ink); }
+.colour-theme-dot { width:24px; height:24px; border-radius:50%; background:var(--preview-accent); }
+.colour-theme-name { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-top:10px; font-size:17px; font-weight:750; line-height:1.25; }
+.colour-theme-selected { display:none; font-size:11px; padding:3px 6px; border-radius:10px; background:var(--theme-accent); color:var(--card); }
+[aria-pressed="true"] > .colour-theme-name .colour-theme-selected { display:inline; }
+.colour-theme-note { display:block; margin-top:4px; font-size:13px; line-height:1.35; color:var(--ink-2); }
+.colour-theme-credit { font-size:13px; line-height:1.5; color:var(--ink-2); }
+.colour-theme-status { font-size:14px; line-height:1.4; min-height:22px; margin-top:12px; }
+.colour-theme-done { margin-top:12px; width:100%; }
+@media(max-width:480px) { .colour-theme-grid { gap:10px; }.colour-theme-sample { padding:10px; gap:8px; }.colour-theme-name { font-size:15px; }.colour-theme-note { font-size:12px; } }

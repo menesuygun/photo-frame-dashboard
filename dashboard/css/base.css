@@ -305,13 +305,13 @@ button.card:active, .h-hero:active, .h-photo:active { transform: scale(.985); }
 
 .rail-credits { font-size: 10px; text-align: center; color: var(--mute); text-decoration: none; padding: 2px 0; }
 
-/* Full touch target for frame settings, rather than a footer-sized link. */
+/* Compact text link with a comfortable touch target at the bottom of the rail. */
 .rail { overflow-y:auto; overscroll-behavior:contain; }
 .rail-family-sync {
- display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
- width:100%; min-height:64px; flex:0 0 64px; margin-top:0; padding:5px 4px;
- color:var(--ink-2); font-size:12px; font-weight:800; font-stretch:75%;
- line-height:1.1; letter-spacing:.04em; text-transform:uppercase; text-align:center;
+ display:flex; align-items:center; justify-content:center;
+ width:100%; min-height:44px; flex:0 0 44px; margin-top:0; padding:4px;
+ color:var(--ink-2); font-size:12px; font-weight:500;
+ line-height:1.3; text-align:center; text-decoration:underline; text-underline-offset:3px;
  touch-action:manipulation;
 }
 .rail-family-sync:active { background:var(--paper-2); }
