@@ -1,4 +1,4 @@
-// Ambient (idle photo frame) and Night (dim red clock) overlays.
+// Daytime photo screensaver and a quiet, theme-tinted night display (11 PM–6 AM).
 (function () {
   'use strict';
   var D = window.DATA, $ = App.$;
@@ -15,13 +15,19 @@
       '</div>';
   }
   function nightInfo() {
-    var n = App.now(), tomorrow = App.addDays(n, n.getHours() < 6 ? 0 : 1);
-    var first = App.timedOn(tomorrow)[0], w = App.weatherNow();
-    return '<div class="nt-time num">' + App.fmt.time(n, false) + '</div>' +
-      '<div class="nt-line">' + App.icon(w.cond, 26) + ' ' + w.temp + '° · ' + (first ? 'First up ' + App.fmt.rel(first.start).toLowerCase() + ': <b>' + App.esc(first.title) + '</b> ' + App.fmt.time(first.start) + ' · ' + App.person(first.people[0]).name : 'Nothing early tomorrow') + '</div>';
+    var n = App.now(), w = App.weatherNow();
+    var next = App.events().filter(function (event) { return event.start > n; }).sort(function (a, b) { return a.start - b.start; })[0];
+    return '<div class="nt-clock"><div class="nt-time num">' + App.fmt.time(n, false) + '<span class="nt-ampm">' + App.fmt.ampm(n) + '</span></div>' +
+      '<div class="nt-date serif">' + App.fmt.day(n) + ', ' + App.fmt.month(n) + ' ' + n.getDate() + '</div></div>' +
+      '<div class="nt-details"><div class="nt-weather"><div class="nt-label">East Gwillimbury</div><div class="nt-weather-now">' + App.icon(w.cond, 30) + '<span>' + App.esc(w.temp) + '°</span></div><div class="nt-weather-text">' + App.esc(w.label || w.summary || 'Weather unavailable') + '</div></div>' +
+      '<div class="nt-next"><div class="nt-label">Next event</div>' + (next ? '<div class="nt-event-title">' + App.esc(next.title) + '</div><div class="nt-event-time">' + App.esc(App.fmt.rel(next.start)) + ' · ' + (next.allDay ? 'All day' : App.fmt.time(next.start)) + '</div>' : '<div class="nt-event-title">No upcoming events</div>') + '</div></div>';
   }
 
   function paint() {
+    if (App.mode === 'ambient' || App.mode === 'night') {
+      var expected = App.isNight() ? 'night' : 'ambient';
+      if (App.mode !== expected) { App.setMode(expected); return; }
+    }
     if (App.mode === 'ambient') $('#ambient .amb-info').innerHTML = ambientInfo();
     if (App.mode === 'night') $('#night .nt-inner').innerHTML = nightInfo();
   }
@@ -48,4 +54,6 @@
     App.resetIdle();
   });
   App.on('minute', paint);
+  App.on('weather', paint);
+  App.on('data', paint);
 })();

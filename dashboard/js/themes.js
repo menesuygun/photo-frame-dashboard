@@ -13,11 +13,17 @@
   ];
   var selected = 'classic';
   function rgb(hex) { return [1, 3, 5].map(function (n) { return parseInt(hex.slice(n, n + 2), 16); }).join(' '); }
+  function mix(first, second, amount) {
+    return '#' + [1, 3, 5].map(function (n) {
+      var a = parseInt(first.slice(n, n + 2), 16), b = parseInt(second.slice(n, n + 2), 16);
+      return Math.round(a + (b - a) * amount).toString(16).padStart(2, '0');
+    }).join('');
+  }
   function apply(id) {
     var theme = themes.find(function (t) { return t.id === id; }) || themes[0];
     selected = theme.id;
     var style = document.documentElement.style;
-    var values = { paper: theme.paper, 'paper-2': theme.soft, card: theme.card, ink: theme.ink, 'ink-rgb': rgb(theme.ink), 'ink-2': theme.secondary, mute: theme.mute, line: theme.line, 'theme-accent': theme.accent, 'theme-accent-rgb': rgb(theme.accent) };
+    var values = { paper: theme.paper, 'paper-2': theme.soft, card: theme.card, ink: theme.ink, 'ink-rgb': rgb(theme.ink), 'ink-2': theme.secondary, mute: theme.mute, line: theme.line, 'theme-accent': theme.accent, 'theme-accent-rgb': rgb(theme.accent), 'night-bg': mix(theme.ink, '#000000', .78), 'night-ink': mix(theme.paper, '#000000', .30), 'night-mute': mix(theme.paper, '#000000', .50), 'night-rule': mix(theme.paper, '#000000', .86), 'night-accent': mix(mix(theme.paper, theme.accent, .20), '#000000', .25) };
     Object.keys(values).forEach(function (name) { style.setProperty('--' + name, values[name]); });
     document.documentElement.dataset.colourTheme = theme.id;
     var meta = document.querySelector('meta[name="theme-color"]');

@@ -154,7 +154,7 @@
     if (b.hasAttribute('data-fastidle')) {
       var fast = App.idle.home >= 60;
       App.idle.home = fast ? 8 : 60;
-      App.idle.ambient = fast ? 15 : 120;
+      App.idle.ambient = fast ? 15 : 300;
       App.openDemo();
       return;
     }

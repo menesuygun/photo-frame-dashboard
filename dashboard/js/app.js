@@ -24,7 +24,7 @@
   App.dayStart = function (d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
   App.addDays = function (d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; };
   App.sameDay = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
-  App.isNight = function () { var h = App.now().getHours(); return h >= 22 || h < 6; };
+  App.isNight = function () { var h = App.now().getHours(); return h >= 23 || h < 6; };
 
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -294,13 +294,14 @@
   // ------------------------------------------------------------ modes: day / ambient / night
   App.setMode = function (m) {
     var stage = $('#stage');
+    if (m === 'ambient' && App.isNight()) m = 'night';
     App.mode = m;
     stage.dataset.mode = m;
     App.emit('mode', m);
   };
 
   // ------------------------------------------------------------ idle
-  App.idle = { home: 60, ambient: 120 };
+  App.idle = { home: 60, ambient: 300 };
   var idleSec = 0;
   function onIdleTick() {
     if (App.householdImporting || App.adhanPlaying) return;
