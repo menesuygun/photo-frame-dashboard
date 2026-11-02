@@ -1,40 +1,19 @@
-/* The bottom right row pairs Shopping with one rotating town update. */
-.home .h-duo { grid-template-columns:minmax(0,1fr) minmax(0,1fr); min-width:0; min-height:0; gap:12px; }
-.h-news { min-width:0; min-height:0; display:flex; flex-direction:column; gap:5px; padding:12px 14px; overflow:hidden; }
-.h-news-head { display:flex; justify-content:space-between; align-items:center; gap:8px; flex:none; }
-.h-news-head .label { font-size:13px; }
-.h-news-next { width:36px; height:28px; display:grid; place-items:center; border-radius:50%; background:var(--paper-2); flex:none; }
-.h-news-next:disabled { opacity:.35; cursor:default; }.h-news-next:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
-.h-news-story { display:block; color:var(--ink); text-decoration:none; min-height:0; overflow-y:auto; flex:1; }
-.h-news-story h3 { font:400 20px/1.05 var(--serif); margin:0 0 7px; overflow-wrap:anywhere; }
-.h-news-story p { font-size:13px; line-height:1.4; color:var(--ink-2); margin:0; }
-.h-news-story:focus-visible { outline:2px solid var(--ink); outline-offset:-2px; }
-.h-news-foot { display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:10px; color:var(--mute); flex:none; }
-.h-news-empty { font-size:14px; line-height:1.4; color:var(--ink-2); }
-@media(min-width:601px) {
- .home.has-meals { grid-template-rows:minmax(216px,max-content) minmax(0,1fr); }
- .home .h-side,.home.has-meals .h-side { display:grid; grid-column:8/13; grid-row:2; grid-template-rows:minmax(0,1fr) 142px 184px; gap:12px; min-height:0; }
- .home.has-meals .h-side { grid-column:15/25; grid-template-rows:minmax(0,1fr) 100px 52px 184px; }
- .home.has-meals .h-main { grid-column:1/15; grid-row:2; grid-template-rows:minmax(0,1fr) 356px; }
- .home:not(.has-meals) .h-main { grid-template-rows:minmax(0,1fr) 334px; }
- .home.has-meals .h-photo,.home.has-meals .h-chore-row,.home.has-meals .h-meals,.home.has-meals .h-duo { grid-column:auto; grid-row:auto; }
- .home .h-duo>.h-shop,.home.has-meals .h-duo>.h-shop { min-width:0; display:flex; flex-direction:column; justify-content:flex-start; gap:6px; padding:14px; overflow:hidden; height:100%; }
- .home .h-stat { flex-wrap:wrap; gap:4px; }.home .h-stat .num { font-size:42px; }.home .h-stat small { font-size:12px; }
- .home .h-recent li { font-size:13px; }
- .home.has-meals .h-meals { flex-direction:row; align-items:center; padding:8px 12px; gap:10px; }
- .home.has-meals .meal-dashboard-head { flex:1; min-width:0; }.home.has-meals .meal-week-list { flex:1; margin:0; }.home.has-meals .meal-dashboard-head .label { font-size:11px; }
- .home.has-meals .meal-today-item .meal-photo,.home.has-meals .meal-today-item .meal-illustration { width:28px; height:28px; font-size:20px; }.home.has-meals .meal-today-item b { font-size:12px; }
-}
+/* Local news lives inside Sports / News, with the dashboard's paper and ink palette. */
+.eg-news-feature { background:var(--card); border-radius:22px; border:1px solid var(--line); padding:28px 32px; }
+.eg-news-head { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:28px; }
+.eg-news-identity { display:flex; align-items:center; gap:14px; }.eg-news-identity>div { display:flex; flex-direction:column; gap:5px; }.eg-news-identity>div>span { font-size:14px; color:var(--mute); }
+.eg-news-badge { display:grid; place-items:center; width:58px; height:58px; border-radius:50%; background:var(--ink); color:var(--paper); font:400 28px/1 var(--serif); flex:none; }
+.eg-news-head .btn { min-height:48px; font-size:14px; padding:0 18px; text-transform:none; letter-spacing:0; }
+.eg-news-head .btn:disabled { opacity:.35; cursor:default; }
+.eg-news-story { display:block; text-decoration:none; color:var(--ink); max-width:900px; }
+.eg-news-story h2 { font:400 43px/1.08 var(--serif); margin:0 0 18px; overflow-wrap:anywhere; }
+.eg-news-story p { font-size:20px; line-height:1.55; color:var(--ink-2); margin:0; }
+.eg-news-read { display:inline-block; margin-top:22px; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:4px; }
+.eg-news-meta { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--line); padding-top:20px; margin-top:25px; color:var(--mute); font-size:13px; }
+.eg-news-empty { display:block; min-height:180px; padding:30px 0; font-size:22px; color:var(--ink-2); }
+.eg-news-story:focus-visible { outline:2px solid var(--ink); outline-offset:6px; }
 @media(max-width:600px) {
- .home .h-duo { grid-template-columns:1fr; }.h-news { min-height:205px; padding:16px; }.h-news-story { overflow:visible; }.h-news-story h3 { font-size:27px; }.h-news-story p { font-size:16px; }.h-news-foot { font-size:12px; margin-top:6px; }
- .home .h-meals[hidden] { display:none; }
-}
-
-@media(min-width:601px) {
- .home .h-hero--empty { gap:2px; padding:14px 18px; }.home .h-hero--empty .h-hero-title { font-size:34px; line-height:1.02; margin:4px 0; }.home .h-hero--empty .h-hero-meta { font-size:12px; line-height:1.3; }
- .home.has-meals .h-hero--empty .h-hero-title { font-size:30px; }
- .home .h-chore-row { min-height:0; }.home .h-chore-row .h-chores,.home .h-chore-row .h-collection { padding:12px 14px; min-height:0; }
- .home.has-meals .h-chore-row .h-chores,.home.has-meals .h-chore-row .h-collection { padding:10px 12px; gap:4px; }
- .home.has-meals .h-chore-row .label { font-size:11px; }.home.has-meals .h-chore-row .ring { width:42px; height:42px; }.home.has-meals .h-chore-row .h-ring .num { width:42px; height:42px; font-size:15px; }.home.has-meals .h-chore-row .h-ring span { font-size:11px; }
- .home.has-meals .collection-bins svg { width:32px; height:44px; }.home.has-meals .collection-bins span { font-size:10px; }
+ .sp-head { flex-wrap:wrap; }.sp-head h1 { font-size:44px; }.sp-update { flex-wrap:wrap; }
+ .eg-news-feature { padding:20px 18px; }.eg-news-head { flex-wrap:wrap; gap:15px; margin-bottom:22px; }.eg-news-head .label { font-size:12px; }
+ .eg-news-story h2 { font-size:32px; }.eg-news-story p { font-size:17px; }.eg-news-badge { width:46px; height:46px; font-size:24px; }
 }

@@ -17,7 +17,7 @@ function summarize(html){
  const sentences=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(clean)].map(part=>part.segment.trim()).filter(Boolean);
  // Keep one or two complete opening sentences, avoiding a long second sentence on a glanceable card.
  let result=sentences[0]||clean;
- if(sentences[1]&&result.length+sentences[1].length<150)result+=' '+sentences[1];
+ if(sentences[1]&&(result.length<60||result.length+sentences[1].length<180))result+=' '+sentences[1];
  return result.slice(0,600);
 }
 export function parseNews(html){
