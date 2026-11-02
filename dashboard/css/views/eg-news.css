@@ -17,3 +17,9 @@
  .eg-news-feature { padding:20px 18px; }.eg-news-head { flex-wrap:wrap; gap:15px; margin-bottom:22px; }.eg-news-head .label { font-size:12px; }
  .eg-news-story h2 { font-size:32px; }.eg-news-story p { font-size:17px; }.eg-news-badge { width:46px; height:46px; font-size:24px; }
 }
+
+.eg-news-filters { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; }
+.eg-news-filters button { min-height:44px; padding:8px 18px; border:1px solid var(--line); border-radius:999px; font-size:14px; background:var(--card); }
+.eg-news-filters button[aria-pressed=true] { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.eg-news-meta a { color:inherit; text-underline-offset:3px; }
+.eg-news-story p { white-space:normal; }

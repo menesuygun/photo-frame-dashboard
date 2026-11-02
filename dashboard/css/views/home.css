@@ -155,3 +155,16 @@
 
 /* Keep all-day and timed cards reachable in compact Today lanes. */
 .h-lane { overflow-y:auto; }.h-lane-head,.h-ev,.h-free,.h-more { flex-shrink:0; }
+
+/* Monthly reminder uses the space below the family calendar lanes. */
+.h-lane-area { display:flex; flex-direction:column; gap:12px; min-height:0; }
+.h-lane-area>.h-lanes { flex:1; min-height:0; }
+.h-lane-area.has-rent-notice>.h-lanes { overflow-y:auto; }
+.h-rent-day { flex:none; display:flex; align-items:center; justify-content:space-between; gap:18px; border-radius:16px; background:#85283B; color:#FFF3EB; padding:16px 22px; }
+.h-rent-day[hidden] { display:none; }
+.h-rent-day small { max-width:130px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; line-height:1.4; }
+.h-rent-day b { font-size:60px; line-height:.95; font-stretch:70%; font-weight:850; letter-spacing:-.02em; }
+.home.has-meals .h-rent-day { padding:9px 14px; }.home.has-meals .h-rent-day b { font-size:36px; }.home.has-meals .h-rent-day small { font-size:10px; }
+@media(max-width:600px) {
+ .h-lane-area { gap:16px; }.h-lane-area>.h-lanes { flex:none; }.h-rent-day { flex-wrap:wrap; gap:8px; padding:16px; }.h-rent-day b { font-size:44px; }.h-rent-day small { max-width:none; font-size:11px; }
+}

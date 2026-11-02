@@ -131,6 +131,15 @@
       }).join('') + '</ul>';
   }
 
+  function rentNotice() {
+    if (!V.el) return;
+    var slot = V.el.querySelector('.h-rent-day');
+    if (!slot) return;
+    var day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', day: 'numeric' }).format(App.now());
+    slot.hidden = day !== '1';
+    V.el.querySelector('.h-lane-area').classList.toggle('has-rent-notice', !slot.hidden);
+  }
+
   function status() {
     var lights = D.devices.filter(function (d) { return d.type === 'light' && d.on; }).length;
     return '<div class="label">Home</div>' +
@@ -145,8 +154,10 @@
     el.querySelector('.h-reminders').innerHTML = App.reminderPreview();
     el.querySelector('.h-hero-slot').innerHTML = hero();
     el.querySelector('.h-lanes').innerHTML = lanes();
+    rentNotice();
     el.querySelector('.h-chores').innerHTML = chores();
     collection();
+    rentNotice();
     mealCard();
     el.querySelector('.h-shop').innerHTML = shopping();
   }
@@ -173,7 +184,7 @@
           '<div class="h-clock" data-go="calendar"></div>' +
           '<div class="h-weather"></div>' +
           '<div class="h-reminders"></div>' +
-          '<div class="h-main"><div class="h-hero-slot"></div><div class="h-lanes" ></div></div>' +
+          '<div class="h-main"><div class="h-hero-slot"></div><div class="h-lane-area"><div class="h-lanes"></div><aside class="h-rent-day" role="note" aria-label="Rent is due today" hidden><small>1st of the month</small><b>RENT DAY</b></aside></div></div>' +
           '<div class="h-side">' +
           '  <button class="h-photo" data-go="photos"><div class="h-photo-stage"></div><div class="h-photo-cap"></div></button>' +
           '  <div class="h-chore-row"><button class="h-chores card" data-go="tasks"></button><aside class="h-collection card" role="status" hidden></aside></div>' +
@@ -202,6 +213,7 @@
     if (!V.el || !V.el.firstChild) return;
     V.el.querySelector('.h-clock').innerHTML = clock();
     collection();
+    rentNotice();
     mealCard();
     V.el.querySelector('.h-hero-slot').innerHTML = hero();
     if (n.getMinutes() === 0) { V.el.querySelector('.h-weather').innerHTML = weather(); V.el.querySelector('.h-lanes').innerHTML = lanes(); }
