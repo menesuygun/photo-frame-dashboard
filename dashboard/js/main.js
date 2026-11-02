@@ -41,3 +41,5 @@ import './google-tasks.js';
 import './eg-schedules.js';
 
 import './alexa-shopping.js';
+
+import './eg-news.js';
