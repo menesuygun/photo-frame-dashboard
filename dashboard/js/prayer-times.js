@@ -29,7 +29,7 @@
   var prayerHTML = App.prayerTimesHTML;
   App.prayerTimesHTML = function () {
     var html = prayerHTML();
-    var link = '<button class="h-adhan-link" data-go="adhan" aria-label="Open Adhan and prayer audio settings">☾ Adhan</button>';
+    var link = '<button class="h-adhan-link" data-go="adhan" aria-label="Open Adhan and prayer audio settings">☾ Adhan' + (App.adhanAudioLabel ? App.esc(App.adhanAudioLabel()) : '') + '</button>';
     return html.includes('h-prayer-panel') ? html.replace('<div class="h-prayer-panel">', '<div class="h-prayer-panel">' + link) : '<div class="h-prayer-panel">' + link + html + '</div>';
   };
   App.refreshPrayers = async function () {

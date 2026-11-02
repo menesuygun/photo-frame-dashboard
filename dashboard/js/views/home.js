@@ -24,6 +24,7 @@
       }).join('') + '</div>';
   }
 
+  App.on('adhan-status', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
   App.on('prayers', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
   App.on('weather', function () { if (V.el) V.el.querySelector('.h-weather').innerHTML = weather(); });
 
