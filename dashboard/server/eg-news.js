@@ -14,7 +14,7 @@ export function text(html){
 function published(value){const m=value.match(/([A-Z][a-z]+) (\d{1,2}), (\d{4})/);if(!m)return null;const months=['January','February','March','April','May','June','July','August','September','October','November','December'],month=months.indexOf(m[1])+1;return month?m[3]+'-'+String(month).padStart(2,'0')+'-'+m[2].padStart(2,'0'):null;}
 export function summarize(html){
  const clean=text(html);if(!clean)return '';
- const sentences=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(clean)].map(part=>part.segment.trim()).filter(Boolean);
+ const sentences=[...new Intl.Segmenter('en',{granularity:'sentence'}).segment(clean)].map(part=>part.segment.trim()).filter(sentence=>sentence&&!/^(?:view\b|read\b|learn more\b|visit\b|click\b|for more\b|to learn more\b|to view\b|for project updates\b)/i.test(sentence));
  let result=sentences[0]||clean;
  for(const sentence of sentences.slice(1,3)){if(result.length+sentence.length>800)break;result+=' '+sentence;}
  return result.slice(0,1200);
