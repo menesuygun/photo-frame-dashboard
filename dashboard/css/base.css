@@ -305,17 +305,20 @@ button.card:active, .h-hero:active, .h-photo:active { transform: scale(.985); }
 
 .rail-credits { font-size: 10px; text-align: center; color: var(--mute); text-decoration: none; padding: 2px 0; }
 
-/* Compact text link with a comfortable touch target at the bottom of the rail. */
+/* Keep the Settings touch target compact at the bottom of the rail. */
 .rail { overflow-y:auto; overscroll-behavior:contain; }
-.rail-family-sync {
- display:flex; align-items:center; justify-content:center;
+.rail-settings {
+ display:flex; align-items:center; justify-content:center; gap:4px;
  width:100%; min-height:44px; flex:0 0 44px; margin-top:0; padding:4px;
  color:var(--ink-2); font-size:12px; font-weight:500;
- line-height:1.3; text-align:center; text-decoration:underline; text-underline-offset:3px;
+ line-height:1.3; text-align:center;
  touch-action:manipulation;
 }
-.rail-family-sync:active { background:var(--paper-2); }
-.rail-family-sync:focus-visible { outline:2px solid var(--ink); outline-offset:-4px; }
+.rail-settings:active { background:var(--paper-2); }
+.rail-settings:focus-visible { outline:2px solid var(--ink); outline-offset:-4px; }
+@media(max-width:600px) {
+ .rail-settings { flex-direction:column; gap:2px; font-size:10px; }
+}
 
 /* Let the kiosk receive both taps instead of triggering browser zoom. */
 .rail-item[data-go=home] { touch-action:manipulation; }

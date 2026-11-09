@@ -25,3 +25,9 @@
 }
 
 .alexa-shopping-settings a.btn { text-decoration:none; }
+.settings-secular {
+ display:flex; align-items:center; justify-content:space-between; gap:12px;
+ min-height:56px; margin:12px 0 24px; padding:10px 14px;
+ background:var(--card); border-radius:12px; cursor:pointer;
+}
+.settings-secular small { display:block; margin-top:3px; color:var(--ink-2); }
