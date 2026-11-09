@@ -34,9 +34,14 @@ function setup(storage = new Map([['frame-adhan-settings-v1', '{"Fajr":true}']])
     localStorage: {getItem: k => storage.get(k) ?? null, setItem: (k, v) => storage.set(k, v), removeItem: k => storage.delete(k)}
   });
   const controls = {};
-  view.show({dataset: {}, addEventListener: (name, handler) => controls[name] = handler});
+  const el = {
+    dataset: {},
+    addEventListener: (name, handler) => controls[name] = handler,
+    querySelector: () => ({focus() {}})
+  };
+  view.show(el);
   return {
-    App, storage, routes, player,
+    App, storage, routes, player, el,
     async tick(minutes) { now += minutes * 60000; await events.second(); },
     async end() { player.ended = true; await audioEvents.ended(); },
     error() { audioEvents.error(); },
@@ -44,7 +49,10 @@ function setup(storage = new Map([['frame-adhan-settings-v1', '{"Fajr":true}']])
       controls.click({target: {closest: () => ({hasAttribute: name => name === attribute, dataset: {}})}});
       await new Promise(resolve => setImmediate(resolve));
     },
-    select(name) { controls.change({target: {dataset: {prayer: name}, checked: true}}); }
+    select(name) { controls.change({target: {hasAttribute: () => false, dataset: {prayer: name}, checked: true}}); },
+    toggleSecular(checked) {
+      controls.change({target: {hasAttribute: name => name === 'data-secular-mode', checked}});
+    }
   };
 }
 
@@ -85,8 +93,9 @@ test('refresh keeps automatic audio on and asks for a tap only after a browser b
 test('secular mode persists, stops previews, and skips prayers that came due while on', async () => {
   const first = setup();
   await first.click('data-adhan-enable');
-  first.App.setSecularMode(true);
+  first.toggleSecular(true);
   assert.equal(first.player.paused, true);
+  assert.match(first.el.innerHTML, /data-secular-mode checked/);
   await first.end();
   assert.deepEqual(first.player.plays, ['/adhan.mp3']);
 
@@ -95,7 +104,7 @@ test('secular mode persists, stops previews, and skips prayers that came due whi
   s.select('Dhuhr');
   await s.click('data-adhan-enable');
   await s.tick(1);
-  s.App.setSecularMode(false);
+  s.toggleSecular(false);
   await s.tick(0);
   assert.deepEqual(s.player.plays, []);
   await s.tick(1);

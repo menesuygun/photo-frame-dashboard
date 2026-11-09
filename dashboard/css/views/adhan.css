@@ -17,3 +17,11 @@
 .adhan-image figcaption a { color:inherit; font-size:10px; text-underline-offset:2px; }
 
 .adhan-prayer>span:first-child { flex-wrap:wrap; row-gap:3px; }.adhan-recording { flex-basis:100%; color:var(--mute); font-size:12px!important; }.adhan-about a { color:inherit; }.adhan-previews { display:flex; flex-wrap:wrap; gap:7px; margin-top:18px; }.adhan-previews>.label { flex-basis:100%; margin-bottom:3px; }.adhan-previews .btn { min-height:40px; font-size:12px; padding:6px 12px; }
+
+.secular-mode {
+ display:flex; align-items:center; justify-content:space-between; gap:12px;
+ min-height:56px; margin:12px 0 24px; padding:10px 14px;
+ background:var(--card); border-radius:12px; cursor:pointer;
+}
+.secular-mode small { display:block; margin-top:3px; color:var(--ink-2); }
+.adhan-panel .secular-mode { background:var(--paper); margin:16px 0 0; }
