@@ -50,9 +50,11 @@ function setup(storage = new Map([['frame-adhan-settings-v1', '{"Fajr":true}']])
 
 test('a selected prayer plays once, followed by the dua, and returns to Today', async () => {
   const s = setup();
+  assert.equal(s.App.adhanAudioLabel(), ' · auto on');
   await s.tick(1);
   assert.deepEqual(s.player.plays, ['/adhan.mp3']);
   assert.deepEqual(s.routes, ['adhan']);
+  assert.equal(s.App.adhanAudioLabel(), ' · audio ready');
   await s.end();
   assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3']);
   assert.equal(s.App.adhanPlaying, true);
@@ -61,6 +63,23 @@ test('a selected prayer plays once, followed by the dua, and returns to Today', 
   await s.tick(1);
   assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3']);
   assert.deepEqual(s.routes, ['adhan', 'home']);
+});
+
+test('refresh keeps automatic audio on and asks for a tap only after a browser block', async () => {
+  const first = setup();
+  await first.click('data-adhan-enable');
+  assert.equal(first.App.adhanAudioLabel(), ' · audio ready');
+
+  const s = setup(first.storage);
+  assert.equal(s.App.adhanAudioLabel(), ' · auto on');
+  const play = s.player.play;
+  s.player.play = async () => { throw new DOMException('Playback blocked', 'NotAllowedError'); };
+  await s.tick(1);
+  assert.equal(s.App.adhanAudioLabel(), ' · tap to allow audio');
+  s.player.play = play;
+  await s.click('data-adhan-enable');
+  assert.equal(s.App.adhanAudioLabel(), ' · audio ready');
+  assert.deepEqual(s.player.plays, ['/adhan.mp3']);
 });
 
 test('secular mode persists, stops previews, and skips prayers that came due while on', async () => {
