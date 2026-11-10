@@ -25,6 +25,3 @@
 }
 .secular-mode small { display:block; margin-top:3px; color:var(--ink-2); }
 .adhan-panel .secular-mode { background:var(--paper); margin:16px 0 0; }
-
-.adhan-source { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin:14px 0 4px; }
-.adhan-source select { min-height:44px; max-width:100%; padding:6px 10px; border:1px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink); font:inherit; }

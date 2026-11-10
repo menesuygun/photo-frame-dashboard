@@ -50,41 +50,17 @@ function setup(storage = new Map([['frame-adhan-settings-v1', '{"Fajr":true}']])
       await new Promise(resolve => setImmediate(resolve));
     },
     select(name) { controls.change({target: {hasAttribute: () => false, dataset: {prayer: name}, checked: true}}); },
-    selectRecording(value) {
-      controls.change({target: {hasAttribute: name => name === 'data-adhan-recording', value}});
-    },
     toggleSecular(checked) {
       controls.change({target: {hasAttribute: name => name === 'data-secular-mode', checked}});
     }
   };
 }
 
-test('recording choice survives refresh and routes both preview and scheduled audio', async () => {
-  const first = setup();
-  first.selectRecording('ayasofya');
-  await first.click('data-adhan-enable');
-  assert.match(first.player.plays[0], /832531_18029529-hq\.mp3$/);
-  first.selectRecording('sultanahmet');
-  first.select('Dhuhr');
-
-  const next = setup(first.storage);
-  assert.match(next.el.innerHTML, /value="sultanahmet" selected/);
-  await next.tick(1);
-  assert.deepEqual(next.player.plays, ['/adhan.mp3']);
-  await next.end();
-  await next.end();
-  await next.end();
-  await next.tick(1);
-  assert.match(next.player.plays.at(-1), /456941_6674270-lq\.mp3$/);
-
-  next.selectRecording('konya');
-  const restored = setup(next.storage);
-  await restored.click('data-adhan-enable');
-  assert.deepEqual(restored.player.plays, ['/adhan.mp3']);
-});
-
 test('a selected prayer plays once, followed by Arabic and Turkish dua, and returns to Today', async () => {
-  const s = setup();
+  const s = setup(new Map([
+    ['frame-adhan-settings-v1', '{"Fajr":true}'],
+    ['frame-adhan-recording-v1', 'sultanahmet']
+  ]));
   assert.equal(s.App.adhanAudioLabel(), ' · auto on');
   await s.tick(1);
   assert.deepEqual(s.player.plays, ['/adhan.mp3']);
