@@ -50,6 +50,7 @@
   Isha:{label:'Yatsı · Rast',file:'rast-makaminda-yatsi-ezani.mp3'}
  };
  const duaSource=assets.dua||'https://api.spreaker.com/download/episode/53209156/ezan_duasi.mp3';
+ const duaTurkishSource=assets.duaTurkish||'/assets/ezan-duasi-tr.m4a';
  let activeSource='';
  function finishAutomatic(returnHome=true){activeAutomatic=null;if(!A.adhanPlaying)return;A.adhanPlaying=false;A.resetIdle();if(returnHome)A.go('home');}
  function failed(error){
@@ -65,33 +66,58 @@
  }
  async function audioEnded(){
   if(isSecular()||!audio.ended)return;
-  if(audioPhase==='dua'){
+  if(audioPhase==='dua-tr'){
    completeAudio(enabled?'Audio enabled for selected prayers.':'Preview finished. Enable audio for automatic playback.');
    return;
   }
-  if(audioPhase!=='adhan')return;
+  if(audioPhase!=='adhan'&&audioPhase!=='dua-ar')return;
+  const turkish=audioPhase==='dua-ar';
   const generation=++playGeneration;
   audioPhase='';
   try{
-   const p=player(duaSource);
+   const p=player(turkish?duaTurkishSource:duaSource);
    p.currentTime=0;
    await startAudio(p,generation);
    if(generation!==playGeneration)return;
-   audioPhase='dua';
-   message='Playing Ezan Duası.';
+   audioPhase=turkish?'dua-tr':'dua-ar';
+   message=turkish?'Playing the Turkish meaning of Ezan Duası.':'Playing Ezan Duası in Arabic.';
    status();
   }catch{
    if(generation===playGeneration)completeAudio('Ezan Duası could not play on this device.');
   }
  }
  function audioError(){
-  if(audioPhase==='dua'){completeAudio('Ezan Duası could not play on this device.');return;}
+  if(audioPhase==='dua-ar'||audioPhase==='dua-tr'){completeAudio('Ezan Duası could not play on this device.');return;}
   if(audioPhase!=='adhan')return;
   if(activeAutomatic){remove(activeAutomatic.fired);firedMemory.delete(activeAutomatic.fired);}
   failed();
   completeAudio(message);
  }
- const adhanSource=name=>assets.audio||'https://konyacami.com/ses_dosya/'+recordings[name].file;
+ const recordingSets={
+  konya:{label:'Konya'},
+  ayasofya:{label:'Hagia Sophia (Ayasofya)',url:'https://cdn.freesound.org/previews/832/832531_18029529-hq.mp3'},
+  sultanahmet:{label:'Sultanahmet (Blue Mosque)',url:'https://cdn.freesound.org/previews/456/456941_6674270-lq.mp3'}
+ };
+ const recordingKey='frame-adhan-recording-v1';
+ const hasRecording=value=>Object.prototype.hasOwnProperty.call(recordingSets,value);
+ const savedRecording=read(recordingKey);
+ let selectedRecording=hasRecording(savedRecording)?savedRecording:'konya';
+ function recordingFor(name){
+  const set=recordingSets[selectedRecording];
+  if(name!=='Fajr'&&set.url)return set;
+  return {
+   label:recordings[name].label,
+   url:assets.audio||'https://konyacami.com/ses_dosya/'+recordings[name].file
+  };
+ }
+ function recordingSelector(){
+  const options=Object.entries(recordingSets).map(([id,set])=>
+   '<option value="'+id+'"'+(id===selectedRecording?' selected':'')+'>'+set.label+'</option>'
+  ).join('');
+  return '<label class="adhan-source"><strong>Adhan recording</strong>'+
+   '<select data-adhan-recording aria-describedby="adhan-source-note">'+options+'</select></label>'+
+   '<p id="adhan-source-note" class="adhan-help">Saved on this device. The Istanbul options each use one field recording for Dhuhr through Isha. Fajr uses the dedicated Konya dawn recording.</p>';
+ }
  function player(url){
   if(!audio){
    audio=new Audio(url);activeSource=url;audio.preload='auto';
@@ -112,7 +138,7 @@
  function wasFired(key){return firedMemory.has(key)||!!read(key);}
  function markFired(key){firedMemory.add(key);save(key,'played');}
  function showAutomatic(){A.adhanPlaying=true;A.resetIdle();A.closeSheet();A.setMode('day');A.go('adhan');}
- function render(){if(!view)return;const data=A.prayerData?.(),next=A.nextPrayer?.();const audioDisabled=isSecular()?' disabled':'';view.innerHTML='<div class="adhan-page"><header class="adhan-head"><div><div class="label">A MOMENT FOR PRAYER</div><h1 class="serif">Adhan</h1></div><button class="btn btn--ghost" data-adhan-home>Back to Today</button></header><div class="adhan-layout"><figure class="adhan-image">'+(assets.image?'<img src="'+A.esc(assets.image)+'" alt="Sultanahmet Mosque in Istanbul">':'<div class="adhan-image-pending"><span aria-hidden="true">☾</span><h2 class="serif">Sultanahmet</h2><p>Istanbul, Türkiye</p><small>Photo will be added after verification.</small></div>')+'<figcaption>Sultanahmet Mosque · Istanbul<br><a href="https://unsplash.com/photos/kNSREmtaGOE" target="_blank" rel="noopener">Photo by Fatih Yürür · Unsplash</a></figcaption></figure><section class="adhan-panel"><div class="label">EAST GWILLIMBURY</div><h2 class="serif">'+(next?next.hours+' hr '+next.minutes+' min to '+next.name:'Daily prayer times')+'</h2><p class="adhan-location">Hanafi Asr · Toronto time</p>'+A.secularModeSwitch()+'<div class="adhan-times">'+names.map(name=>'<label class="adhan-prayer"><span><b>'+name+'</b><small>'+ (data?time(data.instants[name]):'Times unavailable')+'</small><small class="adhan-recording">'+recordings[name].label+'</small></span><span class="adhan-switch"><input type="checkbox" data-prayer="'+name+'" aria-label="Play adhan for '+name+'" '+(settings[name]?'checked':'')+'><span aria-hidden="true"></span></span></label>').join('')+'</div><div class="adhan-audio"><button class="btn btn--solid" data-adhan-enable'+audioDisabled+'>Enable & test audio</button><button class="btn btn--ghost" data-adhan-stop'+audioDisabled+'>Stop audio</button></div><p class="adhan-status" role="status">'+A.esc(isSecular()?'Secular mode is on. Turn it off to hear adhan and Ezan Duası.':message)+'</p><p class="adhan-help">Switch on the prayers you want to hear on this device. Keep the dashboard open and the device awake. Automatic playback stays on after a refresh. If your browser blocks sound, Today will show “tap to allow audio.” Playback cannot run while the browser is suspended or the device is locked.</p><div class="adhan-previews"><div class="label">Preview each adhan</div>'+names.map(name=>'<button class="btn btn--ghost" data-adhan-preview="'+name+'"'+audioDisabled+'>▶ '+recordings[name].label+'</button>').join('')+'</div></section></div><section class="adhan-about"><h2 class="serif">The call to prayer</h2><p>Each prayer has its own Turkish mosque-style recitation. Sabah uses its separate morning recording, including “Es-salâtü hayrun mine’n-nevm.” The adhan announces the beginning of a prayer time. These times use the same East Gwillimbury schedule shown on Today. Automatic playback runs only for the prayers you select, including while the dashboard screensaver is showing. When it starts, this page opens automatically. Ezan Duası plays after the adhan, then the dashboard returns to Today.</p><p>Recordings: <a href="https://konyacami.com/cami-musikisi" target="_blank" rel="noopener">Konya Camilerini Temizleme Derneği · Câmi Mûsikîsi</a> and <a href="https://www.spreaker.com/episode/ezan-duasi--53209156" target="_blank" rel="noopener">Diyanet Dijital · Ezan Duası</a>.</p><p>Your choices stay on this device. Enable them on the tablet you want to hear.</p></section></div>';}
+ function render(){if(!view)return;const data=A.prayerData?.(),next=A.nextPrayer?.();const audioDisabled=isSecular()?' disabled':'';view.innerHTML='<div class="adhan-page"><header class="adhan-head"><div><div class="label">A MOMENT FOR PRAYER</div><h1 class="serif">Adhan</h1></div><button class="btn btn--ghost" data-adhan-home>Back to Today</button></header><div class="adhan-layout"><figure class="adhan-image">'+(assets.image?'<img src="'+A.esc(assets.image)+'" alt="Sultanahmet Mosque in Istanbul">':'<div class="adhan-image-pending"><span aria-hidden="true">☾</span><h2 class="serif">Sultanahmet</h2><p>Istanbul, Türkiye</p><small>Photo will be added after verification.</small></div>')+'<figcaption>Sultanahmet Mosque · Istanbul<br><a href="https://unsplash.com/photos/kNSREmtaGOE" target="_blank" rel="noopener">Photo by Fatih Yürür · Unsplash</a></figcaption></figure><section class="adhan-panel"><div class="label">EAST GWILLIMBURY</div><h2 class="serif">'+(next?next.hours+' hr '+next.minutes+' min to '+next.name:'Daily prayer times')+'</h2><p class="adhan-location">Hanafi Asr · Toronto time</p>'+A.secularModeSwitch()+recordingSelector()+'<div class="adhan-times">'+names.map(name=>'<label class="adhan-prayer"><span><b>'+name+'</b><small>'+ (data?time(data.instants[name]):'Times unavailable')+'</small><small class="adhan-recording">'+recordingFor(name).label+'</small></span><span class="adhan-switch"><input type="checkbox" data-prayer="'+name+'" aria-label="Play adhan for '+name+'" '+(settings[name]?'checked':'')+'><span aria-hidden="true"></span></span></label>').join('')+'</div><div class="adhan-audio"><button class="btn btn--solid" data-adhan-enable'+audioDisabled+'>Enable & test audio</button><button class="btn btn--ghost" data-adhan-stop'+audioDisabled+'>Stop audio</button></div><p class="adhan-status" role="status">'+A.esc(isSecular()?'Secular mode is on. Turn it off to hear adhan and Ezan Duası.':message)+'</p><p class="adhan-help">Switch on the prayers you want to hear on this device. Keep the dashboard open and the device awake. Automatic playback stays on after a refresh. If your browser blocks sound, Today will show “tap to allow audio.” Playback cannot run while the browser is suspended or the device is locked.</p><div class="adhan-previews"><div class="label">Preview each adhan</div>'+names.map(name=>'<button class="btn btn--ghost" data-adhan-preview="'+name+'"'+audioDisabled+'>▶ '+name+'</button>').join('')+'</div></section></div><section class="adhan-about"><h2 class="serif">The call to prayer</h2><p>Konya uses separate recitations for each prayer. Sabah uses its dedicated morning recording, including “Es-salâtü hayrun mine’n-nevm.” The adhan announces the beginning of a prayer time. These times use the same East Gwillimbury schedule shown on Today. Automatic playback runs only for the prayers you select, including while the dashboard screensaver is showing. When it starts, this page opens automatically. After the adhan, Ezan Duası plays in Arabic, followed by its spoken Turkish meaning. The dashboard then returns to Today.</p><p>Recordings: <a href="https://konyacami.com/cami-musikisi" target="_blank" rel="noopener">Konya Camilerini Temizleme Derneği · Câmi Mûsikîsi</a>, <a href="https://freesound.org/people/cartavetrata/sounds/832531/" target="_blank" rel="noopener">Hagia Sophia by cartavetrata</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>), <a href="https://freesound.org/people/lindacass/sounds/456941/" target="_blank" rel="noopener">Sultanahmet by lindacass</a> (<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>), and <a href="https://www.spreaker.com/episode/ezan-duasi--53209156" target="_blank" rel="noopener">Diyanet Dijital · Ezan Duası</a>.</p><p>Your choices stay on this device. Enable them on the tablet you want to hear.</p></section></div>';}
  async function enable(name='Dhuhr',automatic=true){
   if(isSecular()||A.adhanPlaying)return;
   const due=pendingPrayer&&settings[pendingPrayer.name]&&Date.now()-pendingPrayer.at<=120000?pendingPrayer:null;
@@ -120,11 +146,12 @@
   const generation=++playGeneration;
   audioPhase='';
   try{
-   const p=player(adhanSource(name));
+   const recording=recordingFor(name);
+   const p=player(recording.url);
    p.currentTime=0;await startAudio(p,generation);if(generation!==playGeneration)return;
    audioPhase='adhan';unlocked=true;blocked=false;
    if(automatic&&due){markFired(due.fired);activeAutomatic=due;pendingPrayer=null;showAutomatic();}
-   message='Playing '+recordings[name].label+'. '+(enabled?'Audio is enabled for your selected prayers.':'Tap Enable & test audio to turn on automatic playback.');
+   message='Playing '+recording.label+'. '+(enabled?'Audio is enabled for your selected prayers.':'Tap Enable & test audio to turn on automatic playback.');
   }catch(error){if(generation!==playGeneration)return;failed(error);}status();
  }
  function stop(returnHome=true){
@@ -152,7 +179,7 @@
    attempts.set(fired,Date.now());pendingPrayer={name,at,fired};const generation=++playGeneration;
    audioPhase='';
    try{
-    const p=player(adhanSource(name));p.currentTime=0;await startAudio(p,generation);if(generation!==playGeneration)return;
+    const p=player(recordingFor(name).url);p.currentTime=0;await startAudio(p,generation);if(generation!==playGeneration)return;
     audioPhase='adhan';activeAutomatic={name,at,fired};
     markFired(fired);pendingPrayer=null;unlocked=true;blocked=false;message=name+' adhan is playing.';showAutomatic();
    }catch(error){
@@ -168,6 +195,15 @@
  function mount(el){view=el;if(!el.dataset.adhanBound){el.dataset.adhanBound='yes';el.addEventListener('change',e=>{if(e.target.hasAttribute('data-secular-mode')){
    A.setSecularMode(e.target.checked);
    el.querySelector('[data-secular-mode]').focus({preventScroll:true});
+   return;
+  }
+  if(e.target.hasAttribute('data-adhan-recording')){
+   const value=e.target.value;
+   if(!hasRecording(value))return;
+   selectedRecording=value;
+   save(recordingKey,value);
+   status();
+   el.querySelector('[data-adhan-recording]').focus({preventScroll:true});
    return;
   }
   const name=e.target.dataset.prayer;if(!names.includes(name))return;settings[name]=e.target.checked;save(key,JSON.stringify(settings));status();});el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-adhan-home'))A.go('home');else if(b.hasAttribute('data-adhan-enable'))enable();else if(b.hasAttribute('data-adhan-stop'))stop();else if(names.includes(b.dataset.adhanPreview))enable(b.dataset.adhanPreview,false);});}render();}
