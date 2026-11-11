@@ -30,6 +30,7 @@ import './education/view.js';
 
 import './household-sync.js';
 
+import './views/pickleball.js';
 import './views/sports.js';
 
 import './views/adhan.js';

@@ -57,3 +57,23 @@
  .h-hero--gs .h-gs-score { grid-column:1; grid-row:2; min-width:0; font-size:25px; text-align:center; align-self:start; }.h-gs-score small { font-size:10px; letter-spacing:.02em; }
  .h-hero--gs .label { font-size:11px; }.h-hero--gs .h-hero-meta,.h-hero--gs .h-hero-foot { font-size:12px; }
 }
+
+.pk-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:12px 0 20px; }
+.pk-heading h2 { font-size:42px; margin:8px 0; }
+.pk-heading p,.pk-ratings p,.pk-ratings small,.pk-source-note { color:var(--mute); line-height:1.5; }
+.pk-links { display:flex; gap:8px; flex-wrap:wrap; }
+.pk-profile a.btn { display:inline-flex; align-items:center; text-decoration:none; font-size:13px; min-height:44px; }
+.pk-ratings { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.pk-ratings article { padding:22px; border-radius:20px; background:var(--card); border:1px solid var(--line); }
+.pk-ratings strong { display:block; font-size:54px; margin:12px 0; }
+.pk-ratings strong span { font-size:18px; }
+.pk-ratings p { font-size:13px; }.pk-ratings small { font-size:12px; }
+.pk-source-note { margin:16px 0 24px; font-size:13px; }
+.pk-section-title { font-size:20px; margin-bottom:14px; }
+.pk-matches { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:20px; }
+.pk-match { border:1px solid var(--line); background:var(--card); border-radius:16px; padding:18px; }
+.pk-match-meta { display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:12px; margin-bottom:12px; color:var(--mute); }
+.pk-win { color:#267361; }.pk-loss { color:#a53238; }
+.pk-teams { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.pk-teams strong,.pk-teams span { display:block; font-size:14px; line-height:1.5; }.pk-teams span { color:var(--mute); font-size:13px; }.pk-teams>b { font-size:28px; white-space:nowrap; }
+@media(max-width:700px) { .pk-ratings,.pk-matches { grid-template-columns:1fr; }.pk-heading h2 { font-size:34px; } }
