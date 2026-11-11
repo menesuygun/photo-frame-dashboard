@@ -9,6 +9,7 @@ const fixture = {
   duprId: 'TEST', duprUrl: 'https://dashboard.dupr.com/dashboard/player/1',
   profileUrl: 'https://www.globalpickleball.network/test', leagueUrl: 'https://www.globalpickleball.network/league',
   league: 'Doubles', leagueRank: 1, leaguePoints: 20,
+  standings: [{rank: 1, name: '<Test Player>', points: 20, wins: 2, losses: 0, dupr: 3.13}, {rank: 1, name: 'Other Player', points: 20, wins: 0, losses: 2, dupr: null}],
   ratings: {duprDoubles: 3.125, duprSingles: null, gpnDoubles: 2.5, gpnDoublesAccuracy: 100, gpnSingles: 2, gpnSinglesAccuracy: 10},
   matches: [{date: '2026-11-10', partner: 'Partner', opponents: ['Opponent 1', 'Opponent 2'], scoreFor: 7, scoreAgainst: 11}]
 };
@@ -58,6 +59,11 @@ test('the panel labels imports, unrated singles and losses, escapes names, and r
   assert.match(html, /7–11/);
   assert.match(html, /&lt;Test Player&gt;/);
   assert.match(html, /fresh import/);
+  assert.match(html, /League table/);
+  assert.match(html, /class="pk-player-row"/);
+  assert.match(html, /3\.13/);
+  assert.match(html, /<td>0<\/td>/);
+  assert.match(html, /Other Player/);
   fail = true;
   await App.refreshPickleball();
   html = App.pickleballPanelHTML();

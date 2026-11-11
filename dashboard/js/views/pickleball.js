@@ -16,6 +16,20 @@
     } catch { return ''; }
   };
 
+  function leagueTable() {
+    if (!Array.isArray(snapshot.standings) || !snapshot.standings.length) return '';
+    return '<section aria-label="League standings"><h3 class="pk-section-title">League table</h3>' +
+      '<p class="pk-source-note">' + esc(snapshot.league) + ' · Imported ' + esc(date(snapshot.standingsCapturedAt || snapshot.capturedAt)) + '</p>' +
+      '<div class="sp-table-scroll pk-standings" tabindex="0" role="region" aria-label="League standings table"><table class="sp-table"><thead><tr>' +
+      ['Rank', 'Player', 'Points', 'W', 'L', 'DUPR'].map(label => '<th scope="col">' + label + '</th>').join('') +
+      '</tr></thead><tbody>' + snapshot.standings.map(player =>
+        '<tr' + (player.name === snapshot.player ? ' class="pk-player-row"' : '') + '><td>' + esc(player.rank) +
+        '</td><th scope="row">' + esc(player.name) + (player.name === snapshot.player ? ' <span class="pk-you">You</span>' : '') +
+        '</th><td>' + esc(player.points) + '</td><td>' + esc(player.wins) + '</td><td>' + esc(player.losses) +
+        '</td><td>' + (Number.isFinite(player.dupr) ? player.dupr.toFixed(2) : 'NR') + '</td></tr>'
+      ).join('') + '</tbody></table></div></section>';
+  }
+
   A.pickleballPanelHTML = function () {
     if (!snapshot) return '<div class="sp-empty">' + esc(busy ? 'Loading your pickleball profile…' : error || 'Open My Pickleball to load your profile.') + '</div>';
     const r = snapshot.ratings;
@@ -29,7 +43,7 @@
       '<article><div class="label">GPN DOUBLES</div><strong class="num">' + rating(r.gpnDoubles) + '</strong><p>Calculated playing level · ' + esc(r.gpnDoublesAccuracy) + '% accuracy</p><small>GPN singles ' + rating(r.gpnSingles) + ' · ' + esc(r.gpnSinglesAccuracy) + '% accuracy</small></article>' +
       '<article><div class="label">LEAGUE RECORD</div><strong class="num">' + wins + '<span> W / </span>' + losses + '<span> L</span></strong><p>#' + esc(snapshot.leagueRank) + ' · ' + esc(snapshot.leaguePoints) + ' ladder points</p><small>' + matches.length + ' recorded games in this league</small></article></div>' +
       '<p class="pk-source-note">Saved from your signed-in GPN account. New ratings and results need a fresh import.</p>' +
-      '<h3 class="pk-section-title">' + esc(snapshot.league) + '</h3>' +
+      leagueTable() + '<h3 class="pk-section-title">Recent games</h3>' +
       '<div class="pk-matches">' + matches.map(match => {
         const won = match.scoreFor > match.scoreAgainst;
         return '<article class="pk-match"><div class="pk-match-meta"><time>' + esc(date(match.date)) + '</time><b class="' + (won ? 'pk-win' : 'pk-loss') + '">' + (won ? 'WIN' : 'LOSS') + '</b></div>' +

@@ -77,3 +77,11 @@
 .pk-teams { display:flex; justify-content:space-between; align-items:center; gap:12px; }
 .pk-teams strong,.pk-teams span { display:block; font-size:14px; line-height:1.5; }.pk-teams span { color:var(--mute); font-size:13px; }.pk-teams>b { font-size:28px; white-space:nowrap; }
 @media(max-width:700px) { .pk-ratings,.pk-matches { grid-template-columns:1fr; }.pk-heading h2 { font-size:34px; } }
+
+.pk-standings { max-height:420px; overflow:auto; margin-bottom:28px; border:1px solid var(--line); border-radius:16px; }
+.pk-standings .sp-table { min-width:580px; margin:0; }
+.pk-standings thead th { position:sticky; top:0; background:var(--card); z-index:1; }
+.pk-standings tbody th { text-align:left; font-size:14px; font-weight:600; }
+.pk-standings .pk-player-row { background:rgba(38,115,97,.12); }
+.pk-standings .pk-player-row th { font-weight:800; }
+.pk-you { display:inline-block; font-size:10px; margin-left:6px; padding:3px 6px; border-radius:8px; background:#267361; color:white; }
