@@ -9,5 +9,11 @@
     "api/eg-schedules.js": {
       "maxDuration": 40
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/eg-news",
+      "destination": "/api/sports?kind=egnews"
+    }
+  ]
 }

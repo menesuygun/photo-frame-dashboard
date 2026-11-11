@@ -15,7 +15,7 @@
  A.egNewsPanelHTML=function(){return '<section class="eg-news-panel" aria-label="East Gwillimbury news">'+panelContent()+'</section>';};
  async function refresh(){
   if(busy)return;lastRotation=Date.now();if(!navigator.onLine){failed=true;paint();return;}busy=true;
-  try{const response=await fetch('/api/eg-news',{signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error();const value=await response.json();if(!valid(value))throw Error();const current=items()[index%Math.max(1,items().length)]?.url;data=value;index=Math.max(0,items().findIndex(item=>item.url===current));failed=false;try{localStorage.setItem(key,JSON.stringify(data));}catch{}}
+  try{const response=await fetch('/api/sports?kind=egnews',{signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error();const value=await response.json();if(!valid(value))throw Error();const current=items()[index%Math.max(1,items().length)]?.url;data=value;index=Math.max(0,items().findIndex(item=>item.url===current));failed=false;try{localStorage.setItem(key,JSON.stringify(data));}catch{}}
   catch{failed=true;}finally{busy=false;paint();}
  }
  function next(){const count=items().length;if(count>1){index=(index+1)%count;lastRotation=Date.now();paint();}}

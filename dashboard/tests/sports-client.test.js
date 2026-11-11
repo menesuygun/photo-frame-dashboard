@@ -7,8 +7,11 @@ test('returning to cached Sports reconnects controls and preserves scroll throug
  click({target:{closest:()=>({dataset:{sportTab:'standings'}})}});
  assert.match(el.innerHTML,/data-sport-tab="standings" aria-pressed="true"/);
  assert.equal(container.scrollTop,180);
- sports.hide();sports.resume(el);click({target:{closest:()=>({dataset:{sportTab:'news'}})}});
- assert.match(el.innerHTML,/data-sport-tab="news" aria-pressed="true"/);
+ const tabIds=[...el.innerHTML.matchAll(/data-sport-tab="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(tabIds.at(-1),'pickleball');
+ assert.equal(tabIds.includes('news'),false);
+ sports.hide();sports.resume(el);click({target:{closest:()=>({dataset:{sportTab:'egnews'}})}});
+ assert.match(el.innerHTML,/data-sport-tab="egnews" aria-pressed="true"/);
 });
 
 test('banner prioritizes Galatasaray live score and today final over upcoming fixture',async()=>{
