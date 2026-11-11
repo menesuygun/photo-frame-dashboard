@@ -26,10 +26,10 @@ test('personal photo upload persists blobs, replaces demos, and restores after r
   const app = library();
   assert.equal(app.context.window.DATA.photos.length, 0);
   await app.context.App.addPhotoFiles([{ type: 'image/jpeg', size: 100, name: 'Family.jpg', lastModified: Date.now() }]);
-  assert.equal(app.storage.size, 1); assert.equal(app.context.window.DATA.photos[0].place, 'Toronto, Canada');
+  assert.equal(app.storage.size, 1); assert.equal(app.context.window.DATA.photos[0].place, '');
   assert.equal(app.context.window.DATA.photos[0].date, '2021-06-12');
   await app.context.App.editPhotoDetails(app.context.window.DATA.photos[0].id, 'Family picnic', '2020-05-04');
-  assert.equal(app.context.window.DATA.photos[0].place, 'Family picnic');
+  assert.equal(app.context.window.DATA.photos[0].place, '');
   assert.equal(app.context.window.DATA.photos[0].url, 'blob:test');
   assert.ok(app.events.includes('photos'));
   const reloaded = library(app.storage);

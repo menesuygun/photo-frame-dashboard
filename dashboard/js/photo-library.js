@@ -28,7 +28,7 @@
   async function reload() {
     records = await transaction('readonly', function (store) { return store.getAll(); });
     var old = window.DATA.photos;
-    window.DATA.photos = records.map(function (p) { return Object.assign({}, p, { place: p.caption || p.location || '', date: p.dateSource ? p.date : '', url: URL.createObjectURL(p.blob), from: 'family', tag: 'uploads' }); });
+    window.DATA.photos = records.map(function (p) { return Object.assign({}, p, { place: '', date: p.dateSource ? p.date : '', url: URL.createObjectURL(p.blob), from: 'family', tag: 'uploads' }); });
     App.emit('photos'); App.emit('data');
     // Let old slides finish their image transition before releasing their URLs.
     setTimeout(function () { old.forEach(function (p) { if (p.url) URL.revokeObjectURL(p.url); }); }, 3000);
@@ -48,7 +48,7 @@
       if (!blob) throw new Error('This photo could not be saved.');
 
       return { id: crypto.randomUUID(), blob: blob, o: canvas.height > canvas.width ? 'p' : 'l',
-        date: details.date || '', dateSource: details.dateSource || 'unknown', location: details.location || '', caption: (details.caption || '').trim().slice(0, 160), fav: false };
+        date: details.date || '', dateSource: details.dateSource || 'unknown', location: '', caption: '', fav: false };
     } finally { URL.revokeObjectURL(url); }
   }
   ready = reload().catch(function () { App.emit('photos'); });
@@ -78,7 +78,7 @@
   App.openPhotoUpload = function () {
     var previews = [], details = [], files = [], generation = 0;
     App.sheet('<div class="sheet-pad photo-upload"><h2 class="serif sheet-h">Add photos</h2>' +
-      '<p class="sheet-p">Choose JPG, PNG or WebP files. Add a caption or use the detected location. Photo date comes from metadata when available.</p>' +
+      '<p class="sheet-p">Choose JPG, PNG or WebP files. Photo captions show the date only. The date comes from photo metadata when available.</p>' +
       '<label>Choose photos<input type="file" accept="image/jpeg,image/png,image/webp" multiple data-files></label>' +
       '<p class="photo-lookup-note">GPS coordinates are sent to Photon/Komoot for place names; photos stay on this device unless you enable Family sync. Location data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.</p>' +
       '<div data-details></div><p role="status" data-status></p><div class="sheet-actions"><button class="btn btn--ghost" data-cancel>Cancel</button><button class="btn btn--solid" data-save disabled>Add selected photos</button></div></div>', {
@@ -102,11 +102,11 @@
           }
           if (token !== generation) return;
           s.querySelector('[data-details]').innerHTML = details.map(function (d, i) {
-            return '<div class="photo-detail-row"><img src="' + previews[i] + '" alt="Photo ' + (i + 1) + '"><div><label>Caption<input maxlength="160" data-caption="' + i + '" placeholder="' + App.esc(d.location || 'Write a caption or location') + '"></label>' +
+            return '<div class="photo-detail-row"><img src="' + previews[i] + '" alt="Photo ' + (i + 1) + '"><div>' +
               '<label>Photo date<input type="date" data-date="' + i + '" value="' + App.esc(d.date) + '"></label>' +
               '<small>' + (d.dateSource === 'metadata' ? 'Date taken found in photo metadata.' : d.dateSource === 'file' ? 'No capture date found. Using the file date; you can change it.' : 'No date available. You can add one.') + '</small></div></div>';
           }).join('');
-          status.textContent = files.length ? 'Review the captions and dates, then add your photos.' : 'Choose at least one photo.';
+          status.textContent = files.length ? 'Review the dates, then add your photos.' : 'Choose at least one photo.';
           s.querySelector('[data-save]').disabled = !files.length;
         });
         s.querySelector('[data-save]').addEventListener('click', async function () {
@@ -115,7 +115,7 @@
           try {
             var values = details.map(function (d, i) {
               var date = s.querySelector('[data-date="' + i + '"]').value;
-              return Object.assign({}, d, { caption: s.querySelector('[data-caption="' + i + '"]').value, date: date, dateSource: date === d.date ? d.dateSource : 'manual' });
+              return Object.assign({}, d, { date: date, dateSource: date === d.date ? d.dateSource : 'manual' });
             });
             var count = await App.addPhotoFiles(files, function (i, total) { status.textContent = 'Saving photo ' + i + ' of ' + total + '…'; }, values);
             if (s.isConnected) close(); App.toast('Added ' + count + ' photos.');
@@ -136,16 +136,16 @@
   App.managePhotos = function () {
     App.sheet('<div class="sheet-pad"><h2 class="serif sheet-h">Your photos</h2><p class="sheet-p">Your photo library. Family sync shares it with your connected devices when enabled.</p><p role="status" data-status></p>' +
       '<div>' + (window.DATA.photos.length ? window.DATA.photos.map(function (p) {
-        return '<div class="photo-library-row"><img src="' + p.url + '" alt=""><span>' + App.esc(p.place || 'No caption') + '<small>' + App.esc(App.photoMeta(p).date) + '</small></span><button class="btn btn--ghost" data-edit="' + p.id + '">Edit</button><button class="btn btn--ghost" data-remove="' + p.id + '">Remove</button></div>';
+        return '<div class="photo-library-row"><img src="' + p.url + '" alt=""><span>' + App.esc(App.photoMeta(p).date) + '</span><button class="btn btn--ghost" data-edit="' + p.id + '">Edit</button><button class="btn btn--ghost" data-remove="' + p.id + '">Remove</button></div>';
       }).join('') : '<p>No photos yet. Use Add photos to upload your own.</p>') + '</div></div>', {
       onMount: function (s) {
         s.addEventListener('click', async function (e) {
           var edit = e.target.closest('[data-edit]');
           if (edit) {
             var p = window.DATA.photos.find(function (p) { return p.id === edit.dataset.edit; });
-            App.sheet('<div class="sheet-pad photo-upload"><h2 class="serif sheet-h">Edit photo details</h2><label>Caption<input maxlength="160" data-caption value="' + App.esc(p.caption || '') + '" placeholder="' + App.esc(p.location || 'Write a caption or location') + '"></label><label>Photo date<input type="date" data-date value="' + App.esc(p.date) + '"></label><p role="status" data-status></p><div class="sheet-actions"><button class="btn btn--solid" data-save>Save details</button></div></div>', {
+            App.sheet('<div class="sheet-pad photo-upload"><h2 class="serif sheet-h">Edit photo date</h2><label>Photo date<input type="date" data-date value="' + App.esc(p.date) + '"></label><p role="status" data-status></p><div class="sheet-actions"><button class="btn btn--solid" data-save>Save details</button></div></div>', {
               onMount: function (sheet, close) { sheet.querySelector('[data-save]').addEventListener('click', async function () {
-                try { await App.editPhotoDetails(p.id, sheet.querySelector('[data-caption]').value, sheet.querySelector('[data-date]').value); close(); App.managePhotos(); }
+                try { await App.editPhotoDetails(p.id, p.caption || '', sheet.querySelector('[data-date]').value); close(); App.managePhotos(); }
                 catch (e) { sheet.querySelector('[data-status]').textContent = e.message; }
               }); }
             }); return;

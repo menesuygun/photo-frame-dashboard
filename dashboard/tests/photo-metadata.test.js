@@ -10,8 +10,8 @@ test('capture dates retain the original calendar date and absent dates remain un
   assert.equal(photoDate('20210231'), '');
   assert.equal(metadataDetails().date, '');
   const result = metadataDetails({ DateTimeOriginal: '2020:07:01 14:00:00', City: 'Toronto', State: 'Ontario', Country: 'Canada', latitude: 43.65, longitude: -79.38 });
-  assert.equal(result.location, 'Toronto, Ontario, Canada'); assert.equal(result.date, '2020-07-01');
-  assert.equal(metadataDetails({ latitude: 91, longitude: 10 }).gps, null);
+  assert.equal(result.location, undefined); assert.equal(result.gps, undefined); assert.equal(result.date, '2020-07-01');
+  assert.equal(metadataDetails({ latitude: 91, longitude: 10 }).gps, undefined);
 });
 test('real EXIF parsing reads a DateTimeOriginal tag from JPEG bytes', async () => {
   const tiff = Buffer.alloc(64);
@@ -25,19 +25,6 @@ test('real EXIF parsing reads a DateTimeOriginal tag from JPEG bytes', async () 
   const tags = await parse(Buffer.concat([header, segment, Buffer.from([0xff, 0xd9])]), { reviveValues: false });
   assert.equal(metadataDetails(tags).date, '2021-06-12');
 });
-test('location API returns town/region without street address and validates coordinates', async () => {
-  const { default: handler } = await import('../api/photo-location.js');
-  const original = globalThis.fetch;
-  globalThis.fetch = async () => ({ ok: true, json: async () => ({ features: [{ properties: { name: 'Private Street', city: 'East Gwillimbury', state: 'Ontario', country: 'Canada' } }] }) });
-  const res = { setHeader() {}, status(n) { this.code = n; return this; }, json(v) { this.body = v; return this; } };
-  try {
-    await handler({ method: 'GET', query: { lat: '44.1', lon: '-79.4' } }, res);
-    assert.equal(res.body.location, 'East Gwillimbury, Ontario, Canada');
-    await handler({ method: 'GET', query: { lat: '200', lon: '-79.4' } }, res);
-    assert.equal(res.code, 400);
-  } finally { globalThis.fetch = original; }
-});
-
 test('uploads without capture metadata automatically use a clearly identified file date', async () => {
   const file = Buffer.from([0, 1, 2]);
   file.lastModified = +new Date('2022-08-10T12:00:00');

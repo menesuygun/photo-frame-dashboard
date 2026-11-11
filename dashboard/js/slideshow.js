@@ -20,7 +20,7 @@
       date: valid ? App.fmt.month(d) + ' ' + d.getDate() + ', ' + d.getFullYear() : 'Date unknown',
       monthYear: valid ? App.fmt.month(d) + ' ' + d.getFullYear() : 'Date unknown',
       kicker: valid && years > 0 ? years + (years === 1 ? ' year ago' : ' years ago') : '',
-      onThisDay: !!onThisDay, place: p.caption || p.location || p.place || '', from: App.person(p.from)
+      onThisDay: !!onThisDay, place: '', from: App.person(p.from)
     };
   };
 
