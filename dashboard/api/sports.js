@@ -1,3 +1,4 @@
+import pickleballHandler from '../server/pickleball.js';
 // Public football data, cached independently by resource. No household data is sent.
 const ROOT='https://site.api.espn.com/apis/';
 const cache=new Map(),inflight=new Map();
@@ -33,6 +34,7 @@ async function resource(kind,date){
 export default async function handler(req,res){
  if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'});
  const q=new URL(req.url,'https://dashboard.local').searchParams,kind=q.get('kind')||'overview',date=q.get('date')||torontoDate();
+ if(kind==='pickleball')return pickleballHandler(req,res);
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00Z'))||Math.abs(Date.parse(date+'T12:00Z')-Date.now())>370*86400000)return res.status(400).json({error:'Choose a date within one year'});
  if(!['overview','scores','standings','galatasaray','news','scorers','fixtures'].includes(kind))return res.status(400).json({error:'Unknown section'});
  try{

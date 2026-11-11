@@ -45,7 +45,7 @@
     try {
       let code = '';
       try { code = localStorage.getItem('frame-calendar-code') || ''; } catch {}
-      const response = await fetch('/api/pickleball', {
+      const response = await fetch('/api/sports?kind=pickleball', {
         headers: {Authorization: 'Bearer ' + code}, cache: 'no-store', signal: AbortSignal.timeout(20000)
       });
       if (response.status === 401) throw new Error('Connect Family sync on this device to view your pickleball profile.');

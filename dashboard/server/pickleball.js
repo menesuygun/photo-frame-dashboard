@@ -1,4 +1,4 @@
-import {authorized} from '../server/household.js';
+import {authorized} from './household.js';
 
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store');
