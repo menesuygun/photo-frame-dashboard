@@ -64,6 +64,8 @@ test('the panel labels imports, unrated singles and losses, escapes names, and r
   assert.match(html, /3\.13/);
   assert.match(html, /<td>0<\/td>/);
   assert.match(html, /Other Player/);
+  assert.match(html, /datetime="2026-11-10"/);
+  assert.match(html, /Games on Nov 10, 2026/);
   fail = true;
   await App.refreshPickleball();
   html = App.pickleballPanelHTML();

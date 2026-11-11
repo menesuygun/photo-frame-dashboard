@@ -30,6 +30,23 @@
       ).join('') + '</tbody></table></div></section>';
   }
 
+  function recentGames(matches) {
+    const groups = new Map();
+    const ordered = [...matches].sort((a, b) => b.date.localeCompare(a.date));
+    for (const match of ordered) {
+      if (!groups.has(match.date)) groups.set(match.date, []);
+      groups.get(match.date).push(match);
+    }
+    return [...groups].map(([day, games]) =>
+      '<section class="pk-game-day" aria-label="Games on ' + esc(date(day)) + '"><h4 class="pk-game-date"><time datetime="' + esc(day) + '">' + esc(date(day)) + '</time><span>' + games.length + (games.length === 1 ? ' game' : ' games') + '</span></h4><div class="pk-matches">' +
+      games.map(match => {
+        const won = match.scoreFor > match.scoreAgainst;
+        return '<article class="pk-match"><div class="pk-match-meta"><b class="' + (won ? 'pk-win' : 'pk-loss') + '">' + (won ? 'WIN' : 'LOSS') + '</b></div>' +
+          '<div class="pk-teams"><div><strong>' + esc(snapshot.player) + ' / ' + esc(match.partner) + '</strong><span>vs ' + esc(match.opponents.join(' / ')) + '</span></div><b class="num">' + esc(match.scoreFor) + '–' + esc(match.scoreAgainst) + '</b></div></article>';
+      }).join('') + '</div></section>'
+    ).join('');
+  }
+
   A.pickleballPanelHTML = function () {
     if (!snapshot) return '<div class="sp-empty">' + esc(busy ? 'Loading your pickleball profile…' : error || 'Open My Pickleball to load your profile.') + '</div>';
     const r = snapshot.ratings;
@@ -44,11 +61,7 @@
       '<article><div class="label">LEAGUE RECORD</div><strong class="num">' + wins + '<span> W / </span>' + losses + '<span> L</span></strong><p>#' + esc(snapshot.leagueRank) + ' · ' + esc(snapshot.leaguePoints) + ' ladder points</p><small>' + matches.length + ' recorded games in this league</small></article></div>' +
       '<p class="pk-source-note">Saved from your signed-in GPN account. New ratings and results need a fresh import.</p>' +
       leagueTable() + '<h3 class="pk-section-title">Recent games</h3>' +
-      '<div class="pk-matches">' + matches.map(match => {
-        const won = match.scoreFor > match.scoreAgainst;
-        return '<article class="pk-match"><div class="pk-match-meta"><time>' + esc(date(match.date)) + '</time><b class="' + (won ? 'pk-win' : 'pk-loss') + '">' + (won ? 'WIN' : 'LOSS') + '</b></div>' +
-          '<div class="pk-teams"><div><strong>' + esc(snapshot.player) + ' / ' + esc(match.partner) + '</strong><span>vs ' + esc(match.opponents.join(' / ')) + '</span></div><b class="num">' + esc(match.scoreFor) + '–' + esc(match.scoreAgainst) + '</b></div></article>';
-      }).join('') + '</div>' + link(snapshot.leagueUrl, 'View league results') + '</section>';
+      recentGames(matches) + link(snapshot.leagueUrl, 'View league results') + '</section>';
   };
 
   A.refreshPickleball = async function () {
