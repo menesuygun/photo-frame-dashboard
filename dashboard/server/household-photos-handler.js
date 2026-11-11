@@ -1,5 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
-import {authorized,configured,supabase} from '../server/household.js';
+import {authorized,configured,supabase} from './household.js';
 export default async function handler(req,res){
  res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary','Authorization');
  if(!authorized(req))return res.status(401).json({error:'Connect this device first.'});

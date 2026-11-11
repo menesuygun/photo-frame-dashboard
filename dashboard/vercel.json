@@ -6,7 +6,7 @@
     "api/google-tasks.js": {
       "maxDuration": 60
     },
-    "api/eg-schedules.js": {
+    "api/sports.js": {
       "maxDuration": 40
     }
   },
@@ -14,6 +14,22 @@
     {
       "source": "/api/eg-news",
       "destination": "/api/sports?kind=egnews"
+    },
+    {
+      "source": "/api/household-photos",
+      "destination": "/api/household?action=photos"
+    },
+    {
+      "source": "/api/travel",
+      "destination": "/api/calendar?action=travel"
+    },
+    {
+      "source": "/api/prayers",
+      "destination": "/api/weather?resource=prayers"
+    },
+    {
+      "source": "/api/eg-schedules",
+      "destination": "/api/sports?kind=eg-schedules"
     }
   ]
 }

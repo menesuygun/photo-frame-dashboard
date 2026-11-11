@@ -1,7 +1,7 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { getCalendarPayload } from './calendar.js';
-import { configured, supabase } from '../server/household.js';
-import { drivingEstimate } from '../server/travel.js';
+import { getCalendarPayload } from './calendar-handler.js';
+import { configured, supabase } from './household.js';
+import { drivingEstimate } from './travel.js';
 const hash = value => createHash('sha256').update(value).digest();
 const cache = new Map(), pending = new Map();
 export default async function handler(req, res) {

@@ -1,3 +1,4 @@
+import schedulesHandler from '../server/eg-schedules-handler.js';
 import {townNewsHandler} from '../server/eg-news.js';
 import pickleballHandler from '../server/pickleball.js';
 // Public football data, cached independently by resource. No household data is sent.
@@ -29,6 +30,7 @@ export default async function handler(req,res){
  const q=new URL(req.url,'https://dashboard.local').searchParams,kind=q.get('kind')||'overview',date=q.get('date')||torontoDate();
  if(kind==='pickleball')return pickleballHandler(req,res);
  if(kind==='egnews')return townNewsHandler(req,res);
+ if(kind==='eg-schedules')return schedulesHandler(req,res);
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00Z'))||Math.abs(Date.parse(date+'T12:00Z')-Date.now())>370*86400000)return res.status(400).json({error:'Choose a date within one year'});
  if(!['overview','scores','standings','galatasaray','scorers','fixtures'].includes(kind))return res.status(400).json({error:'Unknown section'});
  try{

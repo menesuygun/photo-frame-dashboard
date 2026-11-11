@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 test('prayer endpoint requests East Gwillimbury, Hanafi, ISNA and Toronto with offset-aware dates', async () => {
-  const { default: handler } = await import('../api/prayers.js');
+  const { default: handler } = await import('../server/prayers-handler.js');
   const original = globalThis.fetch, calls = [];
   globalThis.fetch = async url => {
     calls.push(url);

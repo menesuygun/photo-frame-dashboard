@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {drivingEstimate} from '../server/travel.js';import handler from '../api/travel.js';
+import {drivingEstimate} from '../server/travel.js';import handler from '../server/travel-handler.js';
 test('traffic estimates refine departure time and round driving minutes up',async()=>{
  const calls=[];const result=await drivingEstimate({origin:'Home',destination:'Venue',start:'2026-10-16T18:00:00Z',now:new Date('2026-10-16T16:00:00Z'),key:'test-only',fetcher:async(url,options)=>{calls.push({url,...options,body:JSON.parse(options.body)});return {ok:true,json:async()=>({routes:[{duration:calls.length===1?'1801s':'2101s'}]})};}});
  assert.equal(result.minutes,36);assert.equal(result.leaveBy,'2026-10-16T17:24:00.000Z');assert.equal(calls.length,2);assert.equal(calls[1].body.departureTime,'2026-10-16T17:29:00.000Z');assert.equal(calls[0].body.routingPreference,'TRAFFIC_AWARE_OPTIMAL');assert.equal(calls[0].body.trafficModel,'BEST_GUESS');assert.equal(calls[0].headers['X-Goog-Api-Key'],'test-only');
