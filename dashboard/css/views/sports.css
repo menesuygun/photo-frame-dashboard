@@ -13,7 +13,7 @@
 .sp-hero h2 { font:42px/1.1 var(--serif); }.sp-hero h2 span { font:italic 22px var(--serif); margin:0 18px; color:#f6c344; }
 .sp-hero p { font-size:14px; opacity:.85; }
 .sp-tabs { display:flex; gap:6px; padding:18px 0; overflow-x:auto; flex:none; }
-.sp-tabs button { min-height:43px; padding:8px 18px; border-radius:999px; font-size:15px; font-weight:700; white-space:nowrap; }
+.sp-tabs button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:43px; padding:8px 18px; border-radius:999px; font-size:15px; font-weight:700; white-space:nowrap; }
 .sp-tabs button[aria-pressed=true] { background:var(--ink); color:var(--paper); }
 .sp-content { min-height:150px; }.sp-match-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .sp-match { background:var(--card); padding:16px; border-radius:16px; border:1px solid var(--line); }

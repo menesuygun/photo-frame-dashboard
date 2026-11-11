@@ -1,5 +1,6 @@
 // Minimal stroke icon set (24×24 grid). Usage: App.icon('home', 28)
 window.ICONS = {
+  pickleball: '<g transform="rotate(35 9 12)"><rect x="4" y="2" width="10" height="13" rx="4"/><path d="M7 15v6h4v-6"/></g><circle cx="19" cy="5" r="3"/><path d="M19 4v.01M18 6v.01M20 6v.01"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M9.2 3h5.6l.5 2.4 1.2.7 2.3-.8 2.8 4.8-1.8 1.6v1.4l1.8 1.6-2.8 4.8-2.3-.8-1.2.7-.5 2.4H9.2l-.5-2.4-1.2-.7-2.3.8-2.8-4.8 1.8-1.6v-1.4L2.4 10l2.8-4.8 2.3.8 1.2-.7z"/>',
   sync: '<path d="M20 7a8 8 0 0 0-13-3L3 8M3 3v5h5M4 17a8 8 0 0 0 13 3l4-4M21 21v-5h-5"/>',
   ball: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.6 5.6c7 1 11.8 5.8 12.8 12.8M5.6 18.4c1-7 5.8-11.8 12.8-12.8"/>',
