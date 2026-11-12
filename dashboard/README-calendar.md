@@ -21,3 +21,9 @@ The server expands recurrence rules, exclusions, and overrides, preserves all-da
 The calendar and clock now use live data; other dashboard sections remain demo data. Google Photos is separate work.
 
 Validation: `npm ci`, `node --test tests/calendar.test.js`, `npm run build`. For local end-to-end testing use Vercel's local development environment so `/api/calendar` runs; Vite by itself serves the interface only.
+
+## Enes work calendar (Google)
+
+Optional server-only `GOOGLE_CALENDAR_URL` accepts the work calendar's **Secret address in iCal format** from Google Calendar → Settings → the calendar → Integrate calendar. Never make the calendar public. Store the link as a sensitive Production environment variable and redeploy; never use a VITE prefix or commit the link. Workspace administrators may disable secret subscription links.
+
+Google events merge with Apple events through the existing protected `/api/calendar` function, refresh every five minutes while the dashboard is open, and always have `people: ['enes']`, including untagged and recurring events. They remain visible on the shared display under Enes. Source-specific event IDs prevent collisions with Apple. Edit the original Google calendar; this subscription is read-only. If either configured feed fails, the client retains the last complete successful update and shows its existing offline status. No additional serverless function is used.

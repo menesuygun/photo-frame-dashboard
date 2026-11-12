@@ -32,7 +32,17 @@ function wireDate(time) {
   return time.isDate ? time.toString() : time.toJSDate().toISOString();
 }
 
-export function parseCalendar(text, from, to, fallbackTimezone = 'America/Toronto') {
+export function googleCalendarUrl(value) {
+  const url = new URL(String(value));
+  if (url.protocol !== 'https:' || url.hostname !== 'calendar.google.com' ||
+      !/^\/calendar\/ical\/[^/]+\/private-[a-zA-Z0-9]+\/basic\.ics$/.test(url.pathname) ||
+      url.username || url.password || url.port || url.search || url.hash) {
+    throw new Error('Invalid Google calendar URL');
+  }
+  return url.href;
+}
+
+export function parseCalendar(text, from, to, fallbackTimezone = 'America/Toronto', options = {}) {
   const calendar = new ICAL.Component(ICAL.parse(text));
   if (calendar.name !== 'vcalendar') throw new Error('Invalid calendar');
   const components = calendar.getAllSubcomponents('vevent');
@@ -50,10 +60,10 @@ export function parseCalendar(text, from, to, fallbackTimezone = 'America/Toront
     }
     const startDate = start.toJSDate(), endDate = end.toJSDate();
     if (endDate <= from || startDate >= to) return;
-    const id = createHash('sha256').update(item.uid + ':' + recurrenceId.toString()).digest('hex');
+    const id = createHash('sha256').update((options.source === 'google' ? 'google:' : '') + item.uid + ':' + recurrenceId.toString()).digest('hex');
     events.set(id, {
-      id, ...assignment(item.summary), start: wireDate(start), end: wireDate(end),
-      allDay: start.isDate, loc: item.location || '', notes: item.description || '', source: 'icloud'
+      id, ...assignment(item.summary), ...(options.source === 'google' ? {people: ['enes'], mentionedPeople: ['enes']} : {}), start: wireDate(start), end: wireDate(end),
+      allDay: start.isDate, loc: item.location || '', notes: item.description || '', source: options.source === 'google' ? 'google' : 'icloud'
     });
     if (events.size > 5000) throw new Error('Calendar has too many events');
   }

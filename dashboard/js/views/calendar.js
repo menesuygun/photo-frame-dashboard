@@ -292,7 +292,7 @@
 
   function addSheet() {
     if (App.dashboardEventSheet) return App.dashboardEventSheet(null, V.date || App.now());
-    if (App.calendarSync) return App.toast('Manage events in Apple Calendar.', { icon: 'calendar' });
+    if (App.calendarSync) return App.toast('Manage events in the original Apple or Google calendar.', { icon: 'calendar' });
     var now = App.now();
     var st = { who: [], day: 0, time: '15:30', dur: 60, title: '' };
     var days = [0, 1, 2, 3, 4];

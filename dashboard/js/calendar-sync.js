@@ -1,4 +1,4 @@
-// iCloud is read-only. Keep the last successful sync in memory during a network outage.
+// Connected calendars are read-only. Keep the last successful sync in memory during a network outage.
 (function () {
   'use strict';
   var App = window.App, D = window.DATA;
@@ -33,6 +33,7 @@
         D.events = payload.events.map(function (event) {
           return Object.assign({}, event, { start: date(event.start), end: date(event.end) });
         });
+        App.calendarSync.sources = payload.sources || ['icloud'];
         App.calendarSync.syncedAt = new Date(payload.syncedAt);
         App.calendarSync.from = new Date(payload.from);
         App.calendarSync.to = new Date(payload.to);
@@ -59,7 +60,7 @@
   App.calendarStatus = function () {
     var state = App.calendarSync, message = {
       loading: 'Connecting calendar…', locked: 'Connect your family calendar', setup: 'Calendar setup is incomplete',
-      ready: 'iCloud · Updated ' + (state.syncedAt ? App.fmt.time(state.syncedAt) : ''),
+      ready: ((state.sources || ['icloud']).indexOf('google') > -1 ? ((state.sources || []).indexOf('icloud') > -1 ? 'Apple + Google' : 'Google') : 'iCloud') + ' · Updated ' + (state.syncedAt ? App.fmt.time(state.syncedAt) : ''),
       stale: 'Calendar offline · Showing last update', error: 'Couldn’t load your calendar'
     }[state.status];
     var action = state.status === 'locked' ? 'Connect' : state.status === 'setup' ? '' : 'Refresh';
