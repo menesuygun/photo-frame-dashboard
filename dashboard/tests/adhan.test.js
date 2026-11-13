@@ -56,7 +56,7 @@ function setup(storage = new Map([['frame-adhan-settings-v1', '{"Fajr":true}']])
   };
 }
 
-test('a selected prayer plays once, followed by Arabic and Turkish dua, and returns to Today', async () => {
+test('a selected prayer plays once, followed by one Arabic dua, and returns to Today', async () => {
   const s = setup(new Map([
     ['frame-adhan-settings-v1', '{"Fajr":true}'],
     ['frame-adhan-recording-v1', 'sultanahmet']
@@ -70,12 +70,10 @@ test('a selected prayer plays once, followed by Arabic and Turkish dua, and retu
   assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3']);
   assert.equal(s.App.adhanPlaying, true);
   await s.end();
-  assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3', '/assets/ezan-duasi-tr.m4a']);
-  assert.equal(s.App.adhanPlaying, true);
-  await s.end();
+  assert.equal(s.App.adhanPlaying, false);
   await s.tick(0);
   await s.tick(1);
-  assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3', '/assets/ezan-duasi-tr.m4a']);
+  assert.deepEqual(s.player.plays, ['/adhan.mp3', '/dua.mp3']);
   assert.deepEqual(s.routes, ['adhan', 'home']);
 });
 
