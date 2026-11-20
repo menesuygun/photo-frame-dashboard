@@ -23,7 +23,7 @@
       '<div class="sp-table-scroll pk-standings" tabindex="0" role="region" aria-label="League standings table"><table class="sp-table"><thead><tr>' +
       ['Rank', 'Player', 'Points', 'W', 'L', 'DUPR'].map(label => '<th scope="col">' + label + '</th>').join('') +
       '</tr></thead><tbody>' + snapshot.standings.map(player =>
-        '<tr' + (player.name === snapshot.player ? ' class="pk-player-row"' : '') + '><td>' + esc(player.rank) +
+        '<tr' + (player.name === snapshot.player ? ' class="pk-player-row"' : '') + '><td>' + esc(player.rank) + (Number(player.rank) === 1 ? ' <span role="img" aria-label="League champion" title="League champion">🏆</span>' : '') +
         '</td><th scope="row">' + esc(player.name) + (player.name === snapshot.player ? ' <span class="pk-you">You</span>' : '') +
         '</th><td>' + esc(player.points) + '</td><td>' + esc(player.wins) + '</td><td>' + esc(player.losses) +
         '</td><td>' + (Number.isFinite(player.dupr) ? player.dupr.toFixed(2) : 'NR') + '</td></tr>'
